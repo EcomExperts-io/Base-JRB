@@ -7,6 +7,7 @@
   assign section_id = 'hero-banner-' | append: section.id
   assign background_type = section.settings.background_type
   assign image_background = section.settings.image_background
+  assign image_background_mbl = section.settings.image_background_mbl
   assign video_background_url = section.settings.video_background_url
   assign video_background_hosted = section.settings.video_background_hosted
 
@@ -24,6 +25,9 @@
 
   assign content_alignment = section.settings.content_alignment
   assign vertical_alignment = section.settings.vertical_alignment
+
+  assign content_alignment_mbl = section.settings.content_alignment_mbl
+  assign vertical_alignment_mbl = section.settings.vertical_alignment_mbl
 -%}
 
 {{ 'section-hero.css' | asset_url | stylesheet_tag }}
@@ -34,6 +38,8 @@
     --hero-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
     --hero-content-alignment: {{ content_alignment }};
     --hero-vertical-alignment: {{ vertical_alignment }};
+    --hero-content-alignment-mbl: {{ content_alignment_mbl }};
+    --hero-vertical-alignment-mbl: {{ vertical_alignment_mbl }};
     --hero-button-background: {{ button_background_color }};
     --hero-button-text: {{ button_text_color }};
   }
@@ -69,30 +75,43 @@
         {% comment %} NOTE: External video URLs (YouTube/Vimeo) often require JavaScript for true background video behavior. This is a basic iframe attempt. Hosted video is recommended. {% endcomment %}
       {% endif %}
     {% else %}
-      {% if image_background != blank %}
-        {{
-          image_background
-          | image_url: width: 2000
-          | image_tag: loading: 'lazy', widths: '400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000', class: ''
-        }}
-      {% else %}
-        {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
-      {% endif %}
+      <div class="desktop-hero-img">
+        {% if image_background != blank %}
+          {{
+            image_background
+            | image_url: width: 2000
+            | image_tag: loading: 'eager', widths: '400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000', class: ''
+          }}
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
+      <div class="mbl-hero-img">
+        {% if image_background_mbl != blank %}
+          {{
+            image_background_mbl
+            | image_url: width: 1000
+            | image_tag: loading: 'eager', widths: '400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000', class: ''
+          }}
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        {% endif %}
+      </div>
     {% endif %}
     <div class="hero-banner__background-overlay"></div>
   </div>
 
-  <div class="hero-banner__content hero-banner__content--h-{{ content_alignment }} hero-banner__content--v-{{ vertical_alignment }}">
+  <div class="hero-banner__content hero-banner__content--h-{{ content_alignment }} hero-banner__content--v-{{ vertical_alignment }} hero-banner__content_mbl--h-{{ content_alignment_mbl }} hero-banner__content_mbl--v-{{ vertical_alignment_mbl }}">
     {% if stars_text != blank %}
       <div class="hero-banner__stars"><span class="stars">★★★★★</span> {{ stars_text }}</div>
     {% endif %}
 
     {% if heading != blank %}
-      <h2 class="hero-banner__heading">{{ heading | escape }}</h2>
+      <h2 class="hero-banner__heading">{{ heading }}</h2>
     {% endif %}
 
     {% if subheading != blank %}
-      <p class="hero-banner__subheading">{{ subheading | escape }}</p>
+      <div class="hero-banner__subheading">{{ subheading }}</div>
     {% endif %}
 
     {% if button_text != blank and button_link != blank %}
@@ -152,6 +171,11 @@
       "label": "Image Background"
     },
     {
+      "type": "image_picker",
+      "id": "image_background_mbl",
+      "label": "Image Background Mobile"
+    },
+    {
       "type": "video",
       "id": "video_background_hosted",
       "label": "Hosted Video Background"
@@ -205,22 +229,43 @@
       "default": "bottom"
     },
     {
+      "type": "select",
+      "id": "content_alignment_mbl",
+      "label": "Horizontal Alignment Mobile",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment_mbl",
+      "label": "Vertical Alignment Mobile",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "bottom"
+    },
+    {
       "type": "text",
       "id": "stars_text",
       "label": "Rating Text",
       "default": "Trusted By 30,539+ Players"
     },
     {
-      "type": "text",
+      "type": "html",
       "id": "heading",
       "label": "Heading",
       "default": "END OF SEASON SALE"
     },
     {
-      "type": "text",
+      "type": "richtext",
       "id": "subheading",
-      "label": "Subheading",
-      "default": "Pro level protection for every level"
+      "label": "Subheading"
     },
     {
       "type": "text",

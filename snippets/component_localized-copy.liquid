@@ -1,0 +1,35 @@
+{%- assign is_eu = false -%}
+{%- assign iso = localization.country.iso_code -%}
+{%- if iso == 'AT' or iso == 'BE' or iso == 'HR' or iso == 'CY' or iso == 'EE' or iso == 'FI' or iso == 'FR' or iso == 'DE' or iso == 'GR' or iso == 'IT' or iso == 'LV' or iso == 'LT' or iso == 'LU' or iso == 'MT' or iso == 'NL' or iso == 'PT' or iso == 'SK' or iso == 'SI' or iso == 'ES' or iso == 'AL' or iso == 'AD' or iso == 'AM' or iso == 'BY' or iso == 'BA' or iso == 'GE' or iso == 'GI' or iso == 'IS' or iso == 'NO' or iso == 'XK' or iso == 'LI' or iso == 'MK' or iso == 'MD' or iso == 'MC' or iso == 'ME' or iso == 'RU' or iso == 'SM' or iso == 'RS' or iso == 'CH' or iso == 'TR' or iso == 'UA' or iso == 'VA' -%}
+  {%- assign is_eu = true -%}
+{%- endif -%}
+
+{% if localization.country == 'United Kingdom' %}
+  {{ uk_copy }}
+{% elsif iso == 'IE' %}
+  {{ irl_copy }}
+{% elsif is_eu %}
+  {{ eu_copy }}
+{% elsif iso == 'CA' %}
+  {{ cad_copy }}
+{% elsif iso == 'BG' %}
+  {{ bgn_copy }}
+{% elsif iso == 'CZ' %}
+  {{ czk_copy }}
+{% elsif iso == 'DK' %}
+  {{ dkk_copy }}
+{% elsif iso == 'HU' %}
+  {{ huf_copy }}
+{% elsif iso == 'PL' %}
+  {{ pln_copy }}
+{% elsif iso == 'RO' %}
+  {{ ron_copy }}
+{% elsif iso == 'SE' %}
+  {{ sek_copy }}
+{% elsif iso == 'AU' %}
+  {{ aud_copy }}
+{% elsif iso == 'NZ' %}
+  {{ nzd_copy }}
+{%- else -%}
+  {{ us_copy }}
+{% endif %}

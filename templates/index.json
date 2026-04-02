@@ -9,25 +9,591 @@
  */
 {
   "sections": {
+    "hero_CibWMB": {
+      "type": "hero-v3",
+      "blocks": {
+        "heading_fmnK6G": {
+          "type": "heading",
+          "settings": {
+            "heading": "Say Hello To The\nNew Lip Recharge",
+            "heading_mobile": "",
+            "line_height_desktop": 50,
+            "line_height_mobile": 40,
+            "color_text": "#ffffff",
+            "color_text_mobile": "#000000",
+            "color_highlight": "#ffffff",
+            "color_highlight_mobile": "#ffffff",
+            "show_highlight_desktop": false,
+            "show_highlight_mobile": true,
+            "heading_gap_desktop": 10,
+            "heading_gap_mobile": 8,
+            "font_size_desktop": 45,
+            "font_size_mobile": 26,
+            "width_desktop": 60,
+            "width_mobile": 80
+          }
+        },
+        "description_eXK6xW": {
+          "type": "description",
+          "settings": {
+            "description": "<p>Meet a powerful new treatment designed</p><p>to hydrate, tint, and recharge your lips.</p>",
+            "color_desktop": "#ffffff",
+            "color_mobile": "#ffffff",
+            "font": "sans",
+            "font_size_desktop": 14,
+            "font_size_mobile": 13,
+            "line_height_desktop": 1.7,
+            "line_height_mobile": 1.7,
+            "width_desktop": 70,
+            "width_mobile": 100
+          }
+        },
+        "cta_kriJqi": {
+          "type": "cta",
+          "settings": {
+            "text_color_desktop": "#ffffff",
+            "background_color_desktop": "#000000",
+            "border_color_desktop": "#000000",
+            "hover_text_color_desktop": "#000000",
+            "hover_background_color_desktop": "rgba(0,0,0,0)",
+            "hover_border_color_desktop": "#000000",
+            "text_color_mobile": "#000000",
+            "background_color_mobile": "#ffffff",
+            "border_color_mobile": "#ffffff",
+            "hover_text_color_mobile": "#ffffff",
+            "hover_background_color_mobile": "rgba(0,0,0,0)",
+            "hover_border_color_mobile": "#ffffff",
+            "button_padding_inline_desktop": 16,
+            "button_padding_inline_mobile": 12,
+            "text": "SHOP NOW",
+            "url": "shopify://products/lip-recharge"
+          }
+        }
+      },
+      "block_order": [
+        "heading_fmnK6G",
+        "description_eXK6xW",
+        "cta_kriJqi"
+      ],
+      "name": "MMB Launch",
+      "settings": {
+        "position_desktop": "desktop-middle-left",
+        "position_mobile": "mobile-bottom-left",
+        "alignment_desktop": "left",
+        "alignment_mobile": "left",
+        "gap_desktop": 24,
+        "gap_mobile": 12,
+        "image_desktop": "shopify://shop_images/Lip_Recharge_Launch_Desktop_3.webp",
+        "image_mobile": "shopify://shop_images/Lip_Recharge_Launch_Mobile_2.webp"
+      }
+    },
     "hero_1": {
       "type": "hero",
+      "disabled": true,
       "settings": {
-        "color_scheme": "scheme-3",
+        "color_scheme": "scheme-1",
         "background_type": "image",
+        "image_background": "shopify://shop_images/Mini_MB_Launch_Desktop.jpg",
+        "image_background_mbl": "shopify://shop_images/Mini_MB_Launch_Mobile.jpg",
         "video_background_url": "",
         "overlay_color": "#e8e1e1",
-        "overlay_opacity": 30,
-        "content_alignment": "center",
+        "overlay_opacity": 0,
+        "content_alignment": "left",
         "vertical_alignment": "center",
+        "content_alignment_mbl": "left",
+        "vertical_alignment_mbl": "bottom",
         "stars_text": "",
-        "heading": "Main Banner Title Here",
-        "subheading": "Sub Header Here",
+        "heading": "<div>Mini Miracle Balms</div>\n<div>Are Officially Here</div>",
+        "subheading": "<p>It’s official: The size and shades you've been</p><p>asking for are now available year-round.</p>",
         "button_text": "Shop Now",
         "button_link": "shopify://collections/cam-plans",
-        "button_background_color": "#ffffff",
-        "button_text_color": "#000000",
+        "button_background_color": "#000000",
+        "button_text_color": "#ffffff",
         "show_endorsement": false,
         "endorsement_name": ""
+      }
+    },
+    "featured_products_mpK79R": {
+      "type": "featured-products",
+      "blocks": {
+        "product_card_npHX8Q": {
+          "type": "product_card",
+          "settings": {
+            "product": "miracle-balm",
+            "image": "shopify://shop_images/Mini_MB_PDP_Launch_1_1.jpg"
+          }
+        },
+        "product_card_yMqmHQ": {
+          "type": "product_card",
+          "settings": {
+            "product": "the-eyeshadow-stick"
+          }
+        },
+        "product_card_CQgqD9": {
+          "type": "product_card",
+          "settings": {
+            "product": "what-the-foundation"
+          }
+        },
+        "product_card_pynyXW": {
+          "type": "product_card",
+          "settings": {
+            "product": "just-enough-tinted-moisturizer"
+          }
+        }
+      },
+      "block_order": [
+        "product_card_npHX8Q",
+        "product_card_yMqmHQ",
+        "product_card_CQgqD9",
+        "product_card_pynyXW"
+      ],
+      "name": "Featured Products",
+      "disabled": true,
+      "settings": {
+        "enable_slider": false,
+        "color_scheme": "",
+        "heading": "Featured Products",
+        "subheading": "",
+        "view_all_text": "See All",
+        "view_all_url": "shopify://collections/shop-all",
+        "heading_alignment": "left",
+        "show_view_all_as_button": false,
+        "button_background_color": "#2e2e2e",
+        "button_text_color": "#ffffff",
+        "product_content_alignment": "center",
+        "review_content_alignment": "center"
+      }
+    },
+    "featured_products_VwR6MU": {
+      "type": "featured-products-custom",
+      "blocks": {
+        "product_ebA8X4": {
+          "type": "product",
+          "settings": {
+            "product": "lip-recharge",
+            "region_specific": false,
+            "allowed_regions": "ALL"
+          }
+        },
+        "product_UD4G6K": {
+          "type": "product",
+          "settings": {
+            "product": "miracle-balm",
+            "region_specific": false,
+            "allowed_regions": "ALL",
+            "image": "shopify://shop_images/Mini_MB_PDP_Launch_1_1.jpg"
+          }
+        },
+        "product_z4wpiJ": {
+          "type": "product",
+          "settings": {
+            "product": "what-the-foundation",
+            "region_specific": false,
+            "allowed_regions": "ALL"
+          }
+        },
+        "product_U4fkzz": {
+          "type": "product",
+          "settings": {
+            "product": "just-enough-tinted-moisturizer",
+            "region_specific": false,
+            "allowed_regions": "ALL"
+          }
+        }
+      },
+      "block_order": [
+        "product_ebA8X4",
+        "product_UD4G6K",
+        "product_z4wpiJ",
+        "product_U4fkzz"
+      ],
+      "settings": {
+        "background": "#ffffff",
+        "heading": "Featured Products",
+        "color": "#000000",
+        "color_mobile": "#000000",
+        "fontfamily": "FontSpringArticulateDemibold",
+        "fontfamily_mobile": "FontSpringArticulateDemibold",
+        "font_weight": 700,
+        "font_weight_mobile": 700,
+        "letter_spacing": "0.3px",
+        "letter_spacing_mobile": "0.3px",
+        "desktop_fontsize": 16,
+        "mobile_fontsize": 13,
+        "cta_text": "SEE ALL",
+        "cta_link": "shopify://collections/shop-all",
+        "reviews_display": "mobile"
+      }
+    },
+    "press_logo_bar_ArjRd9": {
+      "type": "press-logo-bar",
+      "blocks": {
+        "press_quote_iDwDtP": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "Collection of effortless cosmetics, designed to help people feel like their best selves",
+            "logo": "vogue",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_PNCtAy": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "We love that all of Jones Road's products fall in line with the no-makeup makeup and dewy skin trends",
+            "logo": "allure",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_FMBn4j": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "Jones Road range is all about silky formulas and subtle flushes of colour.",
+            "logo": "cosmopolitan",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_Lj3DeP": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "If 'no-make-up' make-up is more your vibe, then Jones Road should be on your radar.",
+            "logo": "bazaar",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_wWLzbr": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "Jones Road, Bobbi Brown's clean beauty brand, is full of gems",
+            "logo": "elle",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_Ced8Rc": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "Jones Road is definitely ahead of the curve",
+            "logo": "glamour",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_NqLaYy": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "Bobbi Brown's new cosmetics and skincare line is hot, hot, hot.",
+            "logo": "marie_claire",
+            "custom_logo_svg": ""
+          }
+        },
+        "press_quote_xL4KnN": {
+          "type": "press_quote",
+          "settings": {
+            "quote": "There's good reason we've given the products so many beauty awards over the years.",
+            "logo": "womens_health",
+            "custom_logo_svg": ""
+          }
+        }
+      },
+      "block_order": [
+        "press_quote_iDwDtP",
+        "press_quote_PNCtAy",
+        "press_quote_FMBn4j",
+        "press_quote_Lj3DeP",
+        "press_quote_wWLzbr",
+        "press_quote_Ced8Rc",
+        "press_quote_NqLaYy",
+        "press_quote_xL4KnN"
+      ],
+      "name": "Press Logo Bar",
+      "settings": {
+        "show_desktop": true,
+        "show_mobile": false
+      }
+    },
+    "163580386992f4d90c": {
+      "type": "press-logos",
+      "blocks": {
+        "8d24dbad-233a-49bc-95ce-4005e7f99503": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/vogue-logo-whote.png"
+          }
+        },
+        "486b104f-f7b1-4e52-bf2b-b5a595f7d46c": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/wsj-3x.png"
+          }
+        },
+        "fc367692-4bfe-47a8-8229-c1418bf4f085": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/FC_Logo_2018_amgwhf.png"
+          }
+        },
+        "cfcae81a-2d66-46c3-99e0-efaa57cab6b7": {
+          "type": "logo",
+          "settings": {
+            "logo": "shopify://shop_images/Allure_logo.svg_6a154b4f-edfa-416e-ad5e-27f8278610a3.png"
+          }
+        },
+        "226c2ae1-2642-4d35-831d-63deb4f922d4": {
+          "type": "logo",
+          "disabled": true,
+          "settings": {
+            "logo": "shopify://shop_images/nyt-3x-white.png"
+          }
+        }
+      },
+      "block_order": [
+        "8d24dbad-233a-49bc-95ce-4005e7f99503",
+        "486b104f-f7b1-4e52-bf2b-b5a595f7d46c",
+        "fc367692-4bfe-47a8-8229-c1418bf4f085",
+        "cfcae81a-2d66-46c3-99e0-efaa57cab6b7",
+        "226c2ae1-2642-4d35-831d-63deb4f922d4"
+      ],
+      "settings": {
+        "section_id": "press",
+        "bg_color": "#000000",
+        "logos_per_row_mobile": 4
+      }
+    },
+    "16358041283a08673d": {
+      "type": "cards-carousel",
+      "blocks": {
+        "7b256edb-7a0c-42fa-bbc6-2e537ad18f5f": {
+          "type": "card",
+          "settings": {
+            "heading": "",
+            "cta_text": "Shop face",
+            "cta_link": "shopify://collections/face",
+            "image": "shopify://shop_images/MECCA_SET1_022025_223_edit_3_e8c89b2a-0fc5-424e-ba8e-73d7d16564d3.png"
+          }
+        },
+        "61f17e40-f182-410c-ac73-ea4bdf164449": {
+          "type": "card",
+          "settings": {
+            "heading": "",
+            "cta_text": "Shop Body",
+            "cta_link": "shopify://collections/body",
+            "image": "shopify://shop_images/HAEJIN_SET1_102325_889_edit2-2_1.png"
+          }
+        },
+        "92df5775-f97f-4b44-b109-78c97afda70c": {
+          "type": "card",
+          "settings": {
+            "heading": "",
+            "cta_text": "Shop Eyes",
+            "cta_link": "shopify://collections/eyes",
+            "image": "shopify://shop_images/JR_120120_3_11787_1_1_8cec0b2c-4be8-4e2b-bcd2-5645d3e6befa.png"
+          }
+        },
+        "4f47f187-4e78-4ec2-b785-c62caa6ef172": {
+          "type": "card",
+          "settings": {
+            "heading": "",
+            "cta_text": "Shop Lips",
+            "cta_link": "shopify://collections/lips",
+            "image": "shopify://shop_images/JENNA_SET2_052825_197_edit_2_9c0ef691-e174-4827-a494-b375f90d4fb4.png"
+          }
+        }
+      },
+      "block_order": [
+        "7b256edb-7a0c-42fa-bbc6-2e537ad18f5f",
+        "61f17e40-f182-410c-ac73-ea4bdf164449",
+        "92df5775-f97f-4b44-b109-78c97afda70c",
+        "4f47f187-4e78-4ec2-b785-c62caa6ef172"
+      ],
+      "settings": {
+        "text_color": "#ffffff",
+        "button_color": "#000000",
+        "button_bg": "#ffffff",
+        "entire_card_clickable": true,
+        "heading": "Shop By Collection",
+        "color": "#000000",
+        "color_mobile": "#000000",
+        "fontfamily": "FontSpringArticulateDemibold",
+        "fontfamily_mobile": "FontSpringArticulateDemibold",
+        "font_weight": 700,
+        "font_weight_mobile": 700,
+        "letter_spacing": "0.3px",
+        "letter_spacing_mobile": "0.3px",
+        "desktop_fontsize": 16,
+        "mobile_fontsize": 13,
+        "cta_text": "",
+        "cta_link": ""
+      }
+    },
+    "1635803874691e1bf3": {
+      "type": "blockquote",
+      "settings": {
+        "bg_color": "#f5f2ec",
+        "text_color": "#000000",
+        "quote": "Clean, strategic, high-grade formulations that work on every skin type and tone —and that are as simple to use as they are to master. Jones Road is a lifetime of beauty knowledge, distilled.",
+        "author": "Bobbi Brown, founder",
+        "url": ""
+      }
+    },
+    "image_with_text_overlay": {
+      "type": "image-text-overlay",
+      "name": "En Route",
+      "settings": {
+        "section_id": "image-banner",
+        "image_desktop": "shopify://shop_images/Lip_Recharge_Teaser_Secondary_Desktop_1.webp",
+        "image_mobile": "shopify://shop_images/Lip_Recharge_Teaser_Secondary_Mobile_1_1.webp",
+        "desktop_image_size": "auto",
+        "desktop_image_height": 25,
+        "desktop_image_min_height": 400,
+        "mobile_image_size": "auto",
+        "mobile_image_height": 80,
+        "mobile_image_min_height": 400,
+        "heading": "The Hype Is Real:\n100% Of Users Agree...",
+        "line_height_desktop": 40,
+        "line_height_mobile": 30,
+        "heading_color": "#ffffff",
+        "heading_color_mobile": "#ffffff",
+        "heading_highlight": false,
+        "highlight_color": "#ffffff",
+        "highlight_color_mobile": "#ffffff",
+        "subheading": "See why 100% agree Lip Recharge is the product they want to keep in their bag... Every single day.",
+        "subheading_lineheight_desktop": 1.6,
+        "subheading_lineheight_mobile": 1.6,
+        "subheading_color": "#ffffff",
+        "cta_text": "Shop Now",
+        "cta_link": "shopify://products/lip-recharge",
+        "text_color_desktop": "#ffffff",
+        "background_color_desktop": "#000000",
+        "border_color_desktop": "#000000",
+        "hover_text_color_desktop": "#000000",
+        "hover_background_color_desktop": "rgba(0,0,0,0)",
+        "hover_border_color_desktop": "#000000",
+        "text_color_mobile": "#ffffff",
+        "background_color_mobile": "#000000",
+        "border_color_mobile": "#000000",
+        "hover_text_color_mobile": "#000000",
+        "hover_background_color_mobile": "rgba(0,0,0,0)",
+        "hover_border_color_mobile": "#000000"
+      }
+    },
+    "1635804764add18fbf": {
+      "type": "column-carousel",
+      "blocks": {
+        "0c185b59-b2bc-4787-98d8-b3f38f33b967": {
+          "type": "column",
+          "settings": {
+            "heading": "Better Beauty",
+            "description": "<p>The world doesn't need more beauty products. It needs better beauty products. </p>",
+            "cta_text": "Learn more",
+            "cta_link": "shopify://pages/about",
+            "image": "shopify://shop_images/PRODUCT-ROW-PDP-01.jpg"
+          }
+        },
+        "d2b381f2-840c-43b1-9790-fed688f6644a": {
+          "type": "column",
+          "settings": {
+            "heading": "Clean Slate",
+            "description": "<p>No phthalates, sulfates, petrolatum, PEGs, EDTA, or BPA. Because clean beauty is a no brainer. </p>",
+            "cta_text": "Learn More",
+            "cta_link": "shopify://pages/about",
+            "image": "shopify://shop_images/PRODUCT-ROW-PDP-02.jpg"
+          }
+        },
+        "1710a8c3-ca7b-4e38-b242-86ceae47df48": {
+          "type": "column",
+          "settings": {
+            "heading": "High Performance",
+            "description": "<p>The makeup equivalent of a swiss army knife. Easy, cool, multi-purpose products. </p>",
+            "cta_text": "Learn More",
+            "cta_link": "shopify://pages/about",
+            "image": "shopify://shop_images/value-props-1.png"
+          }
+        },
+        "0e33a93a-24ee-40f6-b82c-4ad3b9e135dd": {
+          "type": "column",
+          "settings": {
+            "heading": "From Bobbi",
+            "description": "<p>It began with the need to create formulas for her own kit. </p>",
+            "cta_text": "Learn More",
+            "cta_link": "shopify://pages/about",
+            "image": "shopify://shop_images/PRODUCT-ROW-PDP-04.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "0c185b59-b2bc-4787-98d8-b3f38f33b967",
+        "d2b381f2-840c-43b1-9790-fed688f6644a",
+        "1710a8c3-ca7b-4e38-b242-86ceae47df48",
+        "0e33a93a-24ee-40f6-b82c-4ad3b9e135dd"
+      ],
+      "settings": {
+        "bg_color": "#f8f8f8",
+        "text_color": "#000000"
+      }
+    },
+    "cards_carousel_6xzFhC": {
+      "type": "cards-carousel",
+      "blocks": {
+        "card_ywTMjJ": {
+          "type": "card",
+          "settings": {
+            "heading": "Olesia’s Chic, Effortless Look",
+            "cta_text": "Get The Look",
+            "cta_link": "shopify://blogs/get-the-look/olesia-s-chic-effortless-look",
+            "image": "shopify://shop_images/JonesRoad_Eyeshadow_SmokeyGrey_04_Olesia_GTL.webp"
+          }
+        },
+        "card_q8mEqB": {
+          "type": "card",
+          "settings": {
+            "heading": "Deja's Simple Smokey Eye",
+            "cta_text": "Get The Look",
+            "cta_link": "shopify://blogs/get-the-look/dejas-simple-smokey-eye",
+            "image": "shopify://shop_images/Deja_1d83f16c-6478-482f-a19e-dc490e1af7a9.jpg"
+          }
+        },
+        "card_ejYXnT": {
+          "type": "card",
+          "settings": {
+            "heading": "Mollye's Monochromatic Look",
+            "cta_text": "Get The Look",
+            "cta_link": "https://www.jonesroadbeauty.com/blogs/get-the-look/mollyes-monochromatic-tawny-look",
+            "image": "shopify://shop_images/JonesRoad_GetTheLook_Mollye_GTL.webp"
+          }
+        },
+        "card_4jJnCh": {
+          "type": "card",
+          "settings": {
+            "heading": "Adelina’s Soft Sophistication",
+            "cta_text": "Get the Look",
+            "cta_link": "shopify://blogs/get-the-look/adelina-s-soft-focus-sparkle",
+            "image": "shopify://shop_images/justbobbi_AdelinaSoftFocusSparkle_d52c22e7-6b38-4645-81da-e98394c22328.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "card_ywTMjJ",
+        "card_q8mEqB",
+        "card_ejYXnT",
+        "card_4jJnCh"
+      ],
+      "settings": {
+        "text_color": "#ffffff",
+        "button_color": "#000000",
+        "button_bg": "#ffffff",
+        "entire_card_clickable": false,
+        "heading": "Get The Look",
+        "color": "#000000",
+        "color_mobile": "#000000",
+        "fontfamily": "FontSpringArticulateDemibold",
+        "fontfamily_mobile": "FontSpringArticulateDemibold",
+        "font_weight": 700,
+        "font_weight_mobile": 700,
+        "letter_spacing": "0.3px",
+        "letter_spacing_mobile": "0.3px",
+        "desktop_fontsize": 16,
+        "mobile_fontsize": 13,
+        "cta_text": "",
+        "cta_link": ""
       }
     },
     "featured_collections_hhETJ9": {
@@ -77,6 +643,7 @@
         "collection_card_nCgcp7"
       ],
       "name": "Featured Collections",
+      "disabled": true,
       "settings": {
         "color_scheme": "",
         "heading": "Find the perfect fit for your game",
@@ -130,6 +697,7 @@
         "selling_point_Y6iWMM"
       ],
       "name": "Selling Points V2",
+      "disabled": true,
       "settings": {
         "color_scheme": "",
         "padding_top": 40,
@@ -172,6 +740,7 @@
         "feature_fb6KKM"
       ],
       "name": "Product Highlights",
+      "disabled": true,
       "settings": {
         "color_scheme": "",
         "padding_top": 40,
@@ -182,7 +751,17 @@
     }
   },
   "order": [
+    "hero_CibWMB",
     "hero_1",
+    "featured_products_mpK79R",
+    "featured_products_VwR6MU",
+    "press_logo_bar_ArjRd9",
+    "163580386992f4d90c",
+    "16358041283a08673d",
+    "1635803874691e1bf3",
+    "image_with_text_overlay",
+    "1635804764add18fbf",
+    "cards_carousel_6xzFhC",
     "featured_collections_hhETJ9",
     "selling_points_v2_6NgzaK",
     "product_highlights_gUaG6E"

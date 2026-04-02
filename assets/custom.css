@@ -1,0 +1,27 @@
+body{
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.hidden {
+  display: none;
+}
+@media screen and (max-width: 700px) {
+  .mobile-hidden.mobile-hidden {
+    display: none;
+  }
+}
+@media screen and (min-width: 701px) {
+  .mobile-visible.mobile-visible {
+    display: none;
+  }
+}
+@media (min-width: 700px) and (max-width: 1022px) {
+  .tablet-hidden {
+    display: none;
+  }
+}
+@media (min-width: 1023px) {
+  .desktop-hidden {
+    display: none !important;
+  }
+}

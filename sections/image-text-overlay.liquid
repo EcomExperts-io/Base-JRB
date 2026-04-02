@@ -1,0 +1,367 @@
+{{ 'section-image-text-overlay.css' | asset_url | stylesheet_tag }}
+
+<div id="{{ section.settings.section_id }}" class="image-banner image-banner-desktop-image-size-{{ section.settings.desktop_image_size }} image-banner-mobile-image-size-{{ section.settings.mobile_image_size }}" 
+  style="
+  --height: {{ section.settings.image_desktop.height }};
+    --desktop-image-height: {{ section.settings.desktop_image_height }}vh;
+    --desktop-image-min-height: {{ section.settings.desktop_image_min_height }}px;
+    --mobile-image-height: {{ section.settings.mobile_image_height }}vh;
+    --mobile-image-min-height: {{ section.settings.mobile_image_min_height }}px;
+  "
+>
+  <div class="image-banner__content">
+    {% if section.settings.heading != blank %}
+      <h2 
+        class="image-banner__heading {% if section.settings.heading_highlight %} highlight {% endif %}"
+        style="--highlight: {{ section.settings.highlight_color }}; --highlight-mobile: {{ section.settings.highlight_color_mobile }}; --heading-color-mobile: {{ section.settings.heading_color_mobile }}; --heading-color: {{ section.settings.heading_color }}; --line-height-desktop: {{ section.settings.line_height_desktop }}px; --line-height-mobile: {{ section.settings.line_height_mobile }}px;"
+      >
+        {% comment %} <span>{{ section.settings.heading | newline_to_br }}</span> {% endcomment %}
+        {%- assign lines = section.settings.heading | newline_to_br | split: '<br />' -%}
+        {%- for line in lines -%}
+          <span>{{ line }}</span>
+        {%- endfor -%}
+      </h2>
+    {% endif %}
+    {% if section.settings.subheading != blank %}
+      <p 
+        class="image-banner__subheading" 
+        style="color: {{ section.settings.subheading_color }}; --line-height-desktop: {{ section.settings.subheading_lineheight_desktop }}; --line-height-mobile: {{ section.settings.subheading_lineheight_mobile }};"
+      >
+        {{ section.settings.subheading }}
+      </p>
+    {% endif %}
+    {% if section.settings.cta_text != blank %}
+      <a 
+        href="{{ section.settings.cta_link }}"
+        class="button button--customizer"
+        style="
+          --text-color-desktop: {{ section.settings.text_color_desktop }};
+          --background-color-desktop: {{ section.settings.background_color_desktop }};
+          --border-color-desktop: {{ section.settings.border_color_desktop }};
+          --hover-text-color-desktop: {{ section.settings.hover_text_color_desktop }};
+          --hover-background-color-desktop: {{ section.settings.hover_background_color_desktop }};
+          --hover-border-color-desktop: {{ section.settings.hover_border_color_desktop }};
+          --text-color-mobile: {{ section.settings.text_color_mobile }};
+          --background-color-mobile: {{ section.settings.background_color_mobile }};
+          --border-color-mobile: {{ section.settings.border_color_mobile }};
+          --hover-text-color-mobile: {{ section.settings.hover_text_color_mobile }};
+          --hover-background-color-mobile: {{ section.settings.hover_background_color_mobile }};
+          --hover-border-color-mobile: {{ section.settings.hover_border_color_mobile }};
+        "
+      >
+        {{ section.settings.cta_text }}
+      </a>
+    {% endif %}
+  </div>
+  <div class="image-banner__image">
+    <picture>
+      <source 
+        srcset="{{ section.settings.image_desktop | img_url: 'x780' }} 2x"
+        media="(min-width: 700px)"
+      >
+      <source 
+        srcset="{{ section.settings.image_mobile | img_url: '1600x' }} 2x"
+        media="(min-width: 501px) and (max-width: 699px)"
+      >
+      <source 
+        srcset="{{ section.settings.image_mobile | img_url: '500x' }} 2x"
+        media="(max-width: 500px)"
+      >
+      <img 
+        class="desktop"
+        src="{{ section.settings.image_desktop | img_url: 'x390' }}"
+        alt="{{ section.settings.image_desktop.alt }}"
+        loading="lazy"
+      >
+    </picture>
+    {% comment %} <picture>
+      <source 
+        srcset="{{ section.settings.image_mobile | img_url: '1600x' }} 2x"
+        media="(min-width: 501px) and (max-width: 1023px)"
+      >
+      <source 
+        srcset="{{ section.settings.image_mobile | img_url: '500x' }} 2x"
+        media="(max-width: 500px)"
+      >
+      <img 
+        class="mobile"
+        src="{{ section.settings.image_mobile | img_url: '800x' }}"
+        alt="{{ section.settings.image_mobile.alt }}"
+        loading="lazy"
+      >
+    </picture> {% endcomment %}
+  </div>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Image With Text Overlay",
+    "class": "image-banner__section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Settings"
+      },
+      {
+        "type": "text",
+        "id": "section_id",
+        "label": "Section ID",
+        "info": "Used to create a permalink to the section. Must be unique to the section, all lower-case, with hyphens instead of spaces.",
+        "default": "image-banner"
+      },
+      {
+        "type": "header",
+        "content": "Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_desktop",
+        "label": "Image (Desktop)"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_mobile",
+        "label": "Image (Mobile)"
+      },
+      {
+        "id": "desktop_image_size",
+        "label": "Desktop image size",
+        "type": "radio",
+        "default": "auto",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "fixed",
+            "label": "Fixed"
+          }
+        ]
+      },
+      {
+        "id": "desktop_image_height",
+        "label": "Desktop image height (VH)",
+        "type": "number",
+        "default": 80,
+        "visible_if": "{{ section.settings.desktop_image_size == 'fixed' }}"
+      },
+      {
+        "id": "desktop_image_min_height",
+        "label": "Desktop image min height (PX)",
+        "type": "number",
+        "default": 500,
+        "visible_if": "{{ section.settings.desktop_image_size == 'fixed' }}"
+      },
+      {
+        "id": "mobile_image_size",
+        "label": "Mobile image size",
+        "type": "radio",
+        "default": "auto",
+        "options": [
+          {
+            "value": "auto",
+            "label": "Auto"
+          },
+          {
+            "value": "fixed",
+            "label": "Fixed"
+          }
+        ]
+      },
+      {
+        "id": "mobile_image_height",
+        "label": "Mobile image height (VH)",
+        "type": "number",
+        "default": 80,
+        "visible_if": "{{ section.settings.mobile_image_size == 'fixed' }}"
+      },
+      {
+        "id": "mobile_image_min_height",
+        "label": "Mobile image min height (PX)",
+        "type": "number",
+        "default": 400,
+        "visible_if": "{{ section.settings.mobile_image_size == 'fixed' }}"
+      },
+      {
+        "type": "header",
+        "content": "Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "heading",
+        "label": "Heading"
+      },
+      {
+        "type": "number",
+        "id": "line_height_desktop",
+        "label": "Line Height (Desktop)",
+        "default": 50
+      },
+      {
+        "type": "number",
+        "id": "line_height_mobile",
+        "label": "Line Height (Mobile)",
+        "default": 40
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading Color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "heading_color_mobile",
+        "label": "Heading Color (Mobile)",
+        "default": "#000"
+      },
+      {
+        "type": "checkbox",
+        "id": "heading_highlight",
+        "label": "Heading Highlight"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "label": "Highlight Color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "highlight_color_mobile",
+        "label": "Highlight Color (Mobile)",
+        "default": "#fff"
+      },
+      {
+        "type": "header",
+        "content": "Subheading"
+      },
+      {
+        "type": "text",
+        "id": "subheading",
+        "label": "Subheading"
+      },
+      {
+        "type": "range",
+        "id": "subheading_lineheight_desktop",
+        "label": "Line Height (Desktop)",
+        "min": 1,
+        "max": 5,
+        "step": 0.1,
+        "default": 1.6
+      },
+      {
+        "type": "range",
+        "id": "subheading_lineheight_mobile",
+        "label": "Line Height (Mobile)",
+        "min": 1,
+        "max": 5,
+        "step": 0.1,
+        "default": 1.5
+      },
+      {
+        "type": "color",
+        "id": "subheading_color",
+        "label": "Subheading Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "CTA"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "url",
+        "id": "cta_link",
+        "label": "CTA Link"
+      },
+      {
+        "type": "header",
+        "content": "Color scheme (Desktop)"
+      },
+      {
+        "type": "color",
+        "id": "text_color_desktop",
+        "label": "Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "background_color_desktop",
+        "label": "Background Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "border_color_desktop",
+        "label": "Border Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "hover_text_color_desktop",
+        "label": "Text Color (Hover)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "hover_background_color_desktop",
+        "label": "Background Color (Hover)",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "hover_border_color_desktop",
+        "label": "Border Color (Hover)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "header",
+        "content": "Color scheme (Mobile)"
+      },
+      {
+        "type": "color",
+        "id": "text_color_mobile",
+        "label": "Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "background_color_mobile",
+        "label": "Background Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "border_color_mobile",
+        "label": "Border Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "hover_text_color_mobile",
+        "label": "Text Color (Hover)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "hover_background_color_mobile",
+        "label": "Background Color (Hover)",
+        "default": "rgba(0,0,0,0)"
+      },
+      {
+        "type": "color",
+        "id": "hover_border_color_mobile",
+        "label": "Border Color (Hover)",
+        "default": "#ffffff"
+      }
+    ],
+    "presets": [{ "name": "Image With Text Overlay" }]
+  }
+{% endschema %}

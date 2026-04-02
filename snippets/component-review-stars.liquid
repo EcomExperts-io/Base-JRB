@@ -1,0 +1,18 @@
+{%- unless show_rating -%}
+  {%- assign show_rating = false -%}
+{%- endunless -%}
+
+{%- unless show_count -%}
+  {%- assign show_count = true -%}
+{%- endunless -%}
+
+{% comment %} <span 
+  class="review__stars js-reviewStars {{ class }}" 
+  data-product="{{ product_id }}" 
+  data-rating="{{ show_rating }}"
+  data-count="{{ show_count }}"
+></span> {% endcomment %}
+
+
+
+<span class="junip-product-summary" data-product-id="{{product.id}}"></span>

@@ -11,8 +11,9 @@
   "type": "footer",
   "name": "t:general.footer",
   "sections": {
-    "footer": {
+    "footerold": {
       "type": "footer",
+      "disabled": true,
       "blocks": {
         "link_list_xdP99L": {
           "type": "link_list",
@@ -56,9 +57,26 @@
         "show_policy": true,
         "margin_top": 60
       }
-    }
+    },
+    "footer": {
+        "type": "custom-footer",
+        "custom_css": [],
+        "settings": {
+          "menu": "footer",
+          "newsletterTitle": "",
+          "newsletterHed": "Stay up to date about product launches, makeup tips, and all things Jones Road",
+          "newsletterPlaceholder": "Sign Up For Free Shipping On Orders Over $55 USD",
+          "newsletter_placeholder_ca": "Sign Up For Free Shipping On Orders Over $125 CAD",
+          "newsletter_placeholder_eu": "Sign Up For Free Shipping On Orders Over €85 EUR",
+          "newsletter_placeholder_uk": "Sign Up For Free Shipping On Orders Over £75 GBP",
+          "newsletter_placeholder_irl": "Sign Up For Free Shipping On Orders Over €85 EUR",
+          "newsletterSuccess": "Thank you for subscribing",
+          "disclaimer": "Bobbi Brown left her namesake company in 2016 and is no longer affiliated or associated with the Bobbi Brown Cosmetics company or the Bobbi Brown branded products"
+        }
+      }
   },
   "order": [
+    "footerold",
     "footer"
   ]
 }

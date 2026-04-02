@@ -57,9 +57,36 @@
     border-bottom: 1px solid rgb(var(--color-foreground), 0.2);
     text-decoration: none;
   }
+  button.localization-button.mbl-back {
+    height: 52px;
+    width: 100%;
+    padding-left: 50px;
+  }
+  button.localization-button.mbl-back:before {
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+    content: "";
+    display: block;
+    height: 10px;
+    transform: rotate3d(0, 0, 1, -45deg);
+    transition: transform .4s cubic-bezier(.165, .84, .44, 1);
+    width: 10px;
+    left: 27px;
+    position: absolute;
+    top: 22px;
+    transform: rotate3d(0, 0, 1, 135deg);
+  }
+  .mbl-back{
+    display: none;
+  }
+  .menu-drawer_action .mbl-back{
+    display: flex;
+  }
 {% endstylesheet %}
 
-{% if enable_country_selector and localization.available_countries.size > 1 %}
+{%- assign countriesMap = settings.currency_selector_countries_map | newline_to_br | split: '<br />' -%}
+
+{% if settings.currency_selector_enabled and localization.available_countries.size > 1 %}
   <localization-form>
     {% form 'localization' %}
       <div
@@ -74,11 +101,24 @@
           @click="localizationOpen = !localizationOpen"
           :class="{ 'localization-open': localizationOpen }"
         >
-          <span>
-            {{ localization.country.name }} ({{ localization.country.currency.iso_code }}
-            {{ localization.country.currency.symbol }})
+        {%- for item in countriesMap -%}
+          {%- assign countryData = item | replace: ', ', ',' | split: ',' -%}
+          {%- for country in localization.available_countries -%}
+            {%- if countryData[1] == localization.country.iso_code -%}
+              {%- assign countryData = item | replace: ', ', ',' | split: ',' -%}
+              {%- assign flag = countryData | last -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endfor -%}
+        {%- if flag != blank -%}
+          <span class="flag">
+            <img src="{{ flag }}" width="32" height="16" alt="{{ country.name | append: ' Flag' }}" loading="lazy" >
           </span>
-          {{- 'icon-caret.svg' | inline_asset_content -}}
+        {%- endif -%}
+          <span role="presentation">{{ localization.country.currency.symbol }}{{ localization.country.currency.iso_code }}</span>
+       
+          {% comment %} {{- 'icon-caret.svg' | inline_asset_content -}} {% endcomment %}
         </button>
 
         <ul
@@ -88,19 +128,42 @@
           role="list"
           class="localization-list color-{{ menu_color_scheme }} gradient"
         >
-          {% for country in localization.available_countries %}
-            <li class="localization-item" tabindex="-1">
-              <a
-                href="#"
-                {% if country.iso_code == localization.country.iso_code %}
-                  aria-current="true"
-                {% endif %}
-                data-value="{{ country.iso_code }}"
-              >
-                {{ country.name }} ({{ country.currency.iso_code }}
-                {{ country.currency.symbol }})
-              </a>
-            </li>
+          <li>
+            <button
+              type="button"
+              class="localization-button mbl-back"
+              aria-controls="LanguageList"
+              @click="localizationOpen = !localizationOpen"
+              :class="{ 'localization-open': localizationOpen }"
+            >
+              Back
+            </button>
+          </li>
+          {%- for item in countriesMap -%}
+              {%- assign countryData = item | replace: ', ', ',' | split: ',' -%}
+              {%- assign flag = countryData | last -%}
+              {% for country in localization.available_countries %}
+                {%- if countryData[1] == country.iso_code -%}
+                <li class="localization-item 1" tabindex="-1">
+                  <a
+                    href="#"
+                    {% if country.iso_code == localization.country.iso_code %}
+                      aria-current="true"
+                    {% endif %}
+                    data-value="{{ country.iso_code }}"
+                  >
+                    <span class="name mobile-hidden tablet-hidden">{{ country.name }}</span>
+                    <span class="symbol">
+                      {% if flag != blank %}
+                        <img class="flag" src="{{ flag }}" width="32" height="16" alt="flag" loading="lazy" />
+                      {% endif %}
+                      <span class="desktop-hidden">{{ country.name }} ({{ country.currency.symbol }}{{ country.currency.iso_code }})</span>
+                      <span class="mobile-hidden tablet-hidden">{{ country.currency.symbol }}{{ country.currency.iso_code }}</span>
+                    </span>
+                  </a>
+                </li>
+                {%- endif -%}
+              {% endfor %}
           {% endfor %}
         </ul>
 
@@ -141,7 +204,7 @@
           class="localization-list color-{{ menu_color_scheme }} gradient"
         >
           {% for language in localization.available_languages %}
-            <li class="localization-item" tabindex="-1">
+            <li class="localization-item 2" tabindex="-1">
               <a
                 href="#"
                 {% if language.iso_code == localization.language.iso_code %}

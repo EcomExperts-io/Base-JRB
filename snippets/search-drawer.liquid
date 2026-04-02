@@ -1,0 +1,437 @@
+<style>
+.search {
+    height: 76px;
+    left: 0;
+    position: absolute;
+    top: 70px;
+    transition: opacity .4s cubic-bezier(.165, .84, .44, 1);
+    width: 100%;
+    z-index: 10;
+}
+.search__content {
+    background: #fff;
+    border-top: 1px solid rgba(0, 0, 0, .1);
+    overflow: hidden;
+    padding: 18px 90px 18px 27px;
+}
+.search__content input[type=text] {
+    border: 00;
+    border-bottom: 1px solid #000;
+    font-size: 14px;
+    height: 36px;
+    letter-spacing: -.19px;
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    background: transparent;
+    font-family: 'RingsideWideWeb';
+    outline: none;
+}
+.search__submit {
+    height: 48px;
+    position: absolute;
+    right: 48px;
+    top: 14px;
+    width: 48px;
+    background: transparent;
+    border: 0px;
+}
+.search__submit:after {
+    border-right: 1px solid #000;
+    border-top: 1px solid #000;
+    bottom: 0;
+    box-sizing: border-box;
+    content: "";
+    height: 11px;
+    left: 0;
+    margin: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: rotate(45deg);
+    width: 11px;
+}
+.search[aria-hidden="true"]:not(.is-open) {
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s cubic-bezier(.165, .84, .44, 1), visibility 0s linear .4s, height 0s linear .4s;
+    visibility: hidden;
+}
+.js-searchDrawer.is-open {
+    height: 76px;
+    opacity: 1;
+    visibility: visible;
+}
+@media screen and (min-width: 1280px) {
+    .js-searchDrawer.is-open {
+        height: 75px;
+    }
+}
+.search__for {
+    background: #fff;
+    border-top: 1px solid #ebebeb;
+    height: auto;
+    left: 0;
+    opacity: 1;
+    position: absolute;
+    top: 74px;
+    transition: opacity .3s cubic-bezier(.165, .84, .44, 1), height 0s 0s, visibility 0s 0s;
+    visibility: visible;
+    width: 100%;
+}
+.search__for__heading {
+    color: #000;
+    font-family: 'GeogrotesqueCondBoldWeb', Arial Black, Impact, sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 1.26px;
+    line-height: 26px;
+    padding: 27px;
+    text-transform: uppercase;
+}
+ul.search__for__list {
+    list-style: none;
+    padding: 0;
+}
+.search__for__list li {
+    border-top: 1px solid #ebebeb;
+}
+.search__for__list a {
+    display: flex;
+    align-items: center;
+    text-decoration: unset;
+}
+.search__for__list img {
+    display: inline-block;
+    height: 87px;
+    margin-right: 18px;
+    object-fit: cover;
+    vertical-align: middle;
+    width: 67px;
+}
+.search__for__list b {
+    color: #000;
+    font-family: 'GeogrotesqueCondBoldWeb', Arial Black, Impact, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .92px;
+    text-transform: uppercase;
+}
+@media screen and (max-width: 1279px) {
+    .search__close__copy.search__close__copy {
+        position: absolute;
+        overflow: hidden;
+        height: 1px;
+        width: 1px;
+        margin: -1px;
+        padding: 0;
+        border: 0;
+        clip: rect(0 0 0 0);
+    }
+    .search__close:after, .search__close:before {
+        background: #000;
+        bottom: 0;
+        content: "";
+        height: 1px;
+        left: 0;
+        margin: auto;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 21px;
+    }
+    .search__close:before {
+        transform: rotate(-45deg);
+    }
+    .search__close:after {
+        transform: rotate(45deg);
+    }
+    .search__close {
+        height: 48px;
+        position: absolute;
+        right: 6px;
+        top: 14px;
+        width: 48px;
+        background: unset;
+        border: 0;
+    }
+}
+@media screen and (min-width: 1280px) {
+    .search__for__heading {
+        padding: 24px;
+    }
+    .search__for {
+        border-top: none;
+        left: 0;
+        top: 75px;
+        width: 100%;
+    }
+    .search {
+        box-sizing: border-box;
+        height: 75px;
+        left: auto;
+        right: 168px;
+        top: 0;
+        width: 260px;
+        z-index: 20;
+    }
+    .search__content {
+        border-radius: 3px;
+        border-top: 0;
+        margin-top: 5px;
+        padding: 14px 24px;
+    }
+    .search__submit {
+        right: 24px;
+        top: 14px;
+        z-index: 1;
+    }
+    .search__submit:after {
+        height: 7px;
+        left: auto;
+        margin-right: 2px;
+        width: 7px;
+    }
+    .search__close {
+        height: 100%;
+        left: 0;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: transparent;
+    }
+    .search__close__copy.search__close__copy {
+        opacity: 0;
+    }
+} 
+</style>
+<div
+  class="js-searchDrawer search"
+  aria-hidden="true"
+  x-data="{ open: false }"
+  :aria-hidden="!open"
+  :class="{ 'is-open': open }"
+  @search-drawer-open.window="open = true; $nextTick(() => $refs.searchDrawerInput?.focus())"
+  data-country="{{ localization.country.iso_code | default: '' }}"
+  data-currency="{{ localization.country.currency.iso_code | default: '' }}"
+>
+  <div class="search__content">
+    <form action="/search" method="get">
+      <input
+        name="q"
+        placeholder="Enter Search"
+        type="text"
+        aria-label="Search query"
+        x-ref="searchDrawerInput"
+        class="js-searchDrawerInput"
+      />
+      <button class="search__submit" type="submit">
+        <span class="visually-hidden">Submit</span>
+      </button>
+      <input type="hidden" value="product" name="type" />
+    </form>
+    <button type="button" class="search__close js-searchClose" aria-label="Close search" @click="open = false">
+      <span class="search__close__copy button">Close</span>
+    </button>
+  </div>
+  <div class="search__for js-searchTop" aria-hidden="false">
+    {%- capture topSearches -%}
+    {%- for index in (1..3) -%}
+        {%- assign settingsKey = 'top_search_' | append: index -%}
+        {%- assign topHandle = settings[settingsKey] -%}
+        {%- assign topProduct = all_products[topHandle] -%}
+        {%- unless topProduct == blank -%}
+        <li>
+            <a href="{{ topProduct.url | append: '?country=' | append: localization.country.iso_code }}">
+            <img src="{{ topProduct.featured_image.src | img_url: '67x87', scale: 2, crop: 'center' }}" alt="{{ topProduct.featured_image.alt }}" loading="lazy" >
+            <b>{{ topProduct.title }}</b>
+            </a>
+        </li>
+        {%- endunless -%}
+    {%- endfor -%}
+    {%- endcapture -%}
+
+    {%- unless topSearches == blank -%}
+    <div class="search__for__heading">Top searches:</div>
+    <ul class="search__for__list">
+        {{ topSearches }}
+    </ul>
+    {%- endunless -%}
+  </div>
+  <div class="search__for js-searchLive" aria-hidden="true" style="display: none;"></div>
+</div>
+
+<script>
+(function() {
+  function debounce(fn, wait) {
+    var timeout;
+    return function() {
+      var args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() { fn.apply(null, args); }, wait);
+    };
+  }
+
+  function escapeHtml(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderProduct(p, countryCode) {
+    var featuredImage = p.featured_image || {};
+    var url = p.url || '#';
+    if (countryCode) url += (url.indexOf('?') !== -1 ? '&' : '?') + 'country=' + encodeURIComponent(countryCode);
+    var imgUrl = featuredImage.url || p.image || '';
+    var imgAlt = escapeHtml((featuredImage.alt || '').trim());
+    var title = escapeHtml(p.title || '');
+    return '<li><a href="' + url + '">' +
+      (imgUrl ? '<img src="' + imgUrl + '" alt="' + imgAlt + '" loading="lazy" width="67" height="87">' : '') +
+      '<b>' + title + '</b></a></li>';
+  }
+
+  function buildLiveResultsHtml(products, countryCode, query) {
+    if (!products.length) return '';
+    var safeQuery = escapeHtml(query);
+    var heading = '<div class="search__for__heading">Search for: \'' + safeQuery + '\'</div>';
+    var list = '<ul class="search__for__list">' + products.map(function(p) { return renderProduct(p, countryCode); }).join('') + '</ul>';
+    return heading + list;
+  }
+
+  function showDefaultTopSearches(topBlock, liveBlock) {
+    liveBlock.style.display = 'none';
+    liveBlock.setAttribute('aria-hidden', 'true');
+    liveBlock.innerHTML = '';
+    if (topBlock) {
+      topBlock.style.display = '';
+      topBlock.setAttribute('aria-hidden', 'false');
+    }
+  }
+
+  function filterProductsByTags(products, countryCode) {
+    return products.filter(function(product) {
+      var tags = Array.isArray(product.tags) ? product.tags : [];
+      var isUK = countryCode === 'GB';
+      var isIrl = countryCode === 'IE';
+      var isAU = countryCode === 'AU';
+      var isNZ = countryCode === 'NZ';
+      var shouldShow = tags.indexOf('hide') === -1 && tags.indexOf('sesami-service') === -1;
+      return isUK ? (tags.indexOf('hide-uk') === -1 && shouldShow)
+        : isIrl ? (tags.indexOf('hide-irl') === -1 && shouldShow)
+        : isAU ? (tags.indexOf('hide-au') === -1 && shouldShow)
+        : isNZ ? (tags.indexOf('hide-nz') === -1 && shouldShow)
+        : shouldShow;
+    });
+  }
+
+  function getCorrectProductKey(isoCode) {
+    switch (isoCode) {
+      case 'USD': return 'usa_product';
+      case 'CAD': return 'cad_product';
+      case 'GBP':
+      case 'EUR':
+      case 'BGN':
+      case 'CZK':
+      case 'DKK':
+      case 'HUF':
+      case 'PLN':
+      case 'RON':
+      case 'SEK':
+        return 'eu_uk_product';
+      default: return null;
+    }
+  }
+
+  function filterProductsByCompliance(products, currency) {
+    var compliance = window.shopComplianceProducts;
+    if (!Array.isArray(compliance) || !compliance.length || !currency) return products;
+
+    var correctProductKey = getCorrectProductKey(currency);
+    if (!correctProductKey) return products;
+
+    var correctStateIds = [];
+    var incorrectStateIds = [];
+    compliance.forEach(function(entry) {
+      if (entry[correctProductKey]) correctStateIds.push(entry[correctProductKey]);
+      ['usa_product', 'cad_product', 'eu_uk_product'].forEach(function(key) {
+        if (key !== correctProductKey && entry[key]) incorrectStateIds.push(entry[key]);
+      });
+    });
+
+    var filtered = products.filter(function(p) {
+      if (p.id && incorrectStateIds.indexOf(p.id) !== -1) return false;
+      return true;
+    });
+
+    filtered.forEach(function(p) {
+      if (p.id && correctStateIds.indexOf(p.id) !== -1) {
+        var match = compliance.find(function(entry) {
+          return entry.usa_product === p.id || entry.cad_product === p.id || entry.eu_uk_product === p.id;
+        });
+        if (match && match.product_title) p.title = match.product_title;
+      }
+    });
+
+    return filtered;
+  }
+
+  function initSearchDrawerLive() {
+    var drawer = document.querySelector('.js-searchDrawer');
+    if (!drawer) return;
+    var input = drawer.querySelector('.js-searchDrawerInput');
+    var topBlock = drawer.querySelector('.js-searchTop');
+    var liveBlock = drawer.querySelector('.js-searchLive');
+    var countryCode = (drawer.getAttribute('data-country') || '').trim();
+    var currencyCode = (drawer.getAttribute('data-currency') || '').trim();
+    var abortController = null;
+
+    if (!input || !liveBlock) return;
+
+    input.addEventListener('input', debounce(function() {
+      var q = (input.value || '').trim();
+      if (abortController) abortController.abort();
+
+      if (!q || q.length < 1) {
+        showDefaultTopSearches(topBlock, liveBlock);
+        return;
+      }
+
+      if (topBlock) {
+        topBlock.style.display = 'none';
+        topBlock.setAttribute('aria-hidden', 'true');
+      }
+      liveBlock.setAttribute('aria-hidden', 'false');
+      liveBlock.style.display = '';
+      liveBlock.innerHTML = '<div class="search__for__heading">Search for: \'' + escapeHtml(q) + '\'</div>';
+
+      var suggestUrl = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) 
+        ? window.Shopify.routes.root + 'search/suggest.json' 
+        : '/search/suggest.json';
+      suggestUrl += '?q=' + encodeURIComponent(q) + '&resources[limit]=3&resources[type]=product';
+
+      abortController = new AbortController();
+      fetch(suggestUrl, { signal: abortController.signal })
+        .then(function(res) { return res.ok ? res.json() : Promise.reject(new Error('Fetch failed')); })
+        .then(function(data) {
+          var rawProducts = ((data || {}).resources || {}).results || {};
+          var products = Array.isArray(rawProducts.products) ? rawProducts.products.slice(0, 3) : [];
+          products = filterProductsByTags(products, countryCode);
+          products = filterProductsByCompliance(products, currencyCode);
+          if (products.length) {
+            liveBlock.innerHTML = buildLiveResultsHtml(products, countryCode, q);
+          } else {
+            showDefaultTopSearches(topBlock, liveBlock);
+          }
+        })
+        .catch(function() {
+          showDefaultTopSearches(topBlock, liveBlock);
+        });
+    }, 350));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSearchDrawerLive);
+  } else {
+    initSearchDrawerLive();
+  }
+})();
+</script>

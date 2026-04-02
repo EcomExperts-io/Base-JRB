@@ -1,0 +1,92 @@
+<div aria-hidden="true" aria-label="{{ link.title }} submenu" class="header-megamenu-menu-mobile">
+  <div class="header-megamenu-menu-inner-mobile">
+    <div class="header-megamenu-menu-mobile-back-heading js-headerSubNavMobileBacktrigger">
+      <span>
+        <svg width="7" height="11" viewBox="0 0 7 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 0.5L1 5.5L6 10.5" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        Back
+      </span>
+    </div>
+    <div class="header-megamenu-menu-mobile-content">
+      <div class="header-megamenu-menu-mobile-content-heading">
+        <a href="{{ link.url }}">
+          <span>{{ link.title }}</span>
+        </a>
+      </div>
+      <div class="header-megamenu-menu-mobile-content-inner">
+        <div class="header-megamenu-menu-mobile-content-grid-block">
+          {% assign collection_handle = link.title | handleize %}
+          {% assign item_collection = collections[collection_handle] %}
+          {% assign products = item_collection.products %}
+          <div class="header-megamenu-menu-mobile-image-block">
+            <div class="swiper-container js-headerMegamenuMobileImageBlockCarousel">
+              <div class="swiper-wrapper">
+                {% for item in products limit: 3 %}
+                  <div class="swiper-slide">
+                    <div class="header-megamenu-menu-mobile-image-block-item">
+                      <a href="{{ item.url }}">
+                        <div class="header-megamenu-menu-nav-blocks-item-image">
+                          <img src="{{ item.featured_image | image_url: width: auto }}" alt="{{ item.title }}" width="" height="" loading="lazy">
+                        </div>
+                        <div class="header-megamenu-menu-nav-blocks-item-content">
+                          <div class="header-megamenu-menu-nav-blocks-item-content-title">
+                            {{ item.title }}
+                          </div>
+                          {%- assign hasFlag = false -%}
+                          {%- for flag in item.tags -%}
+                            {%- if flag contains 'flag_' -%}
+                              {%- assign hasFlag = true -%}
+                              {%- assign flag = flag | split: 'flag_' | last -%}
+                            {%- endif -%}
+                          {%- endfor -%}
+                          {% if hasFlag %}
+                            <div class="header-megamenu-menu-nav-blocks-item-content-tag">
+                              {{ flag }}
+                            </div>
+                          {% endif %}
+                          <div class="header-megamenu-menu-nav-blocks-item-content-review">
+                            <span class="junip-product-summary" data-product-id="{{item.id}}"></span>
+                          </div>
+                        </div>
+                      </a>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="swiper-button-prev">
+                <svg width="11" height="19" viewBox="0 0 11 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10.0888 10.0888C10.577 9.60068 10.577 8.80923 10.0888 8.32106L2.13389 0.366116C1.64573 -0.122039 0.854276 -0.122039 0.366116 0.366116C-0.122039 0.854276 -0.122039 1.64573 0.366116 2.13389L7.43719 9.20495L0.366116 16.2761C-0.122039 16.7642 -0.122039 17.5556 0.366116 18.0438C0.854276 18.532 1.64573 18.532 2.13389 18.0438L10.0888 10.0888ZM7.95495 10.455H9.20495V7.95495H7.95495V10.455Z" fill="black"></path>
+                </svg>
+              </div>
+              <div class="swiper-button-next">
+                <svg width="11" height="19" viewBox="0 0 11 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10.0888 10.0888C10.577 9.60068 10.577 8.80923 10.0888 8.32106L2.13389 0.366116C1.64573 -0.122039 0.854276 -0.122039 0.366116 0.366116C-0.122039 0.854276 -0.122039 1.64573 0.366116 2.13389L7.43719 9.20495L0.366116 16.2761C-0.122039 16.7642 -0.122039 17.5556 0.366116 18.0438C0.854276 18.532 1.64573 18.532 2.13389 18.0438L10.0888 10.0888ZM7.95495 10.455H9.20495V7.95495H7.95495V10.455Z" fill="black"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="header-megamenu-menu-mobile-content-nav-list">
+          <ul class="header-megamenu-menu-mobile-content-nav-list-default">
+            {% for item in products offset: 3 limit: 6 %}
+              <li>
+                <a href="{{ item.url }}">
+                  {{ item.title }}
+                </a>
+              </li>
+            {% endfor %}
+            <li class="shop-all-list">
+              {% assign link_title_lower = link.title | downcase %}
+              {% if link_title_lower == 'shop all' %}
+                <a href="{{ link.url }}"> Shop All </a>
+              {% else %}
+                <a href="{{ link.url }}"> Shop all {{ link.title | capitalize }} </a>
+              {% endif %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

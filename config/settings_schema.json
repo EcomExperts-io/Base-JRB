@@ -8,6 +8,104 @@
     "theme_support_url": "https://ecomexperts.io/"
   },
   {
+    "name": "Currency selector",
+    "settings": [
+      {
+        "id": "currency_selector_enabled",
+        "label": "Enable currency selector",
+        "type": "checkbox"
+      },
+      {
+        "content": "Define a list of countries to be displayed in the currency selector. Type each item (country name, country alpha-2 code, currency ISO code, currency symbol, flag) in a new line in comma-separated CSV format.",
+        "type": "paragraph"
+      },
+      {
+        "default": "United Kingdom, GB, GBP, £\nUnited States, US, USD, $",
+        "id": "currency_selector_countries_map",
+        "info": "Example: United States, US, USD, $, https:\/\/cdn.shopify.com\/s\/files\/1\/0424\/9527\/9254\/files\/united-states-of-america-flag-icon-64.png?v=1722345040",
+        "label": "Country data",
+        "type": "textarea"
+      }
+    ]
+  },
+  {
+    "name": "Top searches",
+    "settings": [
+      {
+        "id": "top_search_1",
+        "label": "Top search #1",
+        "type": "product"
+      },
+      {
+        "id": "top_search_2",
+        "label": "Top search #2",
+        "type": "product"
+      },
+      {
+        "id": "top_search_3",
+        "label": "Top search #3",
+        "type": "product"
+      }
+    ]
+  },
+  {
+    "name": "Tags",
+    "settings": [
+      {
+        "type": "color",
+        "id": "tag_color",
+        "label": "Tag Color",
+        "default": "#f50a99"
+      },
+      {
+        "type": "textarea",
+        "id": "tag_list",
+        "label": "Holiday Tags",
+        "info": "Enter tags (separated by commas) to apply background color. Example: New, Bestseller, Limited Edition, etc."
+      },
+      {
+        "type": "color",
+        "id": "tag_bg_color",
+        "label": "Holiday Tag Background Color",
+        "info": "This will be only applicable for the tags that is available in the Holiday Tags List",
+        "default": "#f50a99"
+      },
+      {
+        "type": "color",
+        "id": "tag_bg_text_color",
+        "label": "Holiday Tag Color",
+        "info": "This color will only apply to tags with a background color defined in the Holiday Tags List",
+        "default": "#fff"
+      },
+      {
+        "type": "textarea",
+        "id": "outline_tag_list",
+        "label": "Outline Tags",
+        "info": "Enter tags (separated by commas) to apply outline color. Example: New, Bestseller, Limited Edition, etc."
+      },
+      {
+        "type": "color",
+        "id": "outline_tag_color",
+        "label": "Outline Tag Color",
+        "info": "This color will only apply to tags defined in the Outline Tags List",
+        "default": "#ED1B2E"
+      },
+      {
+        "type": "textarea",
+        "id": "navigation_titles",
+        "label": "Category Titles",
+        "info": "Enter category titles (separated by commas) to apply color. Example: Face, Eyes, Lips, Skin Care, Kits, Tools, Apparel"
+      },
+      {
+        "type": "color",
+        "id": "navigation_color",
+        "label": "Category Color",
+        "info": "This color will only apply to the category titles defined in the Category Titles List",
+        "default": "#f50a99"
+      }
+    ]
+  },
+  {
     "name": "t:settings_schema.logo.name",
     "settings": [
       {
@@ -19,8 +117,8 @@
         "type": "range",
         "id": "logo_height",
         "min": 10,
-        "max": 200,
-        "step": 10,
+        "max": 80,
+        "step": 2,
         "default": 50,
         "unit": "px",
         "label": "t:settings_schema.logo.settings.logo_height.label"

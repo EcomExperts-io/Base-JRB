@@ -1,0 +1,118 @@
+<div class="mega-menu">
+    <div class="mega-menu-inner">
+        <div class="mega-menu-image-wrap">
+            {% if block.settings.b1image != blank %}
+                <div class="mega-menu-image">
+                    <a href="{{ block.settings.b1link }}">
+                        <img src="{{ block.settings.b1image | image_url: width: 400 }}" loading="lazy" alt="menu image" />
+                    </a>
+                    <div class="mega-text-wrap">
+                        <a href="{{ block.settings.b1link }}">
+                            <span class="mega-text-title">{{ block.settings.b1title }}</span>
+                        </a>
+                        <div class="mega-text-desc">{{ block.settings.b1text }}</div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if block.settings.b2image != blank %}
+                <div class="mega-menu-image">
+                    <a href="{{ block.settings.b2link }}">
+                        <img src="{{ block.settings.b2image | image_url: width: 400 }}" loading="lazy" alt="menu image" />
+                    </a>
+                    <div class="mega-text-wrap">
+                        <a href="{{ block.settings.b2link }}">
+                            <span class="mega-text-title">{{ block.settings.b2title }}</span>
+                        </a>
+                        <div class="mega-text-desc">{{ block.settings.b2text }}</div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="megamenu-rts">
+            <div class="megamenu-nav-heading">
+                <span>{{ link.title }}</span>
+            </div>
+            <div class="megamenu-nav-items">
+                {% if link.links.size > 0 %}
+                    <div class="megamenu-nav-blocks">
+                        <ul class="megamenu-nav-item-list">
+                            {% for sublink in link.links %}
+                            {%- assign sublink_badge = sublink.object.metafields.navigation.badge -%}
+                            <li class="megamenu-nav-item-list-item">
+                                <a
+                                href="{{ sublink.url }}"
+                                {% if subLink.url contains 'http' %}
+                                    target="_blank" rel="noreferrer noopener"
+                                {% endif %}
+                                >
+                                {{ sublink.title }}
+                                {%- if sublink_badge != blank -%}
+                                    <strong class="header__nav__badge">{{ sublink_badge }}</strong>
+                                {%- endif -%}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <div class="megamenu-nav-item megamenu-nav-item--left">
+                        {% assign collection_handle = link.title | handleize %}
+                        {% assign item_collection = collections[collection_handle] %}
+                        {% assign products = item_collection.products %}
+                        <ul class="megamenu-nav-item-list">
+                            {% assign header_nav_desktop_new_limit = 5 %}
+                            {% for item in products limit: header_nav_desktop_new_limit %}
+                            <li class="megamenu-nav-item-list-item">
+                                <a href="{{ item.url }}">
+                                <div class="megamenu-nav-item-image">
+                                    <img src="{{ item.featured_image | image_url: width: auto }}" alt="{{ item.title }}" width="" height="">
+                                </div>
+                                <div class="megamenu-nav-item-content">
+                                    <div class="megamenu-nav-item-content-title">
+                                    {{ item.title }}
+                                    </div>
+                                    <div class="megamenu-nav-item-content-row">
+                                    {% if item.metafields.custom.show_product_review_stars == true %}
+                                        <div class="megamenu-nav-item-content-review">
+                                        <span class="junip-product-summary" data-product-id="{{item.id}}"></span>
+                                        </div>
+                                    {% endif %}
+                                    {% if item.metafields.custom.show_product_tag == true and item.metafields.custom.product_tag != blank %}
+                                        <div class="megamenu-nav-item-content-tag">
+                                        {{ item.metafields.custom.product_tag }}
+                                        </div>
+                                    {% endif %}
+                                    </div>
+                                </div>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="megamenu-nav-item megamenu-nav-item--right">
+                        <div class="megamenu-nav-item-list">
+                            <ul>
+                            {% for item in products offset: header_nav_desktop_new_limit limit: 5 %}
+                                <li>
+                                <a href="{{ item.url }}">
+                                    {{ item.title }}
+                                </a>
+                                </li>
+                            {% endfor %}
+                            <li class="shop-all-list">
+                                <a href="{{ link.url }}">
+                                {% if link.title contains 'Shop All' %}
+                                    {{ link.title }}
+                                {% else %}
+                                    Shop all {{ link.title }}
+                                {% endif %}
+                                </a>
+                            </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

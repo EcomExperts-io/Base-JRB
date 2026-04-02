@@ -1,0 +1,310 @@
+{{ 'section-custom-footer.css' | asset_url | stylesheet_tag }}
+{% include 'footer',
+  disclaimer: section.settings.disclaimer,
+  newsletterTitle: section.settings.newsletterTitle,
+  newsletterHed: section.settings.newsletterHed,
+  newsletterPlaceholder: section.settings.newsletterPlaceholder,
+  newsletterSuccess: section.settings.newsletterSuccess,
+  footerMenu: section.settings.menu
+%}
+
+<script>
+(function() {
+  var CLASSNAME_SUCCESS = 'footer__subscribe--success';
+  var CLASSNAME_ERROR_STATE = 'form--error';
+  var CLASSNAME_ERROR_MSG = 'form__error-msg';
+  var SELECTOR_FORM = '.js-footerSubscribe';
+  var SELECTOR_FOOTER = '.js-footer';
+
+  var COOKIE_NAME = 'SUBSCRIBED';
+  var COOKIE_EXPIRATION = 365;
+  var KLAVIYO_ENDPOINT = 'https://manage.kmail-lists.com/ajax/subscriptions/subscribe';
+  var KLAVIYO_LIST_ID = {{ section.settings.klaviyo_list_id | json }};
+
+  /* ── Cookie helpers ── */
+
+  function setCookie(name, value, days) {
+    var expires = '';
+    if (days) {
+      var d = new Date();
+      d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+      expires = '; expires=' + d.toUTCString();
+    }
+    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+  }
+
+  /* ── Form validation (mirrors formValidation.js) ── */
+
+  var EMAIL_RE = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+
+  function isValidEmail(email) {
+    return EMAIL_RE.test(email);
+  }
+
+  function addFormError(el, message) {
+    var errorEl = el.parentNode.querySelector('.' + CLASSNAME_ERROR_MSG);
+    el.classList.add(CLASSNAME_ERROR_STATE);
+    if (errorEl) errorEl.parentNode.removeChild(errorEl);
+
+    var newError = document.createElement('div');
+    newError.setAttribute('aria-live', 'polite');
+    newError.className = CLASSNAME_ERROR_MSG;
+    newError.innerHTML = message;
+    el.parentNode.appendChild(newError);
+  }
+
+  function clearFormError(el) {
+    el.classList.remove(CLASSNAME_ERROR_STATE);
+    var errorEl = el.parentNode.querySelector('.' + CLASSNAME_ERROR_MSG);
+    if (errorEl) errorEl.parentNode.removeChild(errorEl);
+  }
+
+  function validateForm(form) {
+    var isValid = true;
+    var inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+
+    for (var i = 0; i < inputs.length; i++) {
+      var el = inputs[i];
+      var val = (el.value || '').trim();
+      var type = el.getAttribute('type') || 'text';
+
+      if (!val) {
+        var placeholder = el.getAttribute('placeholder');
+        var errorText = el.getAttribute('data-error') ||
+          (placeholder ? 'Please enter ' + (el.getAttribute('data-name') || placeholder) : 'Required field');
+        addFormError(el, errorText);
+        isValid = false;
+      } else if (type === 'email' && !isValidEmail(val)) {
+        addFormError(el, el.getAttribute('data-error') || 'Invalid email address');
+        isValid = false;
+      } else {
+        clearFormError(el);
+      }
+    }
+    return isValid;
+  }
+
+  function onInputChange(ev) {
+    var input = ev.target;
+    var form = input.closest('form');
+    if (form && input.classList.contains(CLASSNAME_ERROR_STATE)) {
+      validateForm(form);
+    }
+  }
+
+  function bindChange(form) {
+    var inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+    for (var i = 0; i < inputs.length; i++) {
+      inputs[i].removeEventListener('change', onInputChange);
+      inputs[i].addEventListener('change', onInputChange);
+      inputs[i].removeEventListener('keyup', onInputChange);
+      inputs[i].addEventListener('keyup', onInputChange);
+    }
+  }
+
+  /* ── Klaviyo subscribe (mirrors klaviyo.js) ── */
+
+  function encodeParams(obj) {
+    var parts = [];
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        parts.push(encodeURIComponent(key) + '=' + encodeURIComponent(obj[key]));
+      }
+    }
+    return parts.join('&');
+  }
+
+  function klaviyoSubscribe(email, source) {
+    var listId = KLAVIYO_LIST_ID ||
+      (window.settings && window.settings.klaviyo_list_id ? window.settings.klaviyo_list_id : '');
+    var timezoneOffset = -(new Date().getTimezoneOffset() / 60);
+
+    return new Promise(function(resolve, reject) {
+      if (!listId || !email) {
+        reject(new Error('Required settings missing'));
+        return;
+      }
+
+      var postData = {
+        email: email,
+        g: listId,
+        '$consent': 'email',
+        '$fields': '$consent,$source,Interested In',
+        '$list_fields': '$consent',
+        '$source': source || 'Website',
+        '$timezone_offset': timezoneOffset
+      };
+
+      fetch(KLAVIYO_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+          'Cache-Control': 'no-store',
+          'Pragma': 'no-cache'
+        },
+        body: encodeParams(postData)
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(response) {
+        var data = response || {};
+        var hasError = data.errors && data.errors.length;
+        if (!hasError) {
+          setCookie(COOKIE_NAME, '1', COOKIE_EXPIRATION);
+        }
+        resolve({ data: data });
+      })
+      .catch(reject);
+    });
+  }
+
+  /* ── Footer newsletter handlers (mirrors footer.js) ── */
+
+  function onNewsletterError(err) {
+    var form = document.querySelector(SELECTOR_FORM);
+    if (!form) return;
+
+    var message = (err && err.message) || '';
+    var input = form.querySelector('input');
+    var id = input ? input.getAttribute('id') : '';
+
+    form.classList.add('has-error');
+
+    var submit = form.querySelector('button');
+    if (submit) submit.disabled = false;
+
+    if (submit) {
+      submit.insertAdjacentHTML(
+        'afterend',
+        '<label aria-live="polite" class="' + CLASSNAME_ERROR_MSG + '" for="' + id + '">' +
+          'An error occurred' + (message ? ' - ' + message : '') +
+        '</label>'
+      );
+    }
+  }
+
+  function onNewsletterResponse(response) {
+    var form = document.querySelector(SELECTOR_FORM);
+    var formSuccess = document.querySelector('.js-footerSubscribeSuccess');
+    var hasError = response.data && response.data.errors && response.data.errors.length;
+
+    if (!form) return;
+
+    if (hasError) {
+      onNewsletterError({ message: response.data.errors.join(' ') });
+    } else {
+      form.classList.add(CLASSNAME_SUCCESS);
+      if (formSuccess) formSuccess.focus();
+    }
+  }
+
+  function submitForm(form) {
+    var email = (form.elements.EMAIL && form.elements.EMAIL.value) || '';
+    var source = (form.elements.SOURCE && form.elements.SOURCE.value) || 'Footer';
+    var submit = form.querySelector('button');
+
+    if (submit) submit.disabled = true;
+
+    klaviyoSubscribe(email, source)
+      .then(onNewsletterResponse)
+      .catch(onNewsletterError);
+  }
+
+  function onFormSubmit(ev) {
+    ev.preventDefault();
+    var form = ev.currentTarget;
+    if (validateForm(form)) {
+      submitForm(form);
+    }
+  }
+
+  function showFooter() {
+    var footer = document.querySelector(SELECTOR_FOOTER);
+    if (footer) footer.classList.remove('is-hidden');
+  }
+
+  function hideFooter() {
+    var footer = document.querySelector(SELECTOR_FOOTER);
+    if (footer) footer.classList.add('is-hidden');
+  }
+
+  function initFooter() {
+    var form = document.querySelector(SELECTOR_FORM);
+    if (!form) return;
+    form.addEventListener('submit', onFormSubmit);
+    form.setAttribute('novalidate', 'true');
+    bindChange(form);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFooter);
+  } else {
+    initFooter();
+  }
+})();
+</script>
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "id": "menu",
+        "label": "Footer Menu",
+        "type": "link_list"
+      },
+      {
+        "id": "klaviyo_list_id",
+        "label": "Klaviyo List ID",
+        "type": "text",
+        "info": "The Klaviyo list ID (g param) to subscribe newsletter signups to",
+        "default": "NXyYyJ"
+      },
+      {
+        "id": "newsletterTitle",
+        "label": "Newsletter Title",
+        "type": "text"
+      },
+      {
+        "id": "newsletterHed",
+        "label": "Newsletter Intro",
+        "type": "text"
+      },
+      {
+        "id": "newsletterPlaceholder",
+        "label": "Newsletter Messaging (US)",
+        "type": "text"
+      },
+      {
+        "id": "newsletter_placeholder_ca",
+        "label": "Newsletter Messaging (CA)",
+        "type": "text"
+      },
+      {
+        "id": "newsletter_placeholder_eu",
+        "label": "Newsletter Messaging (EU)",
+        "type": "text"
+      },
+      {
+        "id": "newsletter_placeholder_uk",
+        "label": "Newsletter Messaging (UK)",
+        "type": "text"
+      },
+      {
+        "id": "newsletter_placeholder_irl",
+        "label": "Newsletter Messaging (IRL)",
+        "type": "text"
+      },
+      {
+        "id": "newsletterSuccess",
+        "label": "Newsletter Success",
+        "type": "text"
+      },
+      {
+        "type": "textarea",
+        "id": "disclaimer",
+        "label": "Disclaimer",
+        "default": "Bobbi Brown left her namesake company in 2016 and is no longer affiliated or associated with the Bobbi Brown Cosmetics Company or the Bobbi Brown branded products."
+      }
+    ]
+  }
+{% endschema %}
