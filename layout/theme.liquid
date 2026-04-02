@@ -65,6 +65,14 @@
     {%- if settings.predictive_search_enabled -%}
       {{ 'component-predictive-search.css' | asset_url | stylesheet_tag }}
     {%- endif -%}
+
+    {%- comment -%} Videowise UGC widget configuration {%- endcomment -%}
+    <script>
+      window.videowiseShadow = {
+        mode: 'closed',
+        assets: []
+      };
+    </script>
   </head>
 
   <body data-currency="{{ localization.country.currency.iso_code }}" data-country="{{ localization.country.iso_code }}">

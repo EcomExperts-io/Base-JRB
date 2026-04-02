@@ -416,16 +416,47 @@ class DataLayerAddToCart extends HTMLElement {
       return;
     }
 
-    const { sku, id, product_title, vendor, product_type, variant_title, price, quantity } = requestState?.responseData?.body;
-    const sellingPlanId = requestState?.responseData?.body?.selling_plan_allocation?.selling_plan?.id || null;
+    const body = requestState.responseData.body;
+    if (!body) return;
+
+    // liquid-ajax-cart often returns a full cart `{ items: [...] }`; `/cart/add.js` can return a single line item at the root.
+    const requestedVariantId = requestState.requestBody?.items?.[0]?.id;
+    let line;
+    if (Array.isArray(body.items) && body.items.length > 0) {
+      if (requestedVariantId != null) {
+        line = body.items.find(
+          (i) =>
+            Number(i.variant_id) === Number(requestedVariantId) ||
+            Number(i.id) === Number(requestedVariantId),
+        );
+      }
+      line = line || body.items[body.items.length - 1];
+    } else {
+      line = body;
+    }
+
+    if (!line) return;
+
+    const sku = line.sku;
+    const variantId = line.variant_id ?? line.id;
+    const productTitle = line.product_title ?? line.title;
+    const vendor = line.vendor;
+    const productType = line.product_type;
+    const variantTitle = line.variant_title ?? line.title;
+    const quantity = line.quantity ?? 1;
+    const priceCents = typeof line.price === 'number' ? line.price : parseInt(line.price, 10) || 0;
+    const sellingPlanId = line.selling_plan_allocation?.selling_plan?.id || null;
+
+    const itemId = sku || (variantId != null ? String(variantId) : '');
+    if (!itemId) return;
 
     const item = {
-      item_id: sku || id.toString(),
-      item_name: product_title,
+      item_id: itemId,
+      item_name: productTitle,
       item_brand: vendor,
-      item_category: product_type,
-      item_variant: variant_title,
-      price: price / 100,
+      item_category: productType,
+      item_variant: variantTitle,
+      price: priceCents / 100,
       quantity: quantity,
     };
 

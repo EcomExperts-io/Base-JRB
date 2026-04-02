@@ -1,0 +1,44 @@
+{%- comment -%}
+  Renders the product how-to video below the gallery.
+  Supports YouTube (external) or uploaded Shopify video.
+
+  @param {object} how_to_video - Product metafield: how_to.video
+  @param {object} how_to_video_external - Product metafield: how_to.external_video (YouTube URL)
+  @param {object} how_to_poster - Product metafield: how_to.poster (poster image)
+{%- endcomment -%}
+
+<div class="product__how-to-video {% if how_to_video_external != blank %}product__how-to-video--iframe{% else %}product__how-to-video--native{% endif %}">
+  {%- if how_to_video_external != blank -%}
+    {%- assign video_id = how_to_video_external.value | split: '?v=' | last | split: '&' | first -%}
+    {%- if video_id == how_to_video_external.value -%}
+      {%- comment -%} Try youtu.be format {%- endcomment -%}
+      {%- assign video_id = how_to_video_external.value | split: 'youtu.be/' | last | split: '?' | first -%}
+    {%- endif -%}
+    <div class="product__how-to-video-wrapper iframe-wrapper">
+      <iframe
+        src="https://www.youtube.com/embed/{{ video_id }}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        loading="lazy"
+        title="How to use {{ product.title }}"
+      ></iframe>
+    </div>
+  {%- else -%}
+    <div class="product__how-to-video-wrapper js-productVideo">
+      <div class="product__how-to-video-play-icon">
+        <svg width="51" height="50" viewBox="0 0 51 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M49.5893 25C49.5893 38.3492 38.8005 49.1667 25.497 49.1667C12.1936 49.1667 1.40474 38.3492 1.40474 25C1.40474 11.6508 12.1936 0.833333 25.497 0.833333C38.8005 0.833333 49.5893 11.6508 49.5893 25Z" stroke="#D0D0D0" stroke-opacity="0.8" stroke-width="1.66667"/>
+          <path d="M34.8446 24.6394C35.1218 24.7999 35.1218 25.2001 34.8446 25.3606L21.1374 33.2981C20.8596 33.4589 20.5119 33.2585 20.5119 32.9375L20.5119 17.0625C20.5119 16.7415 20.8596 16.5411 21.1374 16.7019L34.8446 24.6394Z" fill="#D0D0D0" fill-opacity="0.8"/>
+        </svg>
+      </div>
+      <video
+        poster="{{ how_to_poster.value | image_url: width: 1000 }}"
+        playsinline
+        preload="metadata"
+      >
+        <source src="{{ how_to_video.value.url }}" type="video/mp4">
+      </video>
+    </div>
+  {%- endif -%}
+</div>

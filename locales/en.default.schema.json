@@ -660,6 +660,10 @@
         "enable_sticky_info": {
           "label": "Enable sticky content"
         },
+        "enable_sticky_atc_bar": {
+          "label": "Enable sticky add-to-cart bar",
+          "info": "Shows a bar fixed below the header with variant dropdowns and add to cart when the main buy buttons scroll out of view."
+        },
         "header": {
           "content": "Layout",
           "info": "Control the layout for this product page"

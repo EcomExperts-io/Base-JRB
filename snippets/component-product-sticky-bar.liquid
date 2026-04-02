@@ -1,0 +1,58 @@
+{%- comment -%}
+  Sticky ATC bar: fixed below header; custom variant dropdowns (name + swatch when Shade/Color/Colour)
+  sync to main variant-selector via hidden selects + section-product.js.
+{%- endcomment -%}
+
+<div
+  class="product-sticky-bar"
+  id="product-sticky-bar-{{ section.id }}"
+  data-product-sticky-bar
+  data-section-id="{{ section.id }}"
+  aria-hidden="true"
+>
+  <div class="product-sticky-bar__inner page-width">
+    <div class="product-sticky-bar__info">
+      <h2 class="product-sticky-bar__title">{{ product.title }}</h2>
+      <div class="product-sticky-bar__reviews">
+        <span class="junip-product-summary" data-product-id="{{ product.id }}"></span>
+      </div>
+    </div>
+
+    <div class="product-sticky-bar__controls">
+      {% unless product.has_only_default_variant %}
+        {% for option in product.options_with_values %}
+          {% render 'component-product-sticky-bar-variant',
+            option: option,
+            product: product,
+            section: section,
+            option_index: forloop.index0
+          %}
+        {% endfor %}
+      {% endunless %}
+
+      <button
+        type="button"
+        class="product-sticky-bar__submit button button--primary"
+        data-sticky-submit
+        data-sticky-submit-for="{{ section.id }}"
+        {% if selected_variant == null or selected_variant.available == false %}
+          disabled
+        {% endif %}
+      >
+        <span class="product-sticky-bar__submit-text">
+          {% if selected_variant == null %}
+            Unavailable
+          {% elsif selected_variant.available == false %}
+            {{ 'products.product.sold_out' | t }}
+          {% else %}
+            {{ 'products.product.add_to_cart' | t }}
+          {% endif %}
+        </span>
+        <span class="product-sticky-bar__submit-sep" aria-hidden="true"></span>
+        <span class="product-sticky-bar__submit-price" data-sticky-price>
+          {{- selected_variant.price | money -}}
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

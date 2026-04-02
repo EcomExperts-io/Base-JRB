@@ -65,13 +65,92 @@
   {%- endstyle -%}
 
   {% assign selected_variant = product.selected_or_first_available_variant %}
+  {%- assign product_form_id = 'product-form-' | append: section.id -%}
 
   <!-- Data Layer -->
   <script type="application/json" data-product>
     {{ product | json }}
   </script>
   <!-- End Data Layer -->
-  
+
+  <!-- Variant Media Data (from variant metafields) -->
+  <script type="application/json" id="variant-media-data-{{ section.id }}">
+  {
+    {% for variant in product.variants %}
+      "{{ variant.id }}": {
+        "title": {{ variant.title | json }},
+        "media": [
+          {%- assign variant_custom_carousel = variant.metafields.custom.carousel_media -%}
+          {%- assign variant_carousel = variant.metafields.carousel -%}
+          {
+            "src": "{{ variant.image | image_url: width: 600 }}",
+            "srcset": "{{ variant.image | image_url: width: 1200 }}",
+            "type": "image"
+          }
+          {%- if variant_custom_carousel -%}
+            {%- for media in variant_custom_carousel.value -%}
+              ,{
+                {%- if media contains '/' or media.media_type == 'image' -%}
+                  "src": "{{ media | image_url: width: 600 }}",
+                  "srcset": "{{ media | image_url: width: 1200 }}",
+                  "type": "image"
+                {%- else -%}
+                  "src": "{{ media.sources[1].url }}",
+                  "srcset": "{{ media.url }}",
+                  "type": "video",
+                  "poster": "{{ media.preview_image | image_url: width: 1200 }}"
+                {%- endif -%}
+              }
+            {%- endfor -%}
+          {%- elsif variant_carousel.size > 0 -%}
+            {%- for field in variant_carousel -%}
+              {%- assign name = field | first -%}
+              {%- assign media = variant_carousel[name].value -%}
+              ,{
+                {%- if media contains '/' or media.media_type == 'image' -%}
+                  "src": "{{ media | image_url: width: 600 }}",
+                  "srcset": "{{ media | image_url: width: 1200 }}",
+                  "type": "image"
+                {%- else -%}
+                  "src": "{{ media.sources[1].url }}",
+                  "srcset": "{{ media.url }}",
+                  "type": "video",
+                  "poster": "{{ media.preview_image | image_url: width: 1200 }}"
+                {%- endif -%}
+              }
+            {%- endfor -%}
+          {%- endif -%}
+        ]
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  }
+  </script>
+  <!-- End Variant Media Data -->
+
+  <!-- Shade Descriptions (from variant metafields) -->
+  <script type="application/json" id="shade-descriptions-{{ section.id }}">
+  {
+    {%- for variant in product.variants -%}
+      {%- assign shade_description = variant.metafields.findation_hero.description -%}
+      {%- if shade_description != blank -%}
+        {%- assign shade_position = product.options_by_name['Shade'].position -%}
+        {%- assign shade_option_id = 'option' | append: shade_position -%}
+        {%- assign shade_name = variant[shade_option_id] | downcase -%}
+        {{ shade_name | json }}: {{ shade_description | json }}{% unless forloop.last %},{% endunless %}
+      {%- endif -%}
+    {%- endfor -%}
+  }
+  </script>
+  <!-- End Shade Descriptions -->
+
+  {%- if section.settings.enable_sticky_atc_bar -%}
+    {% render 'component-product-sticky-bar',
+      product: product,
+      section: section,
+      selected_variant: selected_variant
+    %}
+  {%- endif -%}
+
   <div class="page-width">
     <div class="product flex product--{{ section.settings.media_size }} product--{{ section.settings.media_position }} {% if section.settings.constrain_to_viewport %}constrain-height{% endif %}">
       <div class="product__media-wrapper flex`__item media-{{ section.settings.media_fit }}">
@@ -84,10 +163,20 @@
           media_layout: section.settings.media_layout,
           mobile_media_layout: section.settings.mobile_media_layout
         %}
+
+        {%- comment -%} How-to video below gallery {%- endcomment -%}
+        {%- assign how_to_video = product.metafields.how_to.video -%}
+        {%- assign how_to_video_external = product.metafields.how_to.external_video -%}
+        {%- assign how_to_poster = product.metafields.how_to.poster -%}
+        {%- if how_to_video != blank or how_to_video_external != blank -%}
+          {% render 'component-product-how-to-video',
+            how_to_video: how_to_video,
+            how_to_video_external: how_to_video_external,
+            how_to_poster: how_to_poster
+          %}
+        {%- endif -%}
       </div>
       <div class="product__info-wrapper flex__item {% if section.settings.enable_sticky_info %}product__info-sticky {% endif %}">
-        {%- assign product_form_id = 'product-form-' | append: section.id -%}
-
         {%- for block in section.blocks -%}
           {%- case block.type -%}
             {%- when 'text' -%}
@@ -101,6 +190,10 @@
             {%- when 'title' -%}
               <div class="product__title" {{ block.shopify_attributes }}>
                 <h1>{{ product.title }}</h1>
+              </div>
+              {%- comment -%} Junip star rating + review count {%- endcomment -%}
+              <div class="product__reviews">
+                <span class="junip-product-summary" data-product-id="{{ product.id }}"></span>
               </div>
 
             {%- when 'price' -%}
@@ -197,30 +290,178 @@
                     {%- if block.settings.picker_type == 'button' -%}
                       <div class="variant-select__button">
                         {%- for option in product.options_with_values -%}
-                          <fieldset class="product-form__input">
-                            <legend class="option__label">{{ option.name }}</legend>
-                            {%- for value in option.values -%}
-                              <input
-                                type="radio"
-                                id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}"
-                                name="{{ option.name }}-{{ option.position }}"
-                                form="{{ product_form_id }}"
-                                value="{{ value | escape }}"
-                                class="pill-radio {% unless value.available %}disabled{% endunless %}"
-                                {% if value.selected %}
-                                  checked
-                                {% endif %}
-                                data-product-url="{{ value.product_url }}"
-                                data-option-value-id="{{ value.id }}"
-                              >
-                              <label
-                                class="pill-label {% unless value.available %}pill-disabled{% endunless %}"
-                                for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 -}}"
-                              >
-                                {{ value }}
-                              </label>
-                            {%- endfor -%}
-                          </fieldset>
+                          {%- assign option_name_downcase = option.name | downcase -%}
+                          {%- if option_name_downcase == 'shade' or option_name_downcase == 'color' or option_name_downcase == 'colour' -%}
+                            {%- comment -%} Shade category filter tabs {%- endcomment -%}
+                            <div class="product__swatches-tabs" data-option-index="{{ forloop.index0 }}">
+                              <ul class="product__swatches-tabs-wrapper">
+                                <li><button type="button" class="product__swatches-btn js-swatchesTabHeading active" data-tab="all">ALL</button></li>
+                                <li><button type="button" class="product__swatches-btn js-swatchesTabHeading" data-tab="fair">FAIR</button></li>
+                                <li><button type="button" class="product__swatches-btn js-swatchesTabHeading" data-tab="light">LIGHT</button></li>
+                                <li><button type="button" class="product__swatches-btn js-swatchesTabHeading" data-tab="medium">MEDIUM</button></li>
+                                <li><button type="button" class="product__swatches-btn js-swatchesTabHeading" data-tab="dark">DARK</button></li>
+                                <li><button type="button" class="product__swatches-btn js-swatchesTabHeading" data-tab="deep">DEEP</button></li>
+                              </ul>
+                            </div>
+
+                            {%- comment -%} Color swatch circles {%- endcomment -%}
+                            {%- assign swatches_list = settings.swatches | newline_to_br | split: '<br />' -%}
+                            <fieldset class="product-form__input product-form__input--swatches">
+                              <div class="product__form-swatches">
+                                {%- for value in option.values -%}
+                                  {%- assign value_downcase = value | downcase -%}
+
+                                  {%- comment -%} Find the variant matching this option value to read metafields {%- endcomment -%}
+                                  {%- assign swatch_variant = nil -%}
+                                  {%- assign option_id_key = 'option' | append: option.position -%}
+                                  {%- for variant in product.variants -%}
+                                    {%- if variant[option_id_key] == value -%}
+                                      {%- assign swatch_variant = variant -%}
+                                      {%- break -%}
+                                    {%- endif -%}
+                                  {%- endfor -%}
+
+                                  {%- comment -%} Determine swatch display: metafield image > metafield color > global swatches > hardcoded fallback {%- endcomment -%}
+                                  {%- assign swatch_color = '' -%}
+                                  {%- assign swatch_image_url = '' -%}
+                                  {%- assign swatch_use_image = false -%}
+
+                                  {%- if swatch_variant -%}
+                                    {%- if swatch_variant.metafields.swatch.image != blank -%}
+                                      {%- assign swatch_image_url = swatch_variant.metafields.swatch.image | image_url: width: 100, height: 100 -%}
+                                      {%- assign swatch_use_image = true -%}
+                                    {%- elsif swatch_variant.metafields.swatch.color != blank -%}
+                                      {%- assign swatch_color = swatch_variant.metafields.swatch.color -%}
+                                    {%- endif -%}
+                                  {%- endif -%}
+
+                                  {%- comment -%} Fallback: check global swatches setting {%- endcomment -%}
+                                  {%- if swatch_use_image == false and swatch_color == '' -%}
+                                    {%- for s in swatches_list -%}
+                                      {%- assign swatch_pair = s | split: '==' -%}
+                                      {%- assign swatch_pair_name = swatch_pair | first | strip -%}
+                                      {%- assign swatch_pair_value = swatch_pair | last | strip -%}
+                                      {%- if swatch_pair_name == value -%}
+                                        {%- if swatch_pair_value contains '.' or swatch_pair_value contains '//' -%}
+                                          {%- assign swatch_image_url = swatch_pair_value -%}
+                                          {%- assign swatch_use_image = true -%}
+                                        {%- else -%}
+                                          {%- assign swatch_color = swatch_pair_value -%}
+                                        {%- endif -%}
+                                        {%- break -%}
+                                      {%- endif -%}
+                                    {%- endfor -%}
+                                  {%- endif -%}
+
+                                  {%- comment -%} Last resort: hardcoded fallbacks for known WTF shades {%- endcomment -%}
+                                  {%- if swatch_use_image == false and swatch_color == '' -%}
+                                    {%- case value_downcase -%}
+                                      {%- when 'alabaster' -%}{%- assign swatch_color = '#F5E1D0' -%}
+                                      {%- when 'porcelain' -%}{%- assign swatch_color = '#EFCFAB' -%}
+                                      {%- when 'fair' -%}{%- assign swatch_color = '#E8C8A0' -%}
+                                      {%- when 'ivory' -%}{%- assign swatch_color = '#DEB88A' -%}
+                                      {%- when 'light' -%}{%- assign swatch_color = '#D4AA78' -%}
+                                      {%- when 'beige' -%}{%- assign swatch_color = '#C9A06C' -%}
+                                      {%- when 'medium' -%}{%- assign swatch_color = '#BE9660' -%}
+                                      {%- when 'medium honey' -%}{%- assign swatch_color = '#B38B55' -%}
+                                      {%- when 'honey' -%}{%- assign swatch_color = '#A67D45' -%}
+                                      {%- when 'golden' -%}{%- assign swatch_color = '#9A7239' -%}
+                                      {%- when 'pecan' -%}{%- assign swatch_color = '#8D6530' -%}
+                                      {%- when 'almond' -%}{%- assign swatch_color = '#7D5628' -%}
+                                      {%- when 'cinnamon' -%}{%- assign swatch_color = '#6B4722' -%}
+                                      {%- when 'chestnut' -%}{%- assign swatch_color = '#5A3A1C' -%}
+                                      {%- when 'deep' -%}{%- assign swatch_color = '#4A2E16' -%}
+                                      {%- when 'espresso' -%}{%- assign swatch_color = '#3A2410' -%}
+                                      {%- else -%}{%- assign swatch_color = '#CCCCCC' -%}
+                                    {%- endcase -%}
+                                  {%- endif -%}
+
+                                  {%- comment -%} Assign shade category for tab filtering {%- endcomment -%}
+                                  {%- assign shade_category = 'all' -%}
+                                  {%- if swatch_variant and swatch_variant.metafields.custom.shade_category != blank -%}
+                                    {%- assign shade_category = swatch_variant.metafields.custom.shade_category -%}
+                                  {%- else -%}
+                                    {%- case value_downcase -%}
+                                      {%- when 'alabaster' or 'porcelain' or 'fair' or 'ivory' -%}
+                                        {%- assign shade_category = 'fair' -%}
+                                      {%- when 'light' or 'beige' -%}
+                                        {%- assign shade_category = 'light' -%}
+                                      {%- when 'medium' or 'medium honey' or 'honey' or 'golden' -%}
+                                        {%- assign shade_category = 'medium' -%}
+                                      {%- when 'pecan' or 'almond' or 'cinnamon' or 'chestnut' -%}
+                                        {%- assign shade_category = 'dark' -%}
+                                      {%- when 'deep' or 'espresso' -%}
+                                        {%- assign shade_category = 'deep' -%}
+                                    {%- endcase -%}
+                                  {%- endif -%}
+
+                                  <div class="product__form-swatch" data-shade-category="{{ shade_category }}">
+                                    <input
+                                      type="radio"
+                                      id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                                      name="{{ option.name }}-{{ option.position }}"
+                                      form="{{ product_form_id }}"
+                                      value="{{ value | escape }}"
+                                      class="swatch-radio visually-hidden {% unless value.available %}disabled{% endunless %}"
+                                      {% if value.selected %}
+                                        checked
+                                      {% endif %}
+                                      data-product-url="{{ value.product_url }}"
+                                      data-option-value-id="{{ value.id }}"
+                                    >
+                                    <label
+                                      class="swatch-label {% if block.settings.swatch_shape == 'circle' %}swatch-label--circle{% else %}swatch-label--square{% endif %} {% unless value.available %}swatch-disabled{% endunless %}"
+                                      for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                                      {% if swatch_use_image %}
+                                        style="background-image: url('{{ swatch_image_url }}'); background-size: cover; background-position: center;"
+                                      {% else %}
+                                        style="background-color: {{ swatch_color }};"
+                                      {% endif %}
+                                      title="{{ value }}"
+                                    >
+                                      <span class="visually-hidden">{{ value }}</span>
+                                    </label>
+                                  </div>
+                                {%- endfor -%}
+                              </div>
+                            </fieldset>
+
+                            {%- comment -%} Shade description {%- endcomment -%}
+                            <div class="product__shade-info" id="shade-info-{{ section.id }}">
+                              <span class="product__shade-name">{{ selected_variant.title | split: ' / ' | first }}</span>
+                              <span class="product__shade-description" id="shade-description-{{ section.id }}">{{ selected_variant.metafields.findation_hero.description }}</span>
+                            </div>
+
+                            {%- comment -%} Find my Shade link {%- endcomment -%}
+                            <a href="/pages/what-the-foundation-quiz" class="product__find-shade-link">Find my Shade</a>
+
+                          {%- else -%}
+                            {%- comment -%} Regular pill buttons for non-shade options {%- endcomment -%}
+                            <fieldset class="product-form__input">
+                              <legend class="option__label">{{ option.name }}</legend>
+                              {%- for value in option.values -%}
+                                <input
+                                  type="radio"
+                                  id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                                  name="{{ option.name }}-{{ option.position }}"
+                                  form="{{ product_form_id }}"
+                                  value="{{ value | escape }}"
+                                  class="pill-radio {% unless value.available %}disabled{% endunless %}"
+                                  {% if value.selected %}
+                                    checked
+                                  {% endif %}
+                                  data-product-url="{{ value.product_url }}"
+                                  data-option-value-id="{{ value.id }}"
+                                >
+                                <label
+                                  class="pill-label {% unless value.available %}pill-disabled{% endunless %}"
+                                  for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+                                >
+                                  {{ value }}
+                                </label>
+                              {%- endfor -%}
+                            </fieldset>
+                          {%- endif -%}
                         {%- endfor -%}
                       </div>
                     {%- endif -%}
@@ -262,11 +503,7 @@
               </div>
 
             {%- when 'description' -%}
-              {%- if product.description != blank -%}
-                <div class="product__description" {{ block.shopify_attributes }}>
-                  <p>{{ product.description }}</p>
-                </div>
-              {%- endif -%}
+              {%- comment -%} Description is now rendered in the accordion section below {%- endcomment -%}
 
             {%- when 'buy_buttons' -%}
               <div class="product-form__buttons" {{ block.shopify_attributes }}>
@@ -279,22 +516,43 @@
                         id="AddToCart-{{ section.id }}"
                         type="submit"
                         name="add"
-                        class="{% if block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
+                        class="product__form-button {% if block.settings.show_dynamic_checkout %}button--secondary{% else %}button--primary{% endif %}"
                         {% if selected_variant == null or selected_variant.available == false %}
                           disabled
                         {% endif %}
                       >
-                        {% if selected_variant == null %}
-                          Unavailable
-                        {% elsif selected_variant.available == false %}
-                          Sold out
-                        {% else %}
-                          Add to cart
-                        {% endif %}
+                        <span class="product__form-button__text">
+                          {% if selected_variant == null %}
+                            Unavailable
+                          {% elsif selected_variant.available == false %}
+                            Sold out
+                          {% else %}
+                            Add to cart
+                          {% endif %}
+                        </span>
+                        <span class="product__form-price" id="product-form-price-{{ section.id }}">
+                          {{ selected_variant.price | money }}
+                        </span>
                         <span class="loading__spinner hidden">
                           {{ 'icon-spinner.svg' | inline_asset_content }}
                         </span>
                       </button>
+                    </div>
+
+                    {%- comment -%} Shipping & Returns badges {%- endcomment -%}
+                    <div class="product__promises">
+                      <div class="product__promise-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>Pay in 2 interest-free installments of <strong>{{ selected_variant.price | divided_by: 2 | money }}</strong> with <strong>shop</strong><svg xmlns="http://www.w3.org/2000/svg" width="40" height="16" viewBox="0 0 40 16" class="shop-pay-icon"><path fill="#5A31F4" d="M30.4 0H9.6C4.3 0 0 4.3 0 9.6v.8C0 11.7 4.3 16 9.6 16h20.8c5.3 0 9.6-4.3 9.6-9.6v-.8C40 4.3 35.7 0 30.4 0z"/><path fill="#fff" d="M13.2 4.8c-.7 0-1.3.2-1.7.7-.4.5-.6 1.1-.6 1.9 0 .8.2 1.4.6 1.9.4.5 1 .7 1.7.7.7 0 1.3-.2 1.7-.7.4-.5.6-1.1.6-1.9 0-.8-.2-1.4-.6-1.9-.4-.5-1-.7-1.7-.7z"/></svg> <a href="#" class="shop-pay-learn-more">Learn more</a></span>
+                      </div>
+                      <div class="product__promise-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        <span>Free shipping on US orders over $55</span>
+                      </div>
+                      <div class="product__promise-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span>Free & Easy Returns</span>
+                      </div>
                     </div>
                     {%- if block.settings.show_dynamic_checkout -%}
                       {{ form | payment_button }}
@@ -546,6 +804,20 @@
               </product-recommendations>
           {%- endcase -%}
         {%- endfor -%}
+
+        {%- comment -%} Videowise "As Seen On You" UGC widget {%- endcomment -%}
+        {%- if section.settings.videowise_code != blank -%}
+          <div class="product__description-videowise">
+            {{ section.settings.videowise_code }}
+          </div>
+        {%- endif -%}
+
+        {%- comment -%} Product description accordions (Shade Descriptions, How to Use, Ingredients, Pair With) {%- endcomment -%}
+        {% render 'component-product-accordions',
+          product: product,
+          selected_variant: product.selected_or_first_available_variant,
+          section_id: section.id
+        %}
       </div>
     </div>
   </div>
@@ -1044,6 +1316,13 @@
       "label": "t:sections.main-product.settings.enable_sticky_info.label"
     },
     {
+      "type": "checkbox",
+      "id": "enable_sticky_atc_bar",
+      "default": false,
+      "label": "t:sections.main-product.settings.enable_sticky_atc_bar.label",
+      "info": "t:sections.main-product.settings.enable_sticky_atc_bar.info"
+    },
+    {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "t:sections.all.colors.label",
@@ -1242,6 +1521,15 @@
         }
       ],
       "default": "300"
+    },
+    {
+      "type": "header",
+      "content": "Videowise widget"
+    },
+    {
+      "type": "liquid",
+      "id": "videowise_code",
+      "label": "Videowise embed code"
     }
   ]
 }

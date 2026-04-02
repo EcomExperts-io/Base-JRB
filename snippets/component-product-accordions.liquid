@@ -1,0 +1,283 @@
+{%- comment -%}
+  Renders product description accordions matching the live JRB theme.
+  Includes: Product Description, Shade Descriptions, How to Use, Ingredients, Pair With.
+
+  @param {object} product - The product object
+  @param {object} selected_variant - The selected or first available variant
+  @param {string} section_id - The section ID for unique element IDs
+{%- endcomment -%}
+
+{% liquid
+  assign how_to_text = product.metafields.how_to.how_to_text
+  assign how_to_tip = product.metafields.how_to.bobbis_tip
+  assign ingredients_full = product.metafields.ingredients.ingredients
+  assign key_ingredients_section = product.metafields.custom.key_ingredients_section.value
+  assign upsells = product.metafields.upsell
+
+  comment
+    Check for variant-level overrides
+  endcomment
+  assign variant_how_to = selected_variant.metafields.how_to.how_to_text
+  assign variant_ingredients = selected_variant.metafields.ingredients.ingredients
+
+  if variant_how_to != blank
+    assign how_to_text = variant_how_to
+  endif
+
+  if variant_ingredients != blank
+    assign ingredients_full = variant_ingredients
+  endif
+
+  comment
+    Check if any variant has shade descriptions (findation_hero.description)
+  endcomment
+  assign has_shade_names = false
+  for variant in product.variants
+    if variant.metafields.findation_hero.description != blank
+      assign has_shade_names = true
+      break
+    endif
+  endfor
+
+  assign swatches = settings.swatches | newline_to_br | split: '<br />'
+%}
+
+<div class="product__description-accordions js-accordion" data-section-id="{{ section_id }}">
+
+  {%- comment -%} 1. Product Description – open by default {%- endcomment -%}
+  {%- if product.description != blank -%}
+    <button
+      data-heading="product-description"
+      aria-expanded="true"
+      aria-controls="tabpanel-desc-{{ section_id }}"
+      data-controls="tabpanel-desc-{{ section_id }}"
+      class="utility__tab utility__tab--product"
+    >
+      Product Description
+    </button>
+    <div
+      data-heading="product-description"
+      aria-hidden="false"
+      id="tabpanel-desc-{{ section_id }}"
+      class="utility__tabpanel utility__tabpanel--product"
+    >
+      <div class="text-underline">
+        <div class="product__description-description">
+          {{ product.description }}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} 2. Shade Descriptions – closed by default {%- endcomment -%}
+  {%- if has_shade_names -%}
+    <button
+      data-heading="shade-descriptions"
+      aria-expanded="false"
+      aria-controls="tabpanel-shades-{{ section_id }}"
+      data-controls="tabpanel-shades-{{ section_id }}"
+      class="utility__tab utility__tab--product"
+    >
+      Shade Descriptions
+    </button>
+    <div
+      data-heading="shade-descriptions"
+      aria-hidden="true"
+      id="tabpanel-shades-{{ section_id }}"
+      class="utility__tabpanel utility__tabpanel--product"
+    >
+      <div class="text-underline">
+        <ul class="product__description-shades">
+          {%- for variant in product.variants -%}
+            {%- assign shade_description = variant.metafields.findation_hero.description -%}
+            {%- if shade_description != blank -%}
+              {%- assign swatch_color = variant.metafields.swatch.color -%}
+              {%- assign swatch_image = variant.metafields.swatch.image -%}
+              {%- assign shade_position = product.options_by_name['Shade'].position -%}
+              {%- assign shade_option_id = 'option' | append: shade_position -%}
+              {%- assign shade_name = variant[shade_option_id] -%}
+
+              <li>
+                {%- if swatch_image != blank -%}
+                  <img src="{{ swatch_image | image_url: width: 100, height: 100 }}" alt="{{ shade_name }}">
+                {%- elsif swatch_color != blank -%}
+                  <i style="background: {{ swatch_color }};"></i>
+                {%- else -%}
+                  {%- for s in swatches -%}
+                    {%- assign swatch = s | split: '==' -%}
+                    {%- assign swatch_name = swatch | first | strip -%}
+                    {%- assign swatch_value = swatch | last | strip -%}
+                    {%- if swatch_name == variant.title -%}
+                      {%- if swatch_value contains '.' -%}
+                        <img src="{{ swatch_value }}" alt="{{ shade_name }}">
+                      {%- else -%}
+                        <i style="background: {{ swatch_value }};"></i>
+                      {%- endif -%}
+                      {%- break -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+                <span class="shade-description">
+                  {%- if variant.metafields.swatch.new == true -%}
+                    <span class="shade-new">NEW </span>
+                  {%- endif -%}
+                  <span class="shade-name">{{ shade_name }}</span> {{ shade_description }}
+                </span>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} 3. How to Use – closed by default {%- endcomment -%}
+  {%- if how_to_text != blank or how_to_tip != blank -%}
+    <button
+      data-heading="how-to-use"
+      aria-expanded="false"
+      aria-controls="tabpanel-howto-{{ section_id }}"
+      data-controls="tabpanel-howto-{{ section_id }}"
+      class="utility__tab utility__tab--product"
+    >
+      How to Use
+    </button>
+    <div
+      data-heading="how-to-use"
+      aria-hidden="true"
+      id="tabpanel-howto-{{ section_id }}"
+      class="utility__tabpanel utility__tabpanel--product"
+    >
+      <div class="text-underline">
+        <div class="product__description-howto">
+          {%- if how_to_text != blank -%}
+            <p>{{ how_to_text }}</p>
+          {%- endif -%}
+          {%- if how_to_tip != blank -%}
+            <div class="product__description-tip">
+              <h3>Bobbi's Tip:</h3>
+              <p>{{ how_to_tip }}</p>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} 4. Ingredients – closed by default {%- endcomment -%}
+  {%- if key_ingredients_section != blank or ingredients_full != blank -%}
+    <button
+      data-heading="ingredients"
+      aria-expanded="false"
+      aria-controls="tabpanel-ingredients-{{ section_id }}"
+      data-controls="tabpanel-ingredients-{{ section_id }}"
+      class="utility__tab utility__tab--product"
+    >
+      Ingredients
+    </button>
+    <div
+      data-heading="ingredients"
+      aria-hidden="true"
+      id="tabpanel-ingredients-{{ section_id }}"
+      class="utility__tabpanel utility__tabpanel--product"
+    >
+      <div class="text-underline">
+        <div class="product__description-ingredients">
+          {%- if key_ingredients_section != blank -%}
+            {%- assign ingredient_titles = key_ingredients_section.ingredient_titles -%}
+            {%- assign ingredient_descriptions = key_ingredients_section.ingredient_descriptions -%}
+            {%- for ingredient_title in ingredient_titles.value -%}
+              <div class="key-ingredients-section-ingredient">
+                <h2>{{ ingredient_title }}</h2>
+                <p>{{ ingredient_descriptions.value[forloop.index0] }}</p>
+              </div>
+            {%- endfor -%}
+          {%- endif -%}
+          {%- if ingredients_full != blank -%}
+            <button type="button" class="product__description-ingredients--toggle js-ingredientsToggle">
+              See Full Ingredient List
+            </button>
+            <div class="modal modal--ingredients js-ingredientsModal" style="display:none;">
+              <div class="modal__content">
+                <div class="modal__el">
+                  <h3 class="modal__title">Ingredients</h3>
+                  <div class="modal__copy">
+                    {{ ingredients_full }}
+                  </div>
+                  <button class="modal__close js-ingredientsToggle" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    <span class="visually-hidden">Close</span>
+                  </button>
+                </div>
+              </div>
+              <div class="modal__bg js-ingredientsToggle"></div>
+            </div>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- comment -%} 5. Pair With – open by default {%- endcomment -%}
+  {%- if upsells.size > 0 -%}
+    <button
+      data-heading="pair-with"
+      aria-expanded="true"
+      aria-controls="tabpanel-pairwith-{{ section_id }}"
+      data-controls="tabpanel-pairwith-{{ section_id }}"
+      class="utility__tab utility__tab--product"
+    >
+      Pair With
+    </button>
+    <div
+      data-heading="pair-with"
+      aria-hidden="false"
+      id="tabpanel-pairwith-{{ section_id }}"
+      class="utility__tabpanel utility__tabpanel--product"
+    >
+      <div class="text-underline">
+        <div class="product__description-upsells">
+          {%- for field in upsells -%}
+            {%- assign name = field | first -%}
+            {%- assign upsell_variant = upsells[name].value -%}
+            {%- if upsell_variant -%}
+              {%- assign upsell_image = product.metafields.upsell_image[name] -%}
+              {%- if upsell_image == blank -%}
+                {%- assign upsell_image = upsell_variant.featured_image -%}
+              {%- endif -%}
+              <div class="product__upsell">
+                <div class="product__upsell-image-info">
+                  <div class="product__upsell-image">
+                    <a href="{{ upsell_variant.url }}">
+                      {{ upsell_image | image_url: width: 600 | image_tag: width: 150, class: 'secondary-aspect-child' }}
+                    </a>
+                  </div>
+                  <div class="product__upsell-info">
+                    <div class="product__upsell-title">
+                      <a href="{{ upsell_variant.url }}">
+                        {{ upsell_variant.product.title }}
+                      </a>
+                    </div>
+                    <div class="product__upsell-price-line">
+                      {{ upsell_variant.price | money }}
+                    </div>
+                    <button
+                      class="product__upsell-add button button--quick-add js-addToBag"
+                      data-product-id="{{ upsell_variant.product.id }}"
+                      data-id="{{ upsell_variant.id }}"
+                      type="button"
+                    >
+                      <span class="product__upsell-label">Add To Bag</span>
+                      <span class="product__upsell-price">{{ upsell_variant.price | money }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+
+</div>

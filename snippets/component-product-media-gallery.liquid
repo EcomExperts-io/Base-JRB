@@ -68,6 +68,34 @@
   data-mobile-layout="{{ mobile_media_layout }}"
 >
   {%- if render_thumbnail -%}
+    {%- comment -%} Vertical thumbnails on left, main image on right (desktop) {%- endcomment -%}
+    <div class="product-media-gallery__thumbnails-wrapper product-media-gallery__thumbnails-wrapper--vertical">
+      <div class="product-media-gallery__thumbnails-scroll">
+        <div class="swiper product-media-gallery__thumbnails product-media-gallery__thumbnails--vertical">
+          <div class="swiper-wrapper">
+            {% assign media_index = 0 %}
+            {% if selected_variant.featured_image != null %}
+              <div class="swiper-slide" data-media-id="{{ selected_variant.featured_media.id }}">
+                {% render 'component-product-media', media: selected_variant.featured_media, loop: video_looping %}
+              </div>
+              {% assign media_index = media_index | plus: 1 %}
+            {% endif %}
+            {% for media in product_media %}
+              {% unless selected_variant.featured_media.id == media.id %}
+                <div class="swiper-slide" data-media-id="{{ media.id }}">
+                  {% render 'component-product-media', media: media, loop: video_looping %}
+                </div>
+                {% assign media_index = media_index | plus: 1 %}
+              {% endunless %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <button type="button" class="product-media-gallery__scroll-down js-thumbnailScrollDown" aria-label="Scroll down">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
     <div class="swiper product-media-gallery__main">
       <div class="swiper-wrapper">
         {% assign media_index = 0 %}
@@ -172,30 +200,6 @@
           {% endunless %}
         {% endfor %}
       </div>
-    </div>
-
-    <div class="product-media-gallery__thumbnails-wrapper">
-      <div class="swiper-button-prev product-media-gallery__nav product-media-gallery__nav--prev"></div>
-      <div class="swiper product-media-gallery__thumbnails">
-        <div class="swiper-wrapper">
-          {% assign media_index = 0 %}
-          {% if selected_variant.featured_image != null %}
-            <div class="swiper-slide" data-media-id="{{ selected_variant.featured_media.id }}">
-              {% render 'component-product-media', media: selected_variant.featured_media, loop: video_looping %}
-            </div>
-            {% assign media_index = media_index | plus: 1 %}
-          {% endif %}
-          {% for media in product_media %}
-            {% unless selected_variant.featured_media.id == media.id %}
-              <div class="swiper-slide" data-media-id="{{ media.id }}">
-                {% render 'component-product-media', media: media, loop: video_looping %}
-              </div>
-              {% assign media_index = media_index | plus: 1 %}
-            {% endunless %}
-          {% endfor %}
-        </div>
-      </div>
-      <div class="swiper-button-next product-media-gallery__nav product-media-gallery__nav--next"></div>
     </div>
   {%- endif -%}
 

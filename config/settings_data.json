@@ -67,6 +67,20 @@
     "gtm_track_login": true,
     "gtm_track_sign_up": true,
     "content_for_index": [],
+    "blocks": {
+      "7885500093077574326": {
+        "type": "shopify://apps/videowise-video-commerce/blocks/script_embed/b48d6c0c-3e3f-4791-a9ab-a5ab7ec82f4d",
+        "disabled": false,
+        "settings": {}
+      },
+      "16017602894386113438": {
+        "type": "shopify://apps/junip/blocks/junip-store-key/dc14f5a8-ed15-41b1-ad08-cfba23f9789b",
+        "disabled": false,
+        "settings": {
+          "enablePreviewMode": true
+        }
+      }
+    },
     "color_schemes": {
       "scheme-1": {
         "settings": {

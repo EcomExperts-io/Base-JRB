@@ -1,0 +1,211 @@
+{% comment %}
+  Single option row: custom dropdown (name + optional swatch) + hidden select for JS sync.
+{% endcomment %}
+
+{% liquid
+  assign option_name_downcase = option.name | downcase
+  assign sticky_show_swatch = false
+  if option_name_downcase == 'shade' or option_name_downcase == 'color' or option_name_downcase == 'colour'
+    assign sticky_show_swatch = true
+  endif
+  assign swatches_list = settings.swatches | newline_to_br | split: '<br />'
+%}
+
+<div
+  class="product-sticky-bar__field{% if sticky_show_swatch %} product-sticky-bar__field--swatch{% endif %}"
+  data-sticky-field
+  data-sticky-option-index="{{ option_index }}"
+>
+  <label class="visually-hidden" id="StickyLabel-{{ section.id }}-{{ option_index }}">{{ option.name }}</label>
+
+  <div
+    class="product-sticky-bar__dropdown{% if sticky_show_swatch %} product-sticky-bar__dropdown--swatch{% endif %}"
+    data-sticky-dropdown
+    data-sticky-show-swatch="{% if sticky_show_swatch %}true{% else %}false{% endif %}"
+  >
+    <button
+      type="button"
+      class="product-sticky-bar__dropdown-trigger"
+      data-sticky-dropdown-trigger
+      aria-haspopup="listbox"
+      aria-expanded="false"
+      aria-controls="StickyList-{{ section.id }}-{{ option_index }}"
+      id="StickyTrigger-{{ section.id }}-{{ option_index }}"
+      aria-labelledby="StickyLabel-{{ section.id }}-{{ option_index }}"
+    >
+      <span class="product-sticky-bar__dropdown-trigger-inner">
+        <span class="product-sticky-bar__dropdown-label" data-sticky-trigger-label>—</span>
+        {% if sticky_show_swatch %}
+          <span class="product-sticky-bar__dropdown-swatch" data-sticky-trigger-swatch aria-hidden="true"></span>
+        {% endif %}
+      </span>
+      <span class="product-sticky-bar__dropdown-chevron" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" viewBox="0 0 12 8" fill="currentColor">
+          <path d="M6 8L0 0h12z"/>
+        </svg>
+      </span>
+    </button>
+
+    <ul
+      class="product-sticky-bar__dropdown-list"
+      id="StickyList-{{ section.id }}-{{ option_index }}"
+      role="listbox"
+      data-sticky-dropdown-list
+      hidden
+    >
+      {%- for value in option.values -%}
+        {%- assign swatch_variant = nil -%}
+        {%- assign option_id_key = 'option' | append: option.position -%}
+        {%- for variant in product.variants -%}
+          {%- if variant[option_id_key] == value -%}
+            {%- assign swatch_variant = variant -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- assign swatch_color = '' -%}
+        {%- assign swatch_image_url = '' -%}
+        {%- assign swatch_use_image = false -%}
+
+        {%- if swatch_variant -%}
+          {%- if swatch_variant.metafields.swatch.image != blank -%}
+            {%- assign swatch_image_url = swatch_variant.metafields.swatch.image | image_url: width: 100, height: 100 -%}
+            {%- assign swatch_use_image = true -%}
+          {%- elsif swatch_variant.metafields.swatch.color != blank -%}
+            {%- assign swatch_color = swatch_variant.metafields.swatch.color -%}
+          {%- endif -%}
+        {%- endif -%}
+
+        {%- if swatch_use_image == false and swatch_color == '' -%}
+          {%- for s in swatches_list -%}
+            {%- assign swatch_pair = s | split: '==' -%}
+            {%- assign swatch_pair_name = swatch_pair | first | strip -%}
+            {%- assign swatch_pair_value = swatch_pair | last | strip -%}
+            {%- if swatch_pair_name == value -%}
+              {%- if swatch_pair_value contains '.' or swatch_pair_value contains '//' -%}
+                {%- assign swatch_image_url = swatch_pair_value -%}
+                {%- assign swatch_use_image = true -%}
+              {%- else -%}
+                {%- assign swatch_color = swatch_pair_value -%}
+              {%- endif -%}
+              {%- break -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+
+        {%- if sticky_show_swatch and swatch_use_image == false and swatch_color == '' -%}
+          {%- assign swatch_color = '#CCCCCC' -%}
+        {%- endif -%}
+
+        <li role="presentation">
+          <button
+            type="button"
+            class="product-sticky-bar__dropdown-option{% unless value.available %} product-sticky-bar__dropdown-option--disabled{% endunless %}"
+            role="option"
+            data-sticky-option-btn
+            data-value="{{ value | escape }}"
+            data-option-value-id="{{ value.id }}"
+            data-product-url="{{ value.product_url }}"
+            {% if value.selected %}
+              aria-selected="true"
+            {% else %}
+              aria-selected="false"
+            {% endif %}
+            {% unless value.available %}
+              disabled
+            {% endunless %}
+            data-swatch-color="{{ swatch_color }}"
+            data-swatch-use-image="{% if swatch_use_image %}true{% else %}false{% endif %}"
+            data-swatch-image="{% if swatch_use_image %}{{ swatch_image_url }}{% endif %}"
+          >
+            <span class="product-sticky-bar__dropdown-option-label">{{ value }}</span>
+            {% if sticky_show_swatch %}
+              <span
+                class="product-sticky-bar__dropdown-option-swatch{% if swatch_use_image %} product-sticky-bar__dropdown-option-swatch--image{% endif %}"
+                aria-hidden="true"
+                {% if swatch_use_image %}
+                  style="background-image: url('{{ swatch_image_url }}');"
+                {% elsif swatch_color != '' %}
+                  style="background-color: {{ swatch_color }};"
+                {% endif %}
+              ></span>
+            {% endif %}
+          </button>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+
+  <select
+    id="StickyOption-{{ section.id }}-{{ option_index }}"
+    class="visually-hidden"
+    tabindex="-1"
+    data-sticky-sync-select
+    data-sticky-option-index="{{ option_index }}"
+    data-option-position="{{ option.position }}"
+    aria-hidden="true"
+  >
+    {%- for value in option.values -%}
+      {%- assign swatch_variant = nil -%}
+      {%- assign option_id_key = 'option' | append: option.position -%}
+      {%- for variant in product.variants -%}
+        {%- if variant[option_id_key] == value -%}
+          {%- assign swatch_variant = variant -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- assign swatch_color = '' -%}
+      {%- assign swatch_image_url = '' -%}
+      {%- assign swatch_use_image = false -%}
+
+      {%- if swatch_variant -%}
+        {%- if swatch_variant.metafields.swatch.image != blank -%}
+          {%- assign swatch_image_url = swatch_variant.metafields.swatch.image | image_url: width: 100, height: 100 -%}
+          {%- assign swatch_use_image = true -%}
+        {%- elsif swatch_variant.metafields.swatch.color != blank -%}
+          {%- assign swatch_color = swatch_variant.metafields.swatch.color -%}
+        {%- endif -%}
+      {%- endif -%}
+
+      {%- if swatch_use_image == false and swatch_color == '' -%}
+        {%- for s in swatches_list -%}
+          {%- assign swatch_pair = s | split: '==' -%}
+          {%- assign swatch_pair_name = swatch_pair | first | strip -%}
+          {%- assign swatch_pair_value = swatch_pair | last | strip -%}
+          {%- if swatch_pair_name == value -%}
+            {%- if swatch_pair_value contains '.' or swatch_pair_value contains '//' -%}
+              {%- assign swatch_image_url = swatch_pair_value -%}
+              {%- assign swatch_use_image = true -%}
+            {%- else -%}
+              {%- assign swatch_color = swatch_pair_value -%}
+            {%- endif -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+
+      {%- if sticky_show_swatch and swatch_use_image == false and swatch_color == '' -%}
+        {%- assign swatch_color = '#CCCCCC' -%}
+      {%- endif -%}
+
+      <option
+        value="{{ value | escape }}"
+        data-option-value-id="{{ value.id }}"
+        data-product-url="{{ value.product_url }}"
+        data-swatch-color="{{ swatch_color }}"
+        data-swatch-use-image="{% if swatch_use_image %}true{% else %}false{% endif %}"
+        data-swatch-image="{% if swatch_use_image %}{{ swatch_image_url }}{% endif %}"
+        {% if value.selected %}
+          selected
+        {% endif %}
+        {% unless value.available %}
+          disabled
+        {% endunless %}
+      >
+        {{ value -}}
+        {%- unless value.available %} — {{ 'products.product.sold_out' | t }}{% endunless %}
+      </option>
+    {%- endfor -%}
+  </select>
+</div>
