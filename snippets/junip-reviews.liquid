@@ -1,0 +1,17 @@
+<script>
+(function() {
+  setInterval(function() {
+    var stars = document.querySelectorAll('.product__card-stars');
+    for (var i = 0; i < stars.length; i++) {
+      var crc = stars[i];
+      var crt = crc.querySelector('.junip-product-summary-review-count');
+      if (!crt) continue;
+      var inns = String(crt.innerHTML);
+      if (!inns.includes('Reviews') && inns.includes('(') && inns.includes(')')) {
+        crt.innerHTML = inns.replace(/[()]/g, '') + ' Reviews';
+      }
+      crc.style.opacity = '1';
+    }
+  }, 100);
+})();
+</script>

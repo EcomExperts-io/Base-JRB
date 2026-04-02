@@ -1,0 +1,10 @@
+<div class="section-header" {% if background %} style="background: {{ background }};" {% endif %}>
+  <h2 class="section-header__heading">
+    {{ heading }}
+  </h2>
+  {% if cta_text != blank %}
+    <a class="section-header__cta" href="{{ cta_link }}">
+      {{ cta_text }}
+    </a>
+  {% endif %}
+</div>

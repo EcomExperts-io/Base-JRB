@@ -20,12 +20,16 @@
     {%- unless settings.type_heading_font.system? -%}
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
-
+    <script type="text/javascript" async="true" src="https://widgets.juniphq.com/v1/junip_shopify.js"></script>
+    <span class="junip-store-key" data-store-key="4NjxTTX33ohe7HAXvYJi8ccY"></span>
+    {% render 'custom-fonts' %}
     {% # Inlined CSS Variables %}
     {% render 'css-variables' %}
+    {% render 'redirection-rules' %}
 
     {% # Load and preload the critical CSS %}
     {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'custom.css' | asset_url | stylesheet_tag }}
 
     {%- if settings.splash_screen_enabled -%}
       {% render 'component-splash-screen-head' %}
@@ -63,7 +67,7 @@
     {%- endif -%}
   </head>
 
-  <body>
+  <body data-currency="{{ localization.country.currency.iso_code }}" data-country="{{ localization.country.iso_code }}">
     {% render 'component-gtm-body' %}
 
     {% render 'component-data-layer' %}
@@ -89,5 +93,6 @@
     {%- if settings.splash_screen_enabled -%}
       <script src="{{ 'component-splash-screen.js' | asset_url }}" type="module"></script>
     {%- endif -%}
+    {% render 'junip-reviews' %}
   </body>
 </html>

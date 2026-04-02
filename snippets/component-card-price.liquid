@@ -1,0 +1,13 @@
+{%- if localization.country.currency.iso_code == 'USD' -%}
+  {%- if format == 'full' -%}
+    {{ price | money }}
+  {%- else -%}
+    {{ price | money_without_trailing_zeros }}
+  {%- endif -%}
+{%- else -%}
+  {%- if format == 'full' -%}
+    {{ price | money | append: ' ' | append: localization.country.currency.iso_code }}
+  {%- else -%}
+    {{ price | money_without_trailing_zeros | append: ' ' | append: localization.country.currency.iso_code }}
+  {%- endif -%}
+{%- endif -%}

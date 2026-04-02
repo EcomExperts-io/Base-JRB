@@ -1,0 +1,75 @@
+<style>
+    .search__content__drawer {
+        padding: 16.5px 20px;
+        border: none;
+        box-shadow: 0 1px 4px #0000000d;
+    }
+    .search__content__drawer button.search__submit {
+        display: none;
+    }
+    .search__content__drawer input {
+        font-size: 14px;
+        color: #000;
+        font-weight: 325;
+        letter-spacing: 0px;
+        font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+        border: 0;
+        border-bottom: 1px solid #000;
+        position: relative;
+        width: 100%;
+        z-index: 1;
+        height: 36px;
+        outline: none;
+    }
+    .search__content__drawer input::placeholder{
+        font-size: 14px;
+        color: #000;
+        font-weight: 325;
+        letter-spacing: 0px;
+        font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+    }
+    .search__content__drawer .search-field-icon {
+        position: absolute;
+        z-index: 2;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .search__content__drawer .search-field {
+        position: relative;
+    }
+    .search__content__drawer .search-field-icon svg{
+        display: block;
+        width: 14px;
+        height: auto;
+    }
+</style>
+
+<div class="search__content__drawer">
+<form action="/search" method="get">
+    <div class="search-field">
+    <!-- Magnifying‐glass SVG -->
+    <div class="search-field-icon">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.1435 17.15L21 21M19.7817 10.375C19.7817 12.8614 18.7923 15.246 17.0312 17.0041C15.2701 18.7623 12.8815 19.75 10.3908 19.75C7.90024 19.75 5.51164 18.7623 3.75052 17.0041C1.98939 15.246 1 12.8614 1 10.375C1 7.8886 1.98939 5.50403 3.75052 3.74587C5.51164 1.98772 7.90024 1 10.3908 1C12.8815 1 15.2701 1.98772 17.0312 3.74587C18.7923 5.50403 19.7817 7.8886 19.7817 10.375Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </div>
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Enter Search"
+        aria-label="Search query"
+        required
+    >
+    </div>
+
+    <!-- Submit button -->
+    <button class="search__submit" type="submit">
+    <span class="visually-hidden">Submit</span>
+    </button>
+
+    <!-- Always search products -->
+    <input type="hidden" name="type" value="product">
+</form>
+</div>

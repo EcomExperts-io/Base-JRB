@@ -23,7 +23,7 @@
     top: calc(100% + 1px);
     left: 0;
     width: min(500px, 100%);
-    height: calc(100vh - var(--header-height) - var(--announcement-bar-height, 0px));
+    height: calc(100dvh - var(--header-height) - var(--announcement-bar-height, 0px));
     transform: translateX(-100%);
     z-index: -1;
     transition: 300ms ease;
@@ -109,15 +109,120 @@
     min-width: 25px;
     height: 25px;
   }
+  #header-drawer #menu-drawer {
+    transform: translate(0) !important;
+    transition: opacity .3s cubic-bezier(.165, .84, .44, 1), visibility 0s .3s;
+    opacity: 0;
+  }
+  #header-drawer #menu-drawer:not(.drawer-open){
+    height: 0;
+    overflow: hidden;
+  }
+  #header-drawer #menu-drawer.drawer-open{
+    opacity: 1;
+  }
+  body.menu-drawer-open {
+    overflow: hidden;
+    /* position: fixed; */
+    width: 100%;
+  }
+  .menu-drawer_action ul#CountryList {
+    background: #f6f2eb;
+    height: calc(100% - 70px);
+    left: 0;
+    max-width: 700px;
+    opacity: 1;
+    position: fixed;
+    z-index: 999999;
+    width: 100%;
+    top: 0;
+    padding: 0;
+    max-height: unset;
+    border: 0;
+    display: block !important;
+    opacity: 0;
+    transition: opacity .3s, visibility 0s 0s;
+    z-index: -1;
+  }
+  /* .menu-drawer_action .localization-button:not(.localization-open) ~ ul#CountryList{
+    height: 0;
+  } */
+  .menu-drawer_action .localization-button.localization-open ~ ul#CountryList {
+    opacity: 1;
+    z-index: 99;
+  }
+  .menu-drawer_action ul#CountryList li {
+    background: transparent;
+  }
+  .menu-drawer_action ul#CountryList li a {
+    display: flex;
+    height: 36px;
+    justify-content: space-between;
+    line-height: 36px;
+    padding: 0 25px;
+  }
+  .menu-drawer_action ul#CountryList li a span.symbol {
+    gap: 24px;
+    width: 100%;
+    font-size: 13px;
+    letter-spacing: .025em;
+    color: black;
+  }
+  .menu-drawer_action ul#CountryList li a span.symbol img {
+    width: 22px;
+  }
+  .menu-drawer_action {
+    padding: 0;
+    height: 70px;
+    position: relative;
+    flex: 0 0 auto;
+  }
+  .menu-drawer_action .localization-wrapper {
+    border: 0px !important;
+    display: flex;
+    padding: 0px !important;
+    margin: 0 !important;
+    gap: 8px;
+    font-size: 16px;
+  }
+  .menu-drawer_action .menu-drawer_localization {
+    width: 50%;
+    flex: 0 0 auto;
+    justify-content: center;
+  }
+  a.menu-drawer_account {
+    padding: 0 !important;
+    justify-content: center;
+    padding-top: 5px !important;
+  }
+  .menu-drawer_action {
+    gap: 0;
+  }
+  .menu-drawer_action:before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 1px;
+    background: rgb(var(--color-foreground),.2);
+    left: 50%;
+  }
+  .menu-drawer_action {
+    position: absolute;
+    height: 70px;
+    width: 100%;
+    bottom: 0;
+    background: white;
+  }
 {% endstylesheet %}
 <div
   id="header-drawer"
   x-data="{ drawerOpen: false }"
-  @click.outside="drawerOpen = false"
+  x-effect="document.body.classList.toggle('menu-drawer-open', drawerOpen)"
+  @click.outside="drawerOpen = false; $dispatch('header-drawer-close')"
 >
   <button
     class="header-drawer_icons"
-    @click="drawerOpen = !drawerOpen"
+    @click="drawerOpen = !drawerOpen; if (!drawerOpen) $dispatch('header-drawer-close'); if (drawerOpen) $nextTick(function() { var d = document.getElementById('menu-drawer'); if (d) { d.scrollTop = 0; var top = d.querySelector('.drawer-top'); if (top) top.scrollTop = 0; } })"
     :class="{ 'drawer-open': drawerOpen }"
   >
     {{- 'icon-menu.svg' | inline_asset_content -}}
@@ -147,7 +252,10 @@
           rel="nofollow"
           class="menu-drawer_account"
         >
-          {{ 'icon-account.svg' | inline_asset_content }}
+          {% comment %} {{ 'icon-account.svg' | inline_asset_content }} {% endcomment %}
+          <svg width="24" height="24" version="1.1" viewBox="0 0 700 700" xmlns="http://www.w3.org/2000/svg">
+            <path d="m227.5 122.5c0-32.488 12.906-63.648 35.879-86.621s54.133-35.879 86.621-35.879 63.648 12.906 86.621 35.879 35.879 54.133 35.879 86.621-12.906 63.648-35.879 86.621-54.133 35.879-86.621 35.879c-32.477-0.039062-63.613-12.957-86.578-35.922s-35.883-54.102-35.922-86.578zm349.14 345.65c-9.2656-53.176-37.16-101.32-78.691-135.79s-93.98-53.039-147.95-52.359c-53.973-0.67969-106.42 17.883-147.95 52.359s-69.426 82.617-78.691 135.79c-3.3086 22.617 3.4062 45.555 18.387 62.82 16.137 18.559 39.562 29.16 64.156 29.027h288.2c24.594 0.13281 48.02-10.469 64.156-29.027 14.98-17.266 21.695-40.203 18.387-62.82z"></path>
+          </svg>
         </a>
       {% endif %}
     </div>

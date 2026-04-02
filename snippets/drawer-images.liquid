@@ -1,0 +1,57 @@
+<style>
+    .drawer-images-wrap{
+        gap: 11px !important;
+        padding: 30px 20px 15px;
+    }
+    .mega-menu-image-wrap.drawer-images-wrap a {
+        padding: 0 !important;
+        border: 0px !important;
+    }
+    .mega-menu-image-wrap.drawer-images-wrap .mega-menu-image {
+        flex: 1;
+        gap: 10px;
+    }
+    .mega-menu-image-wrap.drawer-images-wrap span.mega-text-title {
+        font-weight: 600;
+        letter-spacing: .3px;
+        text-transform: uppercase;
+        color: #000;
+        font-size: 13px;
+        line-height: 1.4;
+    }
+    .mega-menu-image-wrap.drawer-images-wrap .mega-text-desc {
+        font-size: 11px;
+        line-height: 18px;
+        text-transform: capitalize;
+        margin-top: 5px;
+    }
+</style>
+{% comment %} {% assign block = section.blocks | first %} {% endcomment %}
+<div class="mega-menu-image-wrap drawer-images-wrap">
+    {% if section.settings.b1image != blank %}
+        <div class="mega-menu-image">
+            <a href="{{ section.settings.b1link }}">
+                <img src="{{ section.settings.b1image | image_url: width: 400 }}" loading="lazy" alt="menu image" />
+            </a>
+            <div class="mega-text-wrap">
+                <a href="{{ section.settings.b1link }}">
+                    <span class="mega-text-title">{{ section.settings.b1title }}</span>
+                </a>
+                <div class="mega-text-desc">{{ section.settings.b1text }}</div>
+            </div>
+        </div>
+    {% endif %}
+    {% if section.settings.b2image != blank %}
+        <div class="mega-menu-image">
+            <a href="{{ section.settings.b2link }}">
+                <img src="{{ section.settings.b2image | image_url: width: 400 }}" loading="lazy" alt="menu image" />
+            </a>
+            <div class="mega-text-wrap">
+                <a href="{{ section.settings.b2link }}">
+                    <span class="mega-text-title">{{ section.settings.b2title }}</span>
+                </a>
+                <div class="mega-text-desc">{{ section.settings.b2text }}</div>
+            </div>
+        </div>
+    {% endif %}
+</div>

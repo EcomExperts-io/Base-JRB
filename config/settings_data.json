@@ -9,6 +9,21 @@
  */
 {
   "current": {
+    "currency_selector_enabled": true,
+    "currency_selector_countries_map": "United States, US, USD, $, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/united-states-of-america-flag-icon-64.png?v=1722345040\nCanada, CA, CAD, $,https://cdn.shopify.com/s/files/1/0424/9527/9254/files/canada-flag-icon-64.png?v=1722345040\nUnited Kingdom, GB, GBP, £,https://cdn.shopify.com/s/files/1/0424/9527/9254/files/united-kingdom-flag-icon-64.png?v=1722345040\nIreland, IE, EUR, €,https://cdn.shopify.com/s/files/1/0424/9527/9254/files/ireland-flag-icon-64.png?v=1722345040\nAustria, AT, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/austria-flag-icon-64.png?v=1724961540\nBelgium, BE, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/belgium-flag-icon-64.png?v=1724961540\nCroatia, HR, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/croatia-flag-icon-64.png?v=1724833842\nCyprus, CY, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/cyprus-flag-icon-64.png?v=1722345040\nEstonia, EE, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/estonia-flag-icon-64.png?v=1724961540\nFinland, FI, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/finland-flag-icon-64.png?v=1724961540\nFrance, FR, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/france-flag-icon-64.png?v=1724961540\nGermany, DE, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/germany-flag-icon-64.png?v=1724961540\nGreece, GR, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/greece-flag-icon-64.png?v=1724961540\nItaly, IT, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/italy-flag-icon-64.png?v=1724961540\nLatvia, LV, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/latvia-flag-icon-64.png?v=1724961540\nLithuania, LT, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/lithuania-flag-icon-64.png?v=1724961540\nLuxembourg, LU, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/luxembourg-flag-icon-64.png?v=1724961540\nMalta, MT, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/malta-flag-icon-64.png?v=1724961540\nNetherlands, NL, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/netherlands-flag-icon-64.png?v=1724961540\nPortugal, PT, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/portugal-flag-icon-64.png?v=1724961540\nSlovak Republic, SK, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/slovakia-flag-icon-64.png?v=1724961540\nSlovenia, SI, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/slovenia-flag-icon-64.png?v=1724961540\nSpain, ES, EUR, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/spain-flag-icon-64.png?v=1724961540 \nMonaco, MC, EUR, €, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/monaco-flag-icon-64.png?v=1743790150\nBulgaria, BG, BGN, лв, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/Flag_of_Bulgaria_svg.png?v=1743790149\nCzech Republic, CZ, CZK, Kč, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/czech-republic-flag-icon-64.png?v=1743790150\nDenmark, DK, DKK, kr, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/denmark-flag-icon-64.png?v=1743790149\nHungary, HU, HUF, Ft,  https://cdn.shopify.com/s/files/1/0424/9527/9254/files/hungary-flag-icon-64.png?v=1743790150\nPoland, PL, PLN, zł, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/poland-flag-icon-64.png?v=1744045111\nRomania, RO, RON, lei, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/romania-flag-icon-64.png?v=1744045256\nSweden, SE, SEK, kr, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/sweden-flag-icon-64.png?v=1743790794\nAustralia, AU, AUD, $, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/australia-flag-icon-64.png?v=1745951194\nNew Zealand, NZ, NZD, $, https://cdn.shopify.com/s/files/1/0424/9527/9254/files/new-zealand-flag-icon-64.png?v=1745951190",
+    "top_search_1": "miracle-balm",
+    "top_search_2": "just-enough-tinted-moisturizer",
+    "top_search_3": "what-the-foundation",
+    "tag_color": "#ff2e92",
+    "tag_list": "Minis Coming Soon,",
+    "tag_bg_color": "rgba(0,0,0,0)",
+    "tag_bg_text_color": "#ff2e92",
+    "outline_tag_list": "Minis Coming Soon,",
+    "outline_tag_color": "#ff2e92",
+    "navigation_titles": "Body",
+    "navigation_color": "#041f45",
+    "logo": "shopify://shop_images/jsLogo_2.svg",
+    "logo_height": 22,
     "type_heading_font": "roboto_condensed_n4",
     "type_body_font": "roboto_condensed_n4",
     "max_page_width": 1600,
@@ -39,16 +54,16 @@
     "gtm_track_add_to_cart": true,
     "gtm_track_cta_click": true,
     "gtm_track_faq_toggle": true,
+    "gtm_track_search": true,
+    "gtm_track_select_content": true,
+    "gtm_track_carousel": true,
     "gtm_track_error_404": true,
     "gtm_track_out_of_stock": true,
     "gtm_track_view_item_list": true,
     "gtm_track_view_cart": true,
     "gtm_track_remove_from_cart": true,
     "gtm_track_update_cart": true,
-    "gtm_track_search": true,
     "gtm_track_product_option": true,
-    "gtm_track_select_content": true,
-    "gtm_track_carousel": true,
     "gtm_track_login": true,
     "gtm_track_sign_up": true,
     "content_for_index": [],
@@ -60,6 +75,7 @@
           "text": "#000000",
           "button": "#121212",
           "button_label": "#ffffff",
+          "secondary_button": "#ffffff",
           "secondary_button_label": "#121212",
           "shadow": "#121212"
         }
@@ -71,6 +87,7 @@
           "text": "#121212",
           "button": "#121212",
           "button_label": "#f3f3f3",
+          "secondary_button": "#ffffff",
           "secondary_button_label": "#121212",
           "shadow": "#121212"
         }
@@ -82,6 +99,7 @@
           "text": "#ffffff",
           "button": "#ffffff",
           "button_label": "#000000",
+          "secondary_button": "#ffffff",
           "secondary_button_label": "#ffffff",
           "shadow": "#121212"
         }
@@ -93,6 +111,7 @@
           "text": "#ffffff",
           "button": "#ffffff",
           "button_label": "#121212",
+          "secondary_button": "#ffffff",
           "secondary_button_label": "#ffffff",
           "shadow": "#121212"
         }
@@ -104,6 +123,7 @@
           "text": "#ed1b1b",
           "button": "#ffffff",
           "button_label": "#334fb4",
+          "secondary_button": "#ffffff",
           "secondary_button_label": "#ffffff",
           "shadow": "#121212"
         }

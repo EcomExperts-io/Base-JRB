@@ -47,85 +47,90 @@
     }
   {% endstyle %}
 {% endunless %}
-<ul
-  {% if nav_style == 'drawer' %}
-    class="menu-drawer_navigation"
-  {% endif %}
->
-  {% for link in menu.links %}
-    <li x-data="{ menuOpen: false, activeSubMenu: null }" @click.outside="menuOpen = false; activeSubMenu = null">
-      {% if link.links != blank %}
-        <div
-          @click="menuOpen = !menuOpen"
-          :class="{ 'menu-open': menuOpen }"
-          class="menu-toggle"
-        >
-          {{- link.title | escape -}}
-          {{- 'icon-caret.svg' | inline_asset_content -}}
-        </div>
-        <ul
-          x-show="menuOpen"
-          class="nav-{{ nav_style }} color-{{ menu_color_scheme }} gradient"
-          x-transition
-          role="list"
-          x-cloak
-        >
-          {%- for childlink in link.links -%}
-            <li>
-              {% if childlink.links == blank %}
-                <a
-                  href="{{ childlink.url }}"
-                  class="header__menu-item header__menu-item--child"
-                  {% if childlink.current %}
-                    aria-current="page"
-                  {% endif %}
-                >
-                  <span> {{ childlink.title | escape }} </span>
-                </a>
-              {% else %}
-                <div
-                  @click="activeSubMenu = (activeSubMenu === '{{ childlink.title | escape }}' ? null : '{{ childlink.title | escape }}')"
-                  :class="{ 'menu-open': activeSubMenu === '{{ childlink.title | escape }}' }"
-                  class="menu-toggle"
-                >
-                  {{- childlink.title | escape -}}
-                  {{- 'icon-caret.svg' | inline_asset_content -}}
-                </div>
-                <ul
-                  x-show="activeSubMenu === '{{ childlink.title | escape }}'"
-                  class="nav-dropdown_child"
-                  x-transition
-                  role="list"
-                  x-cloak
-                >
-                  {%- for grandchildlink in childlink.links -%}
-                    <li>
-                      <a
-                        href="{{ grandchildlink.url }}"
-                        class="header__menu-item header__menu-item--grandchild"
-                        {% if grandchildlink.current %}
-                          aria-current="page"
-                        {% endif %}
-                      >
-                      <span> {{ grandchildlink.title | escape }} </span>
-                      </a>
-                    </li>
-                  {%- endfor -%}
-                </ul>
-              {% endif %}
-            </li>
-          {%- endfor -%}
-        </ul>
-      {% else %}
-        <a
-          href="{{ link.url }}"
-          {% if link.current %}
-            aria-current="page"
-          {% endif %}
-        >
-          {{- link.title | escape -}}
-        </a>
-      {% endif %}
-    </li>
-  {% endfor %}
-</ul>
+<div class="drawer-top">
+  {% render 'drawer-search' %}
+  {% render 'drawer-images' %}
+  {% render 'drawer-menu' %}
+  <ul
+    {% if nav_style == 'drawer' %}
+      class="menu-drawer_navigation"
+    {% endif %}
+  >
+    {% for link in menu.links %}
+      <li x-data="{ menuOpen: false, activeSubMenu: null }" @click.outside="menuOpen = false; activeSubMenu = null">
+        {% if link.links != blank %}
+          <div
+            @click="menuOpen = !menuOpen"
+            :class="{ 'menu-open': menuOpen }"
+            class="menu-toggle"
+          >
+            {{- link.title | escape -}}
+            {{- 'icon-caret.svg' | inline_asset_content -}}
+          </div>
+          <ul
+            x-show="menuOpen"
+            class="nav-{{ nav_style }} color-{{ menu_color_scheme }} gradient"
+            x-transition
+            role="list"
+            x-cloak
+          >
+            {%- for childlink in link.links -%}
+              <li>
+                {% if childlink.links == blank %}
+                  <a
+                    href="{{ childlink.url }}"
+                    class="header__menu-item header__menu-item--child"
+                    {% if childlink.current %}
+                      aria-current="page"
+                    {% endif %}
+                  >
+                    <span> {{ childlink.title | escape }} </span>
+                  </a>
+                {% else %}
+                  <div
+                    @click="activeSubMenu = (activeSubMenu === '{{ childlink.title | escape }}' ? null : '{{ childlink.title | escape }}')"
+                    :class="{ 'menu-open': activeSubMenu === '{{ childlink.title | escape }}' }"
+                    class="menu-toggle"
+                  >
+                    {{- childlink.title | escape -}}
+                    {{- 'icon-caret.svg' | inline_asset_content -}}
+                  </div>
+                  <ul
+                    x-show="activeSubMenu === '{{ childlink.title | escape }}'"
+                    class="nav-dropdown_child"
+                    x-transition
+                    role="list"
+                    x-cloak
+                  >
+                    {%- for grandchildlink in childlink.links -%}
+                      <li>
+                        <a
+                          href="{{ grandchildlink.url }}"
+                          class="header__menu-item header__menu-item--grandchild"
+                          {% if grandchildlink.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                        <span> {{ grandchildlink.title | escape }} </span>
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  </ul>
+                {% endif %}
+              </li>
+            {%- endfor -%}
+          </ul>
+        {% else %}
+          <a
+            href="{{ link.url }}"
+            {% if link.current %}
+              aria-current="page"
+            {% endif %}
+          >
+            {{- link.title | escape -}}
+          </a>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>

@@ -1,0 +1,21 @@
+{% assign award = product.metafields.my_fields.product_award %}
+
+{%- unless show_badge -%}
+  {%- assign show_badge = true -%}
+{%- endunless -%}
+
+{% if award and award != blank %}
+  <div data-product-award-id="{{ product.id }}" class="product__{{- context -}}-award swiper-award-logo {% if context == 'hero' %}product__hero-award--desktop{% endif %}" style="background-image: url({{ award | img_url: 'master' }})">
+  </div>
+{% else %}
+  {%- if show_badge -%}
+    {% for tag in product.tags %}
+      {%- assign hasBadge = true -%}
+      {% if tag contains 'badge_' %}
+        <div data-product-award-id="{{ product.id }}" class="product__{{- context -}}-badge swiper-award-logo" style="background-image: url({{ 'badge.static.png' |  asset_img_url: '250x' }});">
+          {{ tag | replace: 'badge_', '' }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {%- endif -%}
+{% endif %}

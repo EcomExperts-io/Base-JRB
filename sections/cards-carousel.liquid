@@ -1,0 +1,310 @@
+<script src="{{ 'section-cards-carousel.js' | asset_url }}" type="module"></script>
+<cards-carousel class="cards-carousel" data-component="cardsCarousel" data-section-id="{{ section.id }}" style="
+  --color: {{ section.settings.color }}; 
+  --color-mobile: {{ section.settings.color_mobile }};
+  --fontfamily: 
+  {% if section.settings.fontfamily == 'RingsideWideWeb' %}
+    'RingsideWideWeb', 'Helvetica', 'Arial', sans-serif
+  {% elsif section.settings.fontfamily == 'GeogrotesqueCondBoldWeb' %}
+    'GeogrotesqueCondBoldWeb', 'Arial Black', 'Impact', sans-serif
+  {% elsif section.settings.fontfamily == 'BaseMonoWideWeb' %}
+    'BaseMonoWideWeb', 'Courier', 'Courier New', sans-serif
+  {% elsif section.settings.fontfamily == 'Canela' %}
+   'Canela', serif
+  {% elsif section.settings.fontfamily == 'FontSpringArticulateDemibold' %}
+    'FontSpringArticulateDemibold', sans-serif
+  {% elsif section.settings.fontfamily == 'ArticulatCF' %}
+    'ArticulatCF', 'GeogrotesqueCondBoldWeb', 'Arial Black', 'Impact', sans-serif
+  {% endif %}
+  ;
+  --fontfamily-mobile: 
+  {% if section.settings.fontfamily_mobile == 'RingsideWideWeb' %}
+    'RingsideWideWeb', 'Helvetica', 'Arial', sans-serif
+  {% elsif section.settings.fontfamily_mobile == 'GeogrotesqueCondBoldWeb' %}
+    'GeogrotesqueCondBoldWeb', 'Arial Black', 'Impact', sans-serif
+  {% elsif section.settings.fontfamily_mobile == 'BaseMonoWideWeb' %}
+    'BaseMonoWideWeb', 'Courier', 'Courier New', sans-serif
+  {% elsif section.settings.fontfamily_mobile == 'Canela' %}
+    'Canela', serif
+  {% elsif section.settings.fontfamily_mobile == 'FontSpringArticulateDemibold' %}
+    'FontSpringArticulateDemibold', sans-serif
+  {% elsif section.settings.fontfamily_mobile == 'ArticulatCF' %}
+    'ArticulatCF', 'GeogrotesqueCondBoldWeb', 'Arial Black', 'Impact', sans-serif
+  {% endif %}
+  ;
+  --font-weight: {{ section.settings.font_weight }};
+  --font-weight-mobile: {{ section.settings.font_weight_mobile }};
+  --letter-spacing: {{ section.settings.letter_spacing }};
+  --letter-spacing-mobile: {{ section.settings.letter_spacing_mobile }};
+  --desktop-fontsize: {{ section.settings.desktop_fontsize }}px;
+  --mobile-fontsize: {{ section.settings.mobile_fontsize }}px;
+  ">
+  {{ 'section-cards-carousel.css' | asset_url | stylesheet_tag }}
+  {% render 'component-section-header', 
+    heading: section.settings.heading,
+    cta_text: section.settings.cta_text,
+    cta_link: section.settings.cta_link
+  %}
+  <div class="cards-carousel__carousel swiper js-cardsCarousel">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+        <div class="cards-carousel__card swiper-slide js-cardsCarouselSlide">
+          <div class="cards-carousel__card-image">
+            <div>
+              <picture>
+                {% unless template contains 'index' %}
+                <source 
+                  srcset="{{ block.settings.image | img_url: 'x1000' }} 2x"
+                  media="(min-width: 1024px)"
+                >
+                {% endunless %}
+                <img 
+                  src="{{ block.settings.image | img_url: 'x800' }}"
+                  alt="{{ block.settings.image.alt }}"
+                  loading="lazy"
+                >
+              </picture>
+            </div>
+          </div>
+          <div class="cards-carousel__card-content" style="color: {{ section.settings.text_color }};">
+            {% if block.settings.heading != blank %}
+              <h3 class="cards-carousel__card-heading">
+                {{ block.settings.heading }}
+              </h3>
+            {% endif %}
+            {% if block.settings.cta_text != blank %}
+              {% if section.settings.entire_card_clickable == true %}
+                <a href="{{ block.settings.cta_link }}" class="cards-carousel__card-button-link"></a>
+              {% endif %}
+              <a 
+                class="cards-carousel__card-button button button--customizer" 
+                href="{{ block.settings.cta_link }}"
+                style="
+                  --color: {{ section.settings.button_color }};
+                  --background: {{ section.settings.button_bg }};
+                "
+              >
+                {{ block.settings.cta_text }}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</cards-carousel>
+
+{% schema %}
+  {
+    "name": "Cards Carousel",
+    "class": "cards-carousel__section",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "header",
+        "content": "Settings"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Card Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "button_color",
+        "label": "Card Button Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "button_bg",
+        "label": "Card Button Background Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "checkbox",
+        "id": "entire_card_clickable",
+        "label": "Entire Card Clickable",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Bestsellers"
+      },
+      {
+        "type": "color",
+        "label": "Color",
+        "id": "color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "label": "Color (Mobile)",
+        "id": "color_mobile",
+        "default": "#000000"
+      },
+      {
+        "type": "select",
+        "id": "fontfamily",
+        "label": "Font Family",
+        "options": [
+          {
+            "value": "RingsideWideWeb",
+            "label": "RingsideWideWeb"
+          },
+          {
+            "value": "GeogrotesqueCondBoldWeb",
+            "label": "GeogrotesqueCondBoldWeb"
+          },
+          {
+            "value": "BaseMonoWideWeb",
+            "label": "BaseMonoWideWeb"
+          },
+          {
+            "value": "Canela",
+            "label": "Canela"
+          },
+          {
+            "value": "FontSpringArticulateDemibold",
+            "label": "FontSpringArticulateDemibold"
+          },
+          {
+            "value": "ArticulatCF",
+            "label": "ArticulatCF"
+          }
+        ],
+        "default": "FontSpringArticulateDemibold"
+      },
+      {
+        "type": "select",
+        "id": "fontfamily_mobile",
+        "label": "Font Family (Mobile)",
+        "options": [
+          {
+            "value": "RingsideWideWeb",
+            "label": "RingsideWideWeb"
+          },
+          {
+            "value": "GeogrotesqueCondBoldWeb",
+            "label": "GeogrotesqueCondBoldWeb"
+          },
+          {
+            "value": "BaseMonoWideWeb",
+            "label": "BaseMonoWideWeb"
+          },
+          {
+            "value": "Canela",
+            "label": "Canela"
+          },
+          {
+            "value": "FontSpringArticulateDemibold",
+            "label": "FontSpringArticulateDemibold"
+          },
+          {
+            "value": "ArticulatCF",
+            "label": "ArticulatCF"
+          }
+        ],
+        "default": "FontSpringArticulateDemibold"
+      },
+      {
+        "type": "range",
+        "id": "font_weight",
+        "label": "Font Weight",
+        "min": 100,
+        "max": 900,
+        "default": 700,
+        "step": 100
+      },
+      {
+        "type": "range",
+        "id": "font_weight_mobile",
+        "label": "Font Weight (Mobile)",
+        "min": 100,
+        "max": 900,
+        "default": 700,
+        "step": 100
+      },
+      {
+        "type": "text",
+        "id": "letter_spacing",
+        "label": "Letter Spacing",
+        "default": "0.3px"
+      },
+      {
+        "type": "text",
+        "id": "letter_spacing_mobile",
+        "label": "Letter Spacing (Mobile)",
+        "default": "0.3px"
+      },
+      {
+        "type": "range",
+        "id": "desktop_fontsize",
+        "label": "Font Size",
+        "min": 1,
+        "max": 100,
+        "default": 16,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "mobile_fontsize",
+        "label": "Font Size (Mobile)",
+        "min": 1,
+        "max": 100,
+        "default": 13,
+        "unit": "px"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "url",
+        "id": "cta_link",
+        "label": "CTA Link"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "card",
+        "name": "Card",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Content"
+          },
+          {
+            "type": "text",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "text",
+            "id": "cta_text",
+            "label": "CTA Text"
+          },
+          {
+            "type": "url",
+            "id": "cta_link",
+            "label": "CTA Link"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+        ]
+      }
+    ],
+    "presets": [{ "name": "Cards Carousel" }]
+  }
+{% endschema %}

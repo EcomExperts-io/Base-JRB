@@ -1,0 +1,36 @@
+{% comment %} 
+  Props
+    image: Image Object (required),
+    width: Number (required) – the largest possible width needed,
+    widths: String (required) – each size to request from the servers, no units, separated by a comma,
+    sizes: String (required) – the width to display the image to the user, with media queries,
+    is_eager: Boolean – use when image is above the fold,
+    class: String
+{% endcomment %}
+
+{% comment %}
+  Fullbleed example
+    width: 3840,
+    widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
+    sizes: '100vw',
+    is_eager: true
+}}
+{% endcomment %}
+
+{% comment %} 
+  Fixed width (300px) example
+    width: 600,
+    widths: '300, 600',
+    sizes: '(min-width: 400px) 300px, 78.75vw'
+{% endcomment %}
+
+{%- assign eager_load_images = false -%}
+{%- if section.index == 1 and is_eager != false -%}
+  {%- assign eager_load_images = true -%}
+{%- endif -%}
+
+{%- if is_eager == true or eager_load_images == true -%}
+  {{ image | image_url: width: width | image_tag: widths: widths, sizes: sizes, class: class, preload: true, fetchpriority: 'high', loading: 'eager' }}
+{%- else -%}
+  {{ image | image_url: width: width | image_tag: widths: widths, sizes: sizes, class: class, loading: 'lazy' }}
+{%- endif -%}

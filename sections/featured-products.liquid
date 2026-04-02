@@ -1,8 +1,28 @@
 {% comment %} /sections/featured-products.liquid {% endcomment %}
 
 {{ 'section-featured-products.css' | asset_url | stylesheet_tag }}
+{% if section.settings.enable_slider == true %}
 <script src="{{ 'section-featured-products.js' | asset_url }}" type="module"></script>
-
+{% endif %}
+{% if section.settings.enable_slider == false %}
+  <style>
+    .no-f-slider .featured-products__swiper-arrows {
+      display: none;
+    }
+    .no-f-slider .swiper-wrapper{
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .no-f-slider .featured-products__card.swiper-slide {
+        flex: unset;
+        width: calc(25% - 9px);
+        height: fit-content;
+    }
+    .no-f-slider .product-card {
+      width: 100%;
+    }
+  </style>
+{% endif %}
 {%- liquid
   assign heading = section.settings.heading
   assign subheading = section.settings.subheading
@@ -27,7 +47,7 @@
 </style>
 
 {%- if products_to_show > 0 -%}
-  <div class="color-{{ section.settings.color_scheme }} featured-products-section">
+  <div class="color-{{ section.settings.color_scheme }} featured-products-section {% if section.settings.enable_slider == false %}no-f-slider{% endif %}">
     <featured-products data-section-id="{{ section.id }}" style="position: relative;">
       <div class="page-width featured-products-content">
         <div class="featured-products__header">
@@ -67,7 +87,24 @@
                   <a href="{{ product.url | default: '#' }}" class="product-card__link">
                     <div class="product-card__image-wrapper">
                       {%- if product.featured_media -%}
-                        {%- assign image = product.featured_media.preview_image -%}
+
+                        {%- if block.settings.image != blank -%}
+                          {%- assign card_image_override = block.settings.image -%}
+                        {%- else -%}
+                          {%- assign card_image_override = product.featured_image -%}
+                        {%- endif -%}
+
+                        {%- if card_image_override -%}
+                          {%- assign image = card_image_override -%}
+                        {%- else -%}
+                          {%- assign card_image = product.metafields.product_card.image -%}
+                          {%- if card_image == blank -%}
+                            {%- assign image = product.featured_media.preview_image -%}
+                          {% else %}
+                            {%- assign image = card_image -%}
+                          {%- endif -%}
+                        {%- endif -%}
+                        
                         <img
                           srcset="
                             {%- if image.width >= 350 -%}{{ image | image_url: width: 350 }} 350w,{%- endif -%}
@@ -85,6 +122,32 @@
                           height="317"
                           class="product-card__image"
                         >
+                      
+                        {% if product.metafields.custom.collection_card_hover != blank %}
+                          {%- assign hoverimage = product.metafields.custom.collection_card_hover.value | first -%}
+                        {% elsif product.metafields.product_card.hover_image != blank %}
+                          {%- assign hoverimage = product.metafields.product_card.hover_image -%}
+                        {% else %}
+                          {%- assign hoverimage = product.images[1] -%}
+                        {% endif %}
+
+                        <img
+                          srcset="
+                            {%- if hoverimage.width >= 350 -%}{{ hoverimage | image_url: width: 350 }} 350w,{%- endif -%}
+                            {%- if hoverimage.width >= 550 -%}{{ hoverimage | image_url: width: 550 }} 550w,{%- endif -%}
+                            {%- if hoverimage.width >= 750 -%}{{ hoverimage | image_url: width: 750 }} 750w,{%- endif -%}
+                            {%- if hoverimage.width >= 1100 -%}{{ hoverimage | image_url: width: 1100 }} 1100w,{%- endif -%}
+                            {%- if hoverimage.width >= 1500 -%}{{ hoverimage | image_url: width: 1500 }} 1500w,{%- endif -%}
+                            {{ hoverimage | image_url }} {{ hoverimage.width }}w
+                          "
+                          src="{{ hoverimage | image_url: width: 750 }}"
+                          sizes="(min-width: 990px) calc(var(--page-width) / 4 - 2rem * 3 / 4), (min-width: 750px) calc(100vw / 2 - 2rem / 2 - 4rem), calc(100vw / 2 - 1rem / 2 - 2rem)"
+                          alt="{{ hoverimage.alt | escape }}"
+                          loading="lazy"
+                          width="264"
+                          height="317"
+                          class="product-card__image hoverimg"
+                        >
                       {%- else -%}
                         {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg product-card__image' }}
                       {%- endif -%}
@@ -93,34 +156,197 @@
                       {%- if product.compare_at_price > product.price -%}
                         <span class="product-card__badge">Save {{ saved_amount }}</span>
                       {%- endif -%}
+
+                      {%- assign hasFlag = false -%}
+                      {%- assign hasSaleFlag = false -%}
+                      {%- assign flags = '' -%}
+                      {%- for tag in product.tags -%}
+                        {%- if tag contains 'flag_' -%}
+                          {%- assign hasFlag = true -%}
+                          {%- assign flag_text = tag | split: "flag_" | last -%}
+                          {%- if flags == '' -%}
+                            {%- assign flags = flag_text -%}
+                          {%- else -%}
+                            {%- assign flags = flags | append: '||' | append: flag_text -%}
+                          {%- endif -%}
+                        {%- endif -%}
+                      {%- endfor -%}
+                      
+                      {%- assign flag_array = flags | split: '||' -%}
+                      {%- assign holiday_tags = settings.tag_list | split: ',' -%}
+                      {%- assign outline_tags = settings.outline_tag_list | split: ',' -%}
+
+                      <div class="product__card-flag-container">
+
+                      {% if hasFlag %}
+                        {% for flag in flag_array %}
+                          {% assign is_holiday_tag = false %}
+                          {% assign is_outline_tag = false %}
+                          {% for outline_tag in outline_tags %}
+                            {% assign trimmed_outline_tag = outline_tag | strip %}
+                            {% if flag == trimmed_outline_tag %}
+                              {% assign is_outline_tag = true %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                          {% for holiday_tag in holiday_tags %}
+                            {% assign trimmed_holiday_tag = holiday_tag | strip %}
+                            {% if flag == trimmed_holiday_tag %}
+                              {% assign is_holiday_tag = true %}
+                              {% break %}
+                            {% endif %}
+                          {% endfor %}
+                          <div class="product__card-flag {% if is_holiday_tag %}product__card-flag--holiday{% endif %} {% if is_outline_tag %}product__card-flag--outline{% endif %}" style="--tag-color: {{ settings.tag_color | default: '#f50a99' }}; --holiday-tag-bg-color: {{ settings.tag_bg_color | default: '#f50a99' }}; --holiday-tag-text-color: {{ settings.tag_bg_text_color | default: '#fff' }}; --outline-tag-color: {{ settings.outline_tag_color | default: '#f50a99' }};"> 
+                            {{ flag }}
+                          </div>
+                        {% endfor %}
+                      {% endif %}
+
+                    </div>
+
+                    {%- render 'product-awards', context: 'card', product: product -%}
+
                     </div>
 
                     <div class="product-card__info product-card__info--{{ product_content_alignment }}">
                       {% comment %} Placeholder for reviews/ratings {% endcomment %}
-                      <div class="product-card__reviews product-card__reviews--{{ review_content_alignment }}">
-                        <span class="visually-hidden">Rating:</span>
-                        <span class="product-card__stars">★★★★☆</span>
-                        <a href="#reviews" class="product-card__review-link">
-                          <span class="product-card__review-count">10 Reviews</span>
-                        </a>
-                      </div>
                       <h3 class="product-card__title">
                         {{ product.title | default: 'Product Title' }}
                       </h3>
-                      <div class="product-card__price">
-                        {%- if product.price -%}
-                          {%- if product.compare_at_price > product.price -%}
-                            <s class="price__compare-at">{{ product.compare_at_price | money }}</s>
-                          {%- endif -%}
-                          <span class="price__regular {% if product.compare_at_price > product.price %}price--on-sale{% endif %}">
-                            {{ product.price | money }}
-                          </span>
-                        {% else %}
-                          <span class="price__regular">
-                            {{ 20000 | money }}
-                          </span>
-                        {% endif %}
+
+
+                      <div class="product__card_stars-button-container">
+                        <div class="product__card-stars">
+                          <span class="junip-product-summary" data-product-id="{{product.id}}"></span>
+                        </div>
+                        {%- assign product_avaiable = product.available -%}
+                        {%- if product.template_suffix == 'bundle' -%}
+                          {%- assign bundle_products = product.metafields.bundle -%}
+                          {%- assign bundle_available = true -%}
+                          {%- assign bundle_discount = product.metafields.bundle_config.discount -%}
+                          {%- assign discount_code = bundle_discount | split: '[' | last | split: ']' | first -%}
+                          {%- assign discount_value = bundle_discount | split: '% ' | first -%}
+                          {%- assign bundle_price = 0 -%}
+                          {%- assign compare_at_price = 0 -%}
+                          {%- for field in bundle_products -%}
+                            {%- assign name = field | first -%}
+                            {%- assign bundle_product = bundle_products[name].value -%}
+                            {%- assign bundle_price = bundle_price | plus: bundle_product.price -%}
+                            {%- assign compare_at_price = compare_at_price | plus: bundle_product.price -%}
+                            {%- unless bundle_product.available -%}
+                              {%- assign bundle_available = false -%}
+                            {%- endunless -%}
+                          {%- endfor -%}
+                          {%- assign discount = discount_value | divided_by: 100.00 | times: bundle_price -%}
+                          {%- assign compare_at_price = compare_at_price -%}
+                          {%- assign bundle_price = bundle_price | minus: discount -%}
+                          {%- assign product_avaiable = bundle_available -%}
+                        {%- endif -%}
+                        {%- if product_avaiable -%}
+                          <button
+                            type="button"
+                            class="product__card-button {% if hide_button == true %} desktop-hidden {% endif %}"
+                          >
+                            <div class="product__card-button--text">
+                              {%- if product.template_suffix == 'bundle' or product.template_suffix == 'set-builder' -%}
+                                Customize
+                              {%- else -%}
+                                Shop Now
+                              {%- endif -%}
+                            </div>
+
+                            {% assign discount_metafield_exists = product.metafields.custom.discount_percentage %}
+                            <div class="product__card-button--price {% if discount_metafield_exists %}product__card-price--discount_metafield{% endif %}">
+                              {% unless discount_metafield_exists %}
+                                {%- if product.template_suffix == 'bundle' -%}
+                                  {% if compare_at_price > product.price %}
+                                    <span class="product__card-button--sale bundle">
+                                      {{ compare_at_price | money_without_trailing_zeros }}
+                                    </span>
+                                  {% endif %}
+                                  <span class="product__card-button--regular bundle">
+                                    {%- render 'component-card-price' with price: bundle_price -%}
+                                  </span>
+                                {%- else -%}
+                                  {% if product.compare_at_price != blank and product.compare_at_price != product.price %}
+                                    <span class="product__card-button--sale">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+                                  {% endif %}
+
+                                  <span class="product__card-button--regular">
+                                    {%- render 'component-card-price' with price: product.price -%}
+                                  </span>
+                                {%- endif -%}
+                              {% else %}
+                                <span class="product__card-button--sale">{%- render 'component-card-price' with price: product.price -%}</span>
+                                {% assign discount_percentage_value = product.metafields.custom.discount_percentage
+                                  | times: product.price
+                                  | divided_by: 100
+                                %}
+                                {% assign discount_percentage_value = product.price | minus: discount_percentage_value %}
+                                <span class="product__card-button--regular">{{ discount_percentage_value | money_without_trailing_zeros }}</span>
+                              {% endunless %}
+                            </div>
+                          </button>
+
+                        {%- else -%}
+                          <button
+                            type="button"
+                            class="product__card-button {% if hide_button == true %} desktop-hidden {% endif %} button--gray {% if notify_me == true %} js-waitlist {% endif %}"
+                            data-id="{{ product.selected_or_first_available_variant.id }}"
+                            data-product-id="{{ product.id }}"
+                          >
+                            {% if notify_me == true %}
+                              <div class="product__card-button--text">Notify Me</div>
+                            {% else %}
+                              <div class="product__card-button--text">
+                                {% if product.metafields.custom.sold_out_text != blank %}
+                                  {{ product.metafields.custom.sold_out_text }}
+                                {% else %}
+                                Sold Out
+                                {% endif %}
+                              </div>
+                            {% endif %}
+
+                            <div class="product__card-button--price {{ product.template_suffix }}">
+                              {%- if product.template_suffix == 'bundle' -%}
+                                {%- assign bundle_products = product.metafields.bundle -%}
+                                {%- assign bundle_discount = product.metafields.bundle_config.discount -%}
+                                {%- assign discount_code = bundle_discount | split: '[' | last | split: ']' | first -%}
+                                {%- assign discount_value = bundle_discount | split: '% ' | first -%}
+                                {%- assign bundle_price = 0 -%}
+                                {%- assign compare_at_price = 0 -%}
+                                {%- for field in bundle_products -%}
+                                  {%- assign name = field | first -%}
+                                  {%- assign bundle_product = bundle_products[name].value -%}
+                                  {%- assign bundle_price = bundle_price | plus: bundle_product.price -%}
+                                  {%- assign compare_at_price = compare_at_price | plus: bundle_product.price -%}
+                                {%- endfor -%}
+                                {%- assign discount = discount_value | divided_by: 100.00 | times: bundle_price -%}
+                                {%- assign compare_at_price = compare_at_price -%}
+                                {%- assign bundle_price = bundle_price | minus: discount -%}
+                                {% if compare_at_price > product.price %}
+                                  <span class="product__card-button--sale bundle">
+                                    {{ compare_at_price | money_without_trailing_zeros }}
+                                  </span>
+                                {% endif %}
+                                <span class="product__card-button--regular bundle">
+                                  {{ bundle_price | money_without_trailing_zeros }}
+                                </span>
+                              {%- else -%}
+                                {% if product.compare_at_price != blank and product.compare_at_price != product.price %}
+                                  <span class="product__card-button--sale">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+                                {% endif %}
+
+                                <span class="product__card-button--regular">
+                                  {{ product.price | money_without_trailing_zeros }}
+                                </span>
+                              {%- endif -%}
+                            </div>
+                          </button>
+                        {%- endif -%}
                       </div>
+
+
                     </div>
                   </a>
                 </div>
@@ -147,6 +373,12 @@
   "tag": "section",
   "class": "featured-products",
   "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_slider",
+      "label": "Enable slider",
+      "default": false
+    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
@@ -264,6 +496,12 @@
           "type": "product",
           "id": "product",
           "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Optional. Will display instead of the product's featured image."
         }
       ]
     }

@@ -1,0 +1,72 @@
+{% liquid
+    assign compliance_products = product.metafields.custom.compliance_products.value
+    assign usa_product = compliance_products.usa_product.value
+    assign cad_product = compliance_products.canada_product.value
+    assign eu_uk_product = compliance_products.eu_uk_product.value
+  
+    # Directly accessing shop'Compliance Products' meta-object
+    assign shop_compliance_products = shop.metaobjects.compliance_products.values
+  %}
+  
+  <script type="text/javascript">
+    // Set Shop Compliance Products to window object
+    const isoCode = "{{ localization.country.currency.iso_code }}";
+    let shopComplianceProducts = {{ shop_compliance_products | json }};
+    shopComplianceProducts = shopComplianceProducts.map(product => ({
+      isoCode,
+      product_title: product.product_title,
+      usa_product: parseInt(product.usa_product.split("/").pop(), 10),
+      cad_product: parseInt(product.canada_product.split("/").pop(), 10),
+      eu_uk_product: parseInt(product.eu_uk_product.split("/").pop(), 10)
+    }));
+  
+    window.shopComplianceProducts = shopComplianceProducts;
+  
+    const usaProductURL = "{{ usa_product.url }}"; 
+    const cadProductURL = "{{ cad_product.url }}"; 
+    const gbpProductURL = "{{ eu_uk_product.url }}"; 
+    const eurProductURL = "{{ eu_uk_product.url }}";
+  
+    const usaProductHandle = usaProductURL.split("/")[2];
+    const cadProductHandle = cadProductURL.split("/")[2];
+    const gbpProductHandle = gbpProductURL.split("/")[2];
+    const eurProductHandle = eurProductURL.split("/")[2];
+  
+    // Map of countries to product URLs
+    let countryProductMap = {
+      "USD": usaProductURL,
+      "CAD": cadProductURL,
+      "GBP": gbpProductURL,
+      "EUR": eurProductURL,
+      "BGN": gbpProductURL,
+      "CZK": gbpProductURL,
+      "DKK": gbpProductURL,
+      "HUF": gbpProductURL,
+      "PLN": gbpProductURL,
+      "RON": gbpProductURL,
+      "SEK": gbpProductURL
+    };
+  
+    // Shopify's built-in Liquid variable for country localization
+    let shopifyCountry = "{{ localization.country.currency.iso_code }}";
+  
+    // List of valid product handles
+    let validHandles = {
+      [usaProductHandle]: usaProductURL,
+      [cadProductHandle]: cadProductURL,
+      [gbpProductHandle]: gbpProductURL,
+      [eurProductHandle]: eurProductURL
+    };
+  
+    // Get the current product page handle and path
+    let currentHandle = "{{ product.handle }}";
+    let currentPath = window.location.pathname;
+  
+    // Run redirection only on specific product pages
+    if (validHandles[currentHandle]) {
+        // Redirect if the current path doesn't match the target path for the country
+        if (countryProductMap[shopifyCountry] && currentPath !== countryProductMap[shopifyCountry]) {
+          window.location.href = countryProductMap[shopifyCountry];
+        }
+    }
+  </script>

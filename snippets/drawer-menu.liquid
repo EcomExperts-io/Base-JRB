@@ -1,0 +1,519 @@
+<style>
+.header-nav-mobile {
+    padding: 16px 20px 30px;
+    box-sizing: border-box;
+}
+.header-nav-mobile-heading {
+    font-family: GeogrotesqueCondBoldWeb, Arial Black, Impact, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    color: #000;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+.js-headerSubNavMobile {
+    font-family: ArticulatCF, GeogrotesqueCondBoldWeb, Arial Black, Impact, sans-serifsans-serif;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #000;
+    font-size: 16px;
+    letter-spacing: .3px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+    gap: 12px !important;
+}
+span.header-nav-mobile-list-image {
+    width: 60px;
+    height: 60px;
+}
+span.header-nav-mobile-list-image img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.header-nav-mobile>ul>li:not(:first-child){
+    margin-top: 8px;
+}
+.header-nav-mobile-list a.js-headerSubNavMobile{
+    padding: 0px !important;
+    border: 0px !important;
+}
+span.header-nav-mobile-list-icon {
+    margin-left: auto;
+}
+.drawer-top {
+    {% comment %} height: 100dvh !important; {% endcomment %}
+    overflow: auto;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 70px;
+}
+li.header-nav-mobile-list.header-nav-mobile-list--no-megamenu a {
+    padding: 0 !important;
+    border: 0px !important;
+    font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+    font-weight: 325;
+    font-size: 14px !important;
+    line-height: 16px !important;
+    letter-spacing: .4px;
+    text-transform: capitalize;
+    color: #000 !important;
+}
+li.header-nav-mobile-list.header-nav-mobile-list--no-megamenu{
+    margin-top: 20px !important;
+}
+li.header-nav-mobile-list.header-nav-mobile-list--no-megamenu a.shop-all-list {
+    text-decoration: underline !important;
+    text-underline-offset: 1px !important;
+}
+.header-nav-mobile {
+    padding-bottom: 20px;
+}
+.header-nav-mobile-secondary {
+    padding-top: 16px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    position: relative;
+}
+.header-nav-mobile-secondary .header-nav-mobile-list--secondary a {
+    padding: 0 !important;
+    border: 0px !important;
+    font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+    font-weight: 325;
+    font-size: 14px !important;
+    line-height: 16px !important;
+    letter-spacing: .4px;
+    text-transform: capitalize;
+    color: #000 !important;
+}
+.header-nav-mobile-secondary li.header-nav-mobile-list--secondary:not(:first-child) {
+    margin-top: 20px;
+}
+.header-nav-mobile-secondary:before {
+    content: '';
+    background: #E8E8E8;
+    height: 1px;
+    width: calc(100% - 40px);
+    top: 0;
+    position: absolute;
+    left: 20px;
+}
+
+
+.header-megamenu-menu-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    bottom: 0;
+    transform: translate(100%);
+    transition: transform .3s;
+    visibility: visible;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    scroll-behavior: smooth;
+    will-change: scroll-position;
+    z-index: 2;
+    background: white;
+    max-width: 100%;
+}
+.header-megamenu-menu-mobile {
+  height: calc(100dvh - var(--header-height) - var(--announcement-bar-height, 0px) - 70px);
+}
+.header-sticky .header-megamenu-menu-mobile {
+  height: calc(100dvh - var(--header-height) - 70px);
+}
+.js-headerSubNavMobile.active ~ .header-megamenu-menu-mobile{
+    transform: translate(0);
+}
+
+.header-megamenu-menu-mobile-back-heading.js-headerSubNavMobileBacktrigger {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+    padding: 32px 20px 20px;
+}
+.header-megamenu-menu-mobile-back-heading.js-headerSubNavMobileBacktrigger span{
+  font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+  color: #000;
+  font-size: 16px;
+  font-weight: 325;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0px;
+  line-height: 19px;
+  text-transform: capitalize;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #E7E7E7;
+}
+div#menu-drawer {
+    overflow-x: hidden;
+}
+.header-megamenu-menu-mobile-content {
+    padding: 20px;
+}
+#header-drawer .header-megamenu-menu-mobile-content-heading a{
+    font-family: GeogrotesqueCondBoldWeb, Arial Black, Impact, sans-serif;
+    font-size: 20px !important;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1;
+    color: #000;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+    padding: 0 !important;
+    border: 0px;
+}
+
+/* Megamenu mobile product carousel: show arrows only when there is content to scroll to */
+.header-megamenu-menu-mobile-image-block .swiper-button-prev.swiper-button-disabled,
+.header-megamenu-menu-mobile-image-block .swiper-button-next.swiper-button-disabled {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-next::after {
+    display: none;
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-prev::after {
+    display: none;
+}
+#header-drawer .header-megamenu-menu-inner-mobile a{
+  padding: 0px !important;
+  border: 0px;
+}
+.header-megamenu-menu-nav-blocks-item-image {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+.header-megamenu-menu-nav-blocks-item-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.header-megamenu-menu-mobile-image-block-item a {
+    display: block !important;
+}
+.header-megamenu-menu-nav-blocks-item-content {
+    margin-top: 10px;
+}
+.header-megamenu-menu-nav-blocks-item-content-title {
+    font-size: 13px;
+    text-align: center;
+    white-space: initial;
+    line-height: 1.2;
+    font-family: articulat-cf;
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .1px;
+}
+.header-megamenu-menu-nav-blocks-item-content-tag {
+    line-height: 16px;
+    font-size: 13px;
+    font-weight: 550;
+    letter-spacing: .4px;
+    color: #ff2e92;
+    font-family: BaseMonoWideWeb, Courier, Courier New, sans-serif;
+    text-transform: uppercase;
+    margin: 0;
+    position: absolute;
+    top: 12px;
+    right: 5px;
+}
+.header-megamenu-menu-nav-blocks-item-content-review {
+    display: flex;
+    margin-top: 6px;
+    justify-content: center;
+}
+.header-megamenu-menu-nav-blocks-item-content-review .junip-product-summary-review-count{
+  display: none;
+}
+#header-drawer .junip-product-summary-star {
+    padding: 0 !important;
+    width: 14px !important;
+    height: 13px !important;
+}
+#header-drawer .junip-product-summary-star svg {
+    display: none;
+}
+#header-drawer .junip-star-filled{
+  background-size: cover;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="20" viewBox="0 0 90 20" fill="none"><path d="M9 13.814L5 17.5L5.38983 12.0725L0 11.244L4.49153 8.18357L1.77966 3.46618L7 5.05556L9 0L11 5.05556L16.2203 3.46618L13.5085 8.18357L18 11.244L12.6102 12.0725L13 17.5L9 13.814Z" fill="black"/></svg>');
+}
+#header-drawer .junip-star-outline{
+  background-size: cover;
+  background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="90" height="20" viewBox="0 0 90 20" fill="none"><path d="M9 13.814L5 17.5L5.38983 12.0725L0 11.244L4.49153 8.18357L1.77966 3.46618L7 5.05556L9 0L11 5.05556L16.2203 3.46618L13.5085 8.18357L18 11.244L12.6102 12.0725L13 17.5L9 13.814Z" stroke="black" fill="none"/></svg>');
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-next {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 10;
+    cursor: pointer;
+}
+.header-megamenu-menu-mobile-content-grid-block {
+    position: relative;
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-next {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 10;
+    cursor: pointer;
+    will-change: transform;
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-prev {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    z-index: 10;
+    cursor: pointer;
+    will-change: transform;
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-prev svg,
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-next svg{
+  width: 20px;
+  height: 20px;
+}
+.js-headerMegamenuMobileImageBlockCarousel .swiper-button-prev svg{
+  transform: rotate(180deg);
+}
+.header-megamenu-menu-mobile-content-nav-list {
+    padding-top: 35px;
+}
+.header-megamenu-menu-mobile-image-block-item .junip-product-summary-stars-wrapper {
+    height: 13px;
+    line-height: 13px;
+}
+.header-megamenu-menu-mobile-content-nav-list ul li:not(:first-child) {
+    margin-top: 20px;
+}
+#menu-drawer .header-megamenu-menu-mobile-content-nav-list ul li a{
+  color: #000 !important;
+  font-size: 14px !important;
+  font-family: RingsideWideWeb, Helvetica, Arial, sans-serif;
+  letter-spacing: .1px;
+  line-height: 17px;
+  font-weight: 325;
+  display: block;
+  text-transform: capitalize;
+}
+#menu-drawer .header-megamenu-menu-mobile-content-nav-list ul li.shop-all-list{
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding-bottom: 2px !important;
+}
+.drawer-top a img{
+  transition: opacity .15s ease;
+}
+.drawer-top a.tapped img, .drawer-top a:active img {
+    opacity: .6;
+}
+@media screen and (max-width: 1023px) {
+  .header-nav-mobile a{
+    font-size: 16px !important;
+    color: black !important;
+  }
+}
+#menu-drawer{
+  width: 100%;
+}
+.megamenu-nav-item-list-item span.junip-product-summary.junip-product-summary-rendered {
+    height: 13px;
+}
+.menu-drawer_navigation{
+  display: none;
+}
+</style>
+{%- assign mobile_nav_control = linklists[section.settings.mblnav] -%}
+<div class="header-nav-mobile">
+  <div class="header-nav-mobile-heading">{{ section.settings.mblnavhdng }}</div>
+  <ul>
+    {%- for link in mobile_nav_control.links -%}
+      {% if link.links.size > 0 %}
+        {% for subLink in link.links %}
+          <li class="header-nav-mobile-list header-nav-mobile-list--no-megamenu">
+            <a
+              class="{% if subLink.url contains 'shop-all' %}shop-all-list{% endif %}"
+              href="{{ subLink.url }}"
+              {% if subLink.url contains 'http' %}
+                target="_blank" rel="noreferrer noopener"
+              {% endif %}
+            >
+              {{ subLink.title }}
+            </a>
+          </li>
+        {% endfor %}
+      {% else %}
+        {% assign collection_handle = link.title | handleize %}
+        {% assign item_collection = collections[collection_handle] %}
+        <li class="header-nav-mobile-list">
+          <a
+            href="javascript:void(0);"
+            class="js-headerSubNavMobile"
+            {% if link.url contains 'http' %}
+              target="_blank" rel="noreferrer noopener"
+            {% endif %}
+          >
+            {% if item_collection.metafields.custom.navigation_image != blank %}
+              <span class="header-nav-mobile-list-image">
+                <img
+                  src="{{ item_collection.metafields.custom.navigation_image | image_url: width: auto }}"
+                  alt="{{ link.title }}"
+                  width=""
+                  height=""
+                >
+              </span>
+            {% endif %}
+            {{ link.title }}
+            <span class="header-nav-mobile-list-icon">
+              <svg width="7" height="12" viewBox="0 0 7 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 11L6 6L1 1" stroke="black" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+            </span>
+          </a>
+          {% render 'header-megamenu-mobile', links: link.links, link: link %}
+        </li>
+      {% endif %}
+    {%- endfor -%}
+  </ul>
+</div>
+
+{%- assign mobile_nav_secondary_control = linklists[section.settings.mblnavscndry] -%}
+<div class="header-nav-mobile-secondary">
+  <div class="header-nav-mobile-heading">{{ section.settings.mblnavhdngscndry }}</div>
+  <ul>
+    {%- for link in mobile_nav_secondary_control.links -%}
+      <li class="header-nav-mobile-list--secondary">
+        <a
+          href="{{ link.url }}"
+          {% if link.url contains 'http' %}
+            target="_blank" rel="noreferrer noopener"
+          {% endif %}
+        >
+          {{ link.title }}
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+<script>
+  function closeAllSubmenus() {
+    document.querySelectorAll('.js-headerSubNavMobile.active').forEach(i => i.classList.remove('active'));
+  }
+
+  document.addEventListener('header-drawer-close', closeAllSubmenus);
+
+  document.querySelectorAll('.js-headerSubNavMobile').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.js-headerSubNavMobile.active').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+
+      // Update Swiper and reset to first slide when megamenu panel becomes visible
+      const panel = el.nextElementSibling;
+      if (panel) {
+        const carousel = panel.querySelector('.js-headerMegamenuMobileImageBlockCarousel');
+        if (carousel && carousel.swiper) {
+          carousel.swiper.update();
+          carousel.swiper.slideTo(0, 0);
+        }
+      }
+    });
+  });
+  document.querySelectorAll('.js-headerSubNavMobileBacktrigger').forEach(el => {
+    el.addEventListener('click', closeAllSubmenus);
+  });
+
+  function initMegamenuMobileCarousels() {
+    if (typeof window.Swiper === 'undefined') return;
+    document.querySelectorAll('.js-headerMegamenuMobileImageBlockCarousel').forEach(container => {
+      if (container.swiper || !container.querySelector('.swiper-slide')) return;
+      const prevBtn = container.querySelector('.swiper-button-prev');
+      const nextBtn = container.querySelector('.swiper-button-next');
+      if (!prevBtn || !nextBtn) return;
+      container.swiper = new window.Swiper(container, {
+        loop: false,
+        spaceBetween: 16,
+        slidesPerView: 2.22,
+        allowTouchMove: true,
+        navigation: { prevEl: prevBtn, nextEl: nextBtn },
+        watchOverflow: true
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMegamenuMobileCarousels);
+  } else {
+    initMegamenuMobileCarousels();
+  }
+
+  var links = document.querySelectorAll('.drawer-top a');
+  
+  links.forEach((link) => {
+		const hasImage = link.querySelector('img');
+		if (hasImage) {
+			link.addEventListener('touchstart', function() {
+				this.classList.add('tapped');
+			});
+			
+			link.addEventListener('touchend', function() {
+				setTimeout(() => {
+					this.classList.remove('tapped');
+				}, 150);
+			});
+			
+			link.addEventListener('touchcancel', function() {
+				this.classList.remove('tapped');
+			});
+
+			link.addEventListener('mousedown', function() {
+				this.classList.add('tapped');
+			});
+			
+			link.addEventListener('mouseup', function() {
+				setTimeout(() => {
+					this.classList.remove('tapped');
+				}, 150);
+			});
+			
+			link.addEventListener('mouseleave', function() {
+				this.classList.remove('tapped');
+			});
+		}
+  });
+
+</script>

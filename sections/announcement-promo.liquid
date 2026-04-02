@@ -1,0 +1,1080 @@
+<style>
+    .header-promo.js__header-promo-wrapper {
+  min-height: 35px;
+  z-index: 11;
+  transition: height 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  width: 100%;
+  height: 100%;
+}
+.header-promo.js__header-promo-wrapper .header-promo-slide {
+  line-height: 21px;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: translateY(100%);
+  padding: 0;
+  transition: transform 900ms ease;
+  max-width: 90%;
+  left: 5%;
+}
+.header-promo.js__header-promo-wrapper .header-promo-slide.active {
+  animation: promo-opacity 800ms ease 0s 1 normal forwards;
+  animation-delay: 3.2s;
+  opacity: 1;
+  transform: translateY(0);
+}
+.header-promo {
+  background: inherit;
+  color: inherit;
+  font-family: "articulat-cf", sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+  z-index: 1;
+  font-weight: 400;
+}
+.header-promo .mobile_promo {
+  display: none;
+}
+@media screen and (max-width: 768px) {
+  .header-promo .mobile_promo {
+    display: block;
+  }
+  .header-promo .mobile_promo + .desktop_promo {
+    display: none;
+  }
+}
+.header-promo .header-promo-slide {
+  line-height: 21px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 7px;
+  letter-spacing: 0.4px;
+}
+@media screen and (max-width: 393px) {
+  .header-promo .header-promo-slide {
+    line-height: 120% !important;
+    padding-block: 9.4px;
+    letter-spacing: 0;
+  }
+}
+.header-promo .header-promo-slide em {
+  text-decoration: underline;
+}
+.header-promo .header-promo-slide strong {
+  font-weight: 700;
+}
+.header-promo .header-promo-slide a {
+  text-decoration: underline;
+  color: {{ section.settings.header_promo_color_usa }};
+  transition: 0.3s;
+}
+.header-promo .header-promo-slide a:hover {
+  color: var(--primary-color);
+}
+@media screen and (min-width: 1024px) {
+  .header-promo {
+    font-size: 15px;
+  }
+}
+.header-promo__inner:not(:empty) {
+  display: block;
+  padding: 7px 40px;
+}
+@keyframes promo-opacity {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+    .header-promo__arrow.header-promo__arrow--next {
+        opacity: 1;
+    }
+    .header-promo__arrow.header-promo__arrow--prev {
+        opacity: 1;
+    }
+</style>
+<div class="announcement-wrapper">
+    {%- assign currency_code = localization.country.currency.iso_code -%}
+  {%- case currency_code -%}
+    {%- when 'USD' -%}
+      {%- if section.settings.enable_header_promo_usa -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'CAD' -%}
+      {%- if section.settings.enable_header_promo_cad -%}
+        {% render 'header-promo', currency_code: currency_code, section: section %}
+      {%- endif -%}
+    {%- when 'GBP' -%}
+      {%- if section.settings.enable_header_promo_uk -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'EUR' -%}
+      {%- if section.settings.enable_header_promo_eur -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'BGN' -%}
+      {%- if section.settings.enable_header_promo_bul -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'CZK' -%}
+      {%- if section.settings.enable_header_promo_cr -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'DKK' -%}
+      {%- if section.settings.enable_header_promo_den -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'HUF' -%}
+      {%- if section.settings.enable_header_promo_hun -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'PLN' -%}
+      {%- if section.settings.enable_header_promo_pol -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'RON' -%}
+      {%- if section.settings.enable_header_promo_rom -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'SEK' -%}
+      {%- if section.settings.enable_header_promo_swe -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'AUD' -%}
+      {%- if section.settings.enable_header_promo_aud -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+    {%- when 'NZD' -%}
+      {%- if section.settings.enable_header_promo_nzd -%}
+        {%- render 'header-promo', currency_code: currency_code, section: section -%}
+      {%- endif -%}
+  {%- endcase -%}
+</div>
+
+<script>
+  const announcementBar = document.querySelector('.announcement-wrapper');
+  const announcementBarHeight = announcementBar.offsetHeight;
+  document.documentElement.style.setProperty('--announcement-bar-height', `${announcementBarHeight}px`);
+</script>
+
+{% schema %}
+{
+  "name": "Announcement Promo",
+  "enabled_on": {
+    "groups": ["header"]
+  },
+  "settings": [
+      {
+        "type": "header",
+        "content": "USA SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_usa",
+        "label": "Enable (USA)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_usa",
+        "label": "Background Color (USA)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_usa",
+        "label": "Text & Icon Color (USA)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_usa",
+        "label": "Delay (USA)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_usa_01",
+        "label": "Text 1 (USA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_usa_01_mobile",
+        "label": "Text 1 (USA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_usa_02",
+        "label": "Text 2 (USA) - Desktop",
+        "info": "Any italic text will become underlined in the header. (Use this field for free shipping promo text)"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_usa_02_mobile",
+        "label": "Text 2 (USA) - Mobile",
+        "info": "Any italic text will become underlined in the header. (Use this field for free shipping promo text)"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_usa_03",
+        "label": "Text 3 (USA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_usa_03_mobile",
+        "label": "Text 3 (USA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "CAD SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_cad",
+        "label": "Enable (CAD)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_cad",
+        "label": "Background Color (CAD)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_cad",
+        "label": "Text & Icon Color (CAD)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_cad",
+        "label": "Delay (CAD)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cad_01",
+        "label": "Text 1 (CAD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cad_01_mobile",
+        "label": "Text 1 (CAD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cad_02",
+        "label": "Text 2 (CAD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cad_02_mobile",
+        "label": "Text 2 (CAD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cad_03",
+        "label": "Text 3 (CAD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cad_03_mobile",
+        "label": "Text 3 (CAD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "UK SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_uk",
+        "label": "Enable (UK)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_uk",
+        "label": "Background Color (UK)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_uk",
+        "label": "Text & Icon Color (UK)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_uk",
+        "label": "Delay (UK)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_uk_01",
+        "label": "Text 1 (UK) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_uk_01_mobile",
+        "label": "Text 1 (UK) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_uk_02",
+        "label": "Text 2 (UK) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_uk_02_mobile",
+        "label": "Text 2 (UK) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_uk_03",
+        "label": "Text 3 (UK) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_uk_03_mobile",
+        "label": "Text 3 (UK) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "EUR SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_eur",
+        "label": "Enable (EUR)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_eur",
+        "label": "Background Color (EUR)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_eur",
+        "label": "Text & Icon Color (EUR)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_eur",
+        "label": "Delay (EUR)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_eur_01",
+        "label": "Text 1 (EUR) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_eur_01_mobile",
+        "label": "Text 1 (EUR) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_eur_02",
+        "label": "Text 2 (EUR) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_eur_02_mobile",
+        "label": "Text 2 (EUR) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_eur_03",
+        "label": "Text 3 (EUR) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_eur_03_mobile",
+        "label": "Text 3 (EUR) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "BULGARIA SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_bul",
+        "label": "Enable (BULGARIA)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_bul",
+        "label": "Background Color (BULGARIA)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_bul",
+        "label": "Text & Icon Color (BULGARIA)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_bul",
+        "label": "Delay (BULGARIA)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_bul_01",
+        "label": "Text 1 (BULGARIA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_bul_01_mobile",
+        "label": "Text 1 (BULGARIA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_bul_02",
+        "label": "Text 2 (BULGARIA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_bul_02_mobile",
+        "label": "Text 2 (BULGARIA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_bul_03",
+        "label": "Text 3 (BULGARIA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_bul_03_mobile",
+        "label": "Text 3 (BULGARIA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "CZECH REPUBLIC SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_cr",
+        "label": "Enable (CZECH REPUBLIC)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_cr",
+        "label": "Background Color (CZECH REPUBLIC)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_cr",
+        "label": "Text & Icon Color (CZECH REPUBLIC)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_cr",
+        "label": "Delay (CZECH REPUBLIC)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cr_01",
+        "label": "Text 1 (CZECH REPUBLIC) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cr_01_mobile",
+        "label": "Text 1 (CZECH REPUBLIC) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cr_02",
+        "label": "Text 2 (CZECH REPUBLIC) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cr_02_mobile",
+        "label": "Text 2 (CZECH REPUBLIC) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cr_03",
+        "label": "Text 3 (CZECH REPUBLIC) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_cr_03_mobile",
+        "label": "Text 3 (CZECH REPUBLIC) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "DENMARK SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_den",
+        "label": "Enable (DENMARK)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_den",
+        "label": "Background Color (DENMARK)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_den",
+        "label": "Text & Icon Color (DENMARK)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_den",
+        "label": "Delay (DENMARK)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_den_01",
+        "label": "Text 1 (DENMARK) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_den_01_mobile",
+        "label": "Text 1 (DENMARK) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_den_02",
+        "label": "Text 2 (DENMARK) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_den_02_mobile",
+        "label": "Text 2 (DENMARK) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_den_03",
+        "label": "Text 3 (DENMARK) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_den_03_mobile",
+        "label": "Text 3 (DENMARK) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "HUNGARY SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_hun",
+        "label": "Enable (HUNGARY)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_hun",
+        "label": "Background Color (HUNGARY)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_hun",
+        "label": "Text & Icon Color (HUNGARY)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_hun",
+        "label": "Delay (HUNGARY)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_hun_01",
+        "label": "Text 1 (HUNGARY) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_hun_01_mobile",
+        "label": "Text 1 (HUNGARY) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_hun_02",
+        "label": "Text 2 (HUNGARY) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_hun_02_mobile",
+        "label": "Text 2 (HUNGARY) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_hun_03",
+        "label": "Text 3 (HUNGARY) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_hun_03_mobile",
+        "label": "Text 3 (HUNGARY) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "POLAND SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_pol",
+        "label": "Enable (POLAND)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_pol",
+        "label": "Background Color (POLAND)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_pol",
+        "label": "Text & Icon Color (POLAND)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_pol",
+        "label": "Delay (POLAND)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_pol_01",
+        "label": "Text 1 (POLAND) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_pol_01_mobile",
+        "label": "Text 1 (POLAND) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_pol_02",
+        "label": "Text 2 (POLAND) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_pol_02_mobile",
+        "label": "Text 2 (POLAND) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_pol_03",
+        "label": "Text 3 (POLAND) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_pol_03_mobile",
+        "label": "Text 3 (POLAND) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "ROMANIA SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_rom",
+        "label": "Enable (ROMANIA)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_rom",
+        "label": "Background Color (ROMANIA)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_rom",
+        "label": "Text & Icon Color (ROMANIA)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_rom",
+        "label": "Delay (ROMANIA)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_rom_01",
+        "label": "Text 1 (ROMANIA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_rom_01_mobile",
+        "label": "Text 1 (ROMANIA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_rom_02",
+        "label": "Text 2 (ROMANIA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_rom_02_mobile",
+        "label": "Text 2 (ROMANIA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_rom_03",
+        "label": "Text 3 (ROMANIA) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_rom_03_mobile",
+        "label": "Text 3 (ROMANIA) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "SWEDEN SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_swe",
+        "label": "Enable (SWEDEN)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_swe",
+        "label": "Background Color (SWEDEN)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_swe",
+        "label": "Text & Icon Color (SWEDEN)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_swe",
+        "label": "Delay (SWEDEN)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_swe_01",
+        "label": "Text 1 (SWEDEN) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_swe_01_mobile",
+        "label": "Text 1 (SWEDEN) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_swe_02",
+        "label": "Text 2 (SWEDEN) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_swe_02_mobile",
+        "label": "Text 2 (SWEDEN) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_swe_03",
+        "label": "Text 3 (SWEDEN) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_swe_03_mobile",
+        "label": "Text 3 (SWEDEN) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "AUD SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_aud",
+        "label": "Enable (AUD)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_aud",
+        "label": "Background Color (AUD)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_aud",
+        "label": "Text & Icon Color (AUD)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_aud",
+        "label": "Delay (AUD)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_aud_01",
+        "label": "Text 1 (AUD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_aud_01_mobile",
+        "label": "Text 1 (AUD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_aud_02",
+        "label": "Text 2 (AUD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_aud_02_mobile",
+        "label": "Text 2 (AUD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_aud_03",
+        "label": "Text 3 (AUD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_aud_03_mobile",
+        "label": "Text 3 (AUD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "header",
+        "content": "NZD SETTINGS"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_header_promo_nzd",
+        "label": "Enable (NZD)",
+        "default": true
+      },
+      {
+        "type": "color",
+        "id": "header_promo_bgcolor_nzd",
+        "label": "Background Color (NZD)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "header_promo_color_nzd",
+        "label": "Text & Icon Color (NZD)",
+        "default": "#ffffff"
+      },
+      {
+        "type": "range",
+        "id": "header_promo_delay_nzd",
+        "label": "Delay (NZD)",
+        "min": 1,
+        "max": 10,
+        "step": 1,
+        "unit": "sec",
+        "default": 4,
+        "info": "Delay between each slide"
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_nzd_01",
+        "label": "Text 1 (NZD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_nzd_01_mobile",
+        "label": "Text 1 (NZD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_nzd_02",
+        "label": "Text 2 (NZD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_nzd_02_mobile",
+        "label": "Text 2 (NZD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_nzd_03",
+        "label": "Text 3 (NZD) - Desktop",
+        "info": "Any italic text will become underlined in the header."
+      },
+      {
+        "type": "richtext",
+        "id": "header_promo_richtext_nzd_03_mobile",
+        "label": "Text 3 (NZD) - Mobile",
+        "info": "Any italic text will become underlined in the header."
+      },
+    ],
+    "presets": [
+    {
+      "name": "Announcement Promo"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,1229 @@
+{%- comment -%}
+  Header Promo Bar with Horizontal Infinite Sliding Animation
+  - currency_code
+{%- endcomment -%}
+
+{% liquid
+  # FOR US
+  assign one_usd_slide_only = false
+  if section.settings.header_promo_richtext_usa_02 == blank and section.settings.header_promo_richtext_usa_03 == blank
+    assign one_usd_slide_only = true
+  endif
+
+  # FOR CAD
+  assign one_cad_slide_only = false
+  if section.settings.header_promo_richtext_cad_02 == blank and section.settings.header_promo_richtext_cad_03 == blank
+    assign one_cad_slide_only = true
+  endif
+
+  # FOR GBP
+  assign one_gbp_slide_only = false
+  if section.settings.header_promo_richtext_uk_02 == blank and section.settings.header_promo_richtext_uk_03 == blank
+    assign one_gbp_slide_only = true
+  endif
+
+  # FOR EUR
+  assign one_eur_slide_only = false
+  if section.settings.header_promo_richtext_eur_02 == blank and section.settings.header_promo_richtext_eur_03 == blank
+    assign one_eur_slide_only = true
+  endif
+
+  # FOR BGN
+  assign one_bul_slide_only = false
+  if section.settings.header_promo_richtext_bul_02 == blank and section.settings.header_promo_richtext_bul_03 == blank
+    assign one_bul_slide_only = true
+  endif
+
+  # FOR CZK
+  assign one_cr_slide_only = false
+  if section.settings.header_promo_richtext_cr_02 == blank and section.settings.header_promo_richtext_cr_03 == blank
+    assign one_cr_slide_only = true
+  endif
+
+  # FOR DKK
+  assign one_den_slide_only = false
+  if section.settings.header_promo_richtext_den_02 == blank and section.settings.header_promo_richtext_den_03 == blank
+    assign one_den_slide_only = true
+  endif
+
+  # FOR HUF
+  assign one_hun_slide_only = false
+  if section.settings.header_promo_richtext_hun_02 == blank and section.settings.header_promo_richtext_hun_03 == blank
+    assign one_hun_slide_only = true
+  endif
+
+  # FOR PLN
+  assign one_pol_slide_only = false
+  if section.settings.header_promo_richtext_pol_02 == blank and section.settings.header_promo_richtext_pol_03 == blank
+    assign one_pol_slide_only = true
+  endif
+
+  # FOR RON
+  assign one_rom_slide_only = false
+  if section.settings.header_promo_richtext_rom_02 == blank and section.settings.header_promo_richtext_rom_03 == blank
+    assign one_rom_slide_only = true
+  endif
+
+  # FOR SEK
+  assign one_swe_slide_only = false
+  if section.settings.header_promo_richtext_swe_02 == blank and section.settings.header_promo_richtext_swe_03 == blank
+    assign one_swe_slide_only = true
+  endif
+
+  # FOR AUD
+  assign one_aud_slide_only = false
+  if section.settings.header_promo_richtext_aud_02 == blank and section.settings.header_promo_richtext_aud_03 == blank
+    assign one_aud_slide_only = true
+  endif
+
+  # FOR NZD
+  assign one_nzd_slide_only = false
+  if section.settings.header_promo_richtext_nzd_02 == blank and section.settings.header_promo_richtext_nzd_03 == blank
+    assign one_nzd_slide_only = true
+  endif
+%}
+
+{%- comment -%} Horizontal Infinite Slider Styles {%- endcomment -%}
+<style>
+  .header-promo {
+    position: relative;
+    overflow: hidden;
+  }
+  .header-promo__outer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 45px;
+    box-sizing: border-box;
+  }
+  .header-promo__edge-link {
+    color: inherit;
+    text-decoration: underline;
+    font-size: 15px;
+    white-space: nowrap;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+  }
+  .header-promo__edge-link.header-promo__edge-link--left {
+    text-decoration: none;
+  }
+
+  
+  .header-promo__edge-link:hover {
+    opacity: 1;
+  }
+  .header-promo__edge-link--left {
+    margin-right: auto;
+  }
+  .header-promo__edge-link--right {
+    margin-left: auto;
+  }
+  .header-promo__container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .header-promo__viewport {
+    overflow: hidden;
+    flex: 0 1 auto;
+    /* max-width: min-content; */
+  }
+  .header-promo__slider {
+    display: flex;
+    width: 100%;
+  }
+  .header-promo__slider.is-animating {
+    transition: transform 0.4s ease-in-out;
+  }
+  .header-promo-slide {
+    min-width: 100%;
+    width: 100%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .header-promo__arrow {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .header-promo__arrow.header-promo__arrow--prev {
+    left: 45px
+  }
+
+  .header-promo__arrow.header-promo__arrow--next{
+    right: 45px;
+  }
+
+  .header-promo__arrow:hover {
+    opacity: 1;
+  }
+  .header-promo__arrow svg {
+    display: block;
+    width: 10px;
+    height: 13px;
+    color: {{ section.settings.header_promo_color_usa }};
+  }
+  /* Hide arrows when only one slide */
+  .header-promo:not(.header-promo--has-slides) .header-promo__arrow {
+    display: none;
+  }
+  @media screen and (max-width: 767px) {
+    .header-promo__outer {
+      padding: 0 10px;
+    }
+    .header-promo__edge-link {
+      font-size: 10px;
+    }
+    .header-promo__viewport {
+      max-width: calc(100% - 40px);
+    }
+    .header-promo__arrow {
+      display: none;
+    }
+  }
+</style>
+
+{% if currency_code == 'USD' %}
+  {%- comment -%} Free Shipping Info Update on Header Promo {%- endcomment -%}
+
+  {%- comment -%} Intelligems Test Groups {%- endcomment -%}
+  {%- assign variant1 = 'eb06c9398187' -%}
+  {%- assign variant2 = 'd2533a399546' -%}
+  {%- assign variant3 = '8e5c08b0fba3' -%}
+  {%- assign variant4 = '649cd904870b' -%}
+
+  {%- if cart.attributes and cart.attributes.igTestGroups -%}
+    {%- assign intelligems_variant = cart.attributes.igTestGroups | default: '' | downcase | strip -%}
+  {%- endif -%}
+
+  {%- if intelligems_variant contains variant1 -%}
+    {%- assign us_shipping_threshold = section.settings.cart_free_shipping_amount_v1 | default: section.settings.cart_free_shipping_amount -%}
+  {%- elsif intelligems_variant contains variant2 -%}
+    {%- assign us_shipping_threshold = section.settings.cart_free_shipping_amount_v2 | default: section.settings.cart_free_shipping_amount -%}
+  {%- elsif intelligems_variant contains variant3 -%}
+    {%- assign us_shipping_threshold = section.settings.cart_free_shipping_amount_v3 | default: section.settings.cart_free_shipping_amount -%}
+  {%- elsif intelligems_variant contains variant4 -%}
+    {%- assign us_shipping_threshold = section.settings.cart_free_shipping_amount_v4 | default: section.settings.cart_free_shipping_amount -%}
+  {%- else -%}
+    {%- assign us_shipping_threshold = section.settings.cart_free_shipping_amount -%}
+  {%- endif -%}
+
+  {%- if us_shipping_threshold != blank and us_shipping_threshold != '' -%}
+    {%- assign promo_02 = section.settings.header_promo_richtext_usa_02 -%}
+    {%- if promo_02 != blank -%}
+      {%- assign promo_02_lower = promo_02 | downcase -%}
+      {%- if promo_02_lower contains 'free shipping' and promo_02_lower contains '$' -%}
+        {%- assign promo_02 = 'Free shipping on US orders over $' | append: us_shipping_threshold -%}
+      {%- endif -%}
+    {%- endif -%}
+    
+    {%- assign promo_02m = section.settings.header_promo_richtext_usa_02_mobile -%}
+    {%- if promo_02m != blank -%}
+      {%- assign promo_02m_lower = promo_02m | downcase -%}
+      {%- if promo_02m_lower contains 'free shipping' and promo_02m_lower contains '$' -%}
+        {%- assign promo_02m = 'Free shipping on US orders over $' | append: us_shipping_threshold -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- else -%}
+    {%- assign promo_02 = section.settings.header_promo_richtext_usa_02 -%}
+    {%- assign promo_02m = section.settings.header_promo_richtext_usa_02_mobile -%}
+  {%- endif -%}
+
+  <div
+    class="header-promo {% unless one_usd_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_usa }}"
+    data-region="{{ currency_code }}"
+    data-amt-v1="{{ section.settings.cart_free_shipping_amount_v1 | default: section.settings.cart_free_shipping_amount }}"
+    data-amt-v2="{{ section.settings.cart_free_shipping_amount_v2 | default: section.settings.cart_free_shipping_amount }}"
+    data-amt-v3="{{ section.settings.cart_free_shipping_amount_v3 | default: section.settings.cart_free_shipping_amount }}"
+    data-amt-v4="{{ section.settings.cart_free_shipping_amount_v4 | default: section.settings.cart_free_shipping_amount }}"
+    style="color: {{ section.settings.header_promo_color_usa }}; background-color: {{ section.settings.header_promo_bgcolor_usa }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_usa_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_usa_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_usa_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_usa_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+
+            {% comment %} 3. TARGET THIS SLIDE WITH JS CLASS {% endcomment %}
+            {% if promo_02 != blank %}
+              <div class="header-promo-slide">
+                {% if promo_02m != blank %}
+                  <span class="mobile_promo js-promo-text-target">{{ promo_02m }}</span>
+                {% endif %}
+                <span class="desktop_promo js-promo-text-target">{{ promo_02 }}</span>
+              </div>
+            {% endif %}
+
+            {% if section.settings.header_promo_richtext_usa_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_usa_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_usa_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_usa_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'CAD' %}
+  <div
+    class="header-promo {% unless one_cad_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_cad }}"
+    style="color: {{ section.settings.header_promo_color_cad }}; background-color: {{ section.settings.header_promo_bgcolor_cad }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_cad_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_cad_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_cad_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_cad_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_cad_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_cad_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_cad_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_cad_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_cad_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_cad_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_cad_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_cad_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'GBP' %}
+  <div
+    class="header-promo {% unless one_gbp_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_uk }}"
+    style="color: {{ section.settings.header_promo_color_uk }}; background-color: {{ section.settings.header_promo_bgcolor_uk }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_uk_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_uk_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_uk_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_uk_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_uk_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_uk_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_uk_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_uk_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_uk_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_uk_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_uk_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_uk_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'EUR' %}
+  <div
+    class="header-promo {% unless one_eur_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_eur }}"
+    style="color: {{ section.settings.header_promo_color_eur }}; background-color: {{ section.settings.header_promo_bgcolor_eur }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_eur_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_eur_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_eur_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_eur_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_eur_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_eur_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_eur_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_eur_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_eur_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_eur_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_eur_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_eur_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'BGN' %}
+  <div
+    class="header-promo {% unless one_bul_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_bul }}"
+    style="color: {{ section.settings.header_promo_color_bul }}; background-color: {{ section.settings.header_promo_bgcolor_bul }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_bul_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_bul_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_bul_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_bul_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_bul_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_bul_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_bul_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_bul_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_bul_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_bul_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_bul_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_bul_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'CZK' %}
+  <div
+    class="header-promo {% unless one_cr_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_cr }}"
+    style="color: {{ section.settings.header_promo_color_cr }}; background-color: {{ section.settings.header_promo_bgcolor_cr }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_cr_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_cr_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_cr_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_cr_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_cr_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_cr_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_cr_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_cr_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_cr_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_cr_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_cr_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_cr_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'DKK' %}
+  <div
+    class="header-promo {% unless one_den_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_den }}"
+    style="color: {{ section.settings.header_promo_color_den }}; background-color: {{ section.settings.header_promo_bgcolor_den }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_den_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_den_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_den_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_den_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_den_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_den_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_den_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_den_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_den_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_den_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_den_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_den_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'HUF' %}
+  <div
+    class="header-promo {% unless one_hun_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_hun }}"
+    style="color: {{ section.settings.header_promo_color_hun }}; background-color: {{ section.settings.header_promo_bgcolor_hun }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_hun_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_hun_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_hun_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_hun_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_hun_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_hun_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_hun_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_hun_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_hun_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_hun_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_hun_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_hun_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'PLN' %}
+  <div
+    class="header-promo {% unless one_pol_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_pol }}"
+    style="color: {{ section.settings.header_promo_color_pol }}; background-color: {{ section.settings.header_promo_bgcolor_pol }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_pol_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_pol_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_pol_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_pol_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_pol_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_pol_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_pol_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_pol_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_pol_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_pol_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_pol_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_pol_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'RON' %}
+  <div
+    class="header-promo {% unless one_rom_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_rom }}"
+    style="color: {{ section.settings.header_promo_color_rom }}; background-color: {{ section.settings.header_promo_bgcolor_rom }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_rom_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_rom_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_rom_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_rom_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_rom_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_rom_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_rom_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_rom_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_rom_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_rom_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_rom_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_rom_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'SEK' %}
+  <div
+    class="header-promo {% unless one_swe_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_swe }}"
+    style="color: {{ section.settings.header_promo_color_swe }}; background-color: {{ section.settings.header_promo_bgcolor_swe }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_swe_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_swe_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_swe_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_swe_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_swe_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_swe_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_swe_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_swe_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_swe_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_swe_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_swe_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_swe_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'AUD' %}
+  <div
+    class="header-promo {% unless one_aud_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_aud }}"
+    style="color: {{ section.settings.header_promo_color_aud }}; background-color: {{ section.settings.header_promo_bgcolor_aud }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_aud_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_aud_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_aud_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_aud_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_aud_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_aud_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_aud_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_aud_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_aud_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_aud_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_aud_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_aud_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% if currency_code == 'NZD' %}
+  <div
+    class="header-promo {% unless one_nzd_slide_only %}header-promo--has-slides js__header-promo-slider{% endunless %}"
+    data-delay="{{ section.settings.header_promo_delay_nzd }}"
+    style="color: {{ section.settings.header_promo_color_nzd }}; background-color: {{ section.settings.header_promo_bgcolor_nzd }}"
+  >
+    <div class="header-promo__outer">
+      {% if section.settings.header_promo_left_link_text != blank and section.settings.header_promo_left_link_url != blank %}
+        <a href="{{ section.settings.header_promo_left_link_url }}" class="header-promo__edge-link header-promo__edge-link--left">
+          {{ section.settings.header_promo_left_link_text }}
+        </a>
+      {% endif %}
+      <div class="header-promo__container">
+        <button type="button" class="header-promo__arrow header-promo__arrow--prev" aria-label="Previous">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.78101 0.384033L0.781006 5.38403L6.78101 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+        <div class="header-promo__viewport">
+          <div class="header-promo__slider">
+            {% if section.settings.header_promo_richtext_nzd_01 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_nzd_01_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_nzd_01_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_nzd_01 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_nzd_02 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_nzd_02_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_nzd_02_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_nzd_02 }}</span>
+                </span>
+              </div>
+            {% endif %}
+            {% if section.settings.header_promo_richtext_nzd_03 != blank %}
+              <div class="header-promo-slide">
+                <span class="header-promo-slide__content">
+                  {% if section.settings.header_promo_richtext_nzd_03_mobile != blank %}
+                    <span class="mobile_promo">{{ section.settings.header_promo_richtext_nzd_03_mobile }}</span>
+                  {% endif %}
+                  <span class="desktop_promo">{{ section.settings.header_promo_richtext_nzd_03 }}</span>
+                </span>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+        <button type="button" class="header-promo__arrow header-promo__arrow--next" aria-label="Next">
+          <svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.320068 0.384033L6.32007 5.38403L0.320068 10.384" stroke="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      {% if section.settings.header_promo_right_link_text != blank and section.settings.header_promo_right_link_url != blank %}
+        <a href="{{ section.settings.header_promo_right_link_url }}" class="header-promo__edge-link header-promo__edge-link--right">
+          {{ section.settings.header_promo_right_link_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{%- comment -%} Horizontal Infinite Slider JavaScript {%- endcomment -%}
+<script>
+  (function() {
+    const sliders = document.querySelectorAll('.js__header-promo-slider');
+    
+    sliders.forEach(function(wrapper) {
+      const slider = wrapper.querySelector('.header-promo__slider');
+      const slides = Array.from(wrapper.querySelectorAll('.header-promo-slide'));
+      const prevBtn = wrapper.querySelector('.header-promo__arrow--prev');
+      const nextBtn = wrapper.querySelector('.header-promo__arrow--next');
+      const delay = (parseInt(wrapper.dataset.delay) || 4) * 1000;
+      
+      if (!slider || slides.length <= 1) return;
+      
+      const totalSlides = slides.length;
+      let currentIndex = 0;
+      let autoplayInterval = null;
+      let isTransitioning = false;
+      
+      // Clone first and last slides for infinite effect
+      const firstClone = slides[0].cloneNode(true);
+      const lastClone = slides[totalSlides - 1].cloneNode(true);
+      firstClone.classList.add('is-clone');
+      lastClone.classList.add('is-clone');
+      
+      slider.appendChild(firstClone);
+      slider.insertBefore(lastClone, slides[0]);
+      
+      // Start at position 1 (after the prepended clone)
+      currentIndex = 1;
+      slider.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+      
+      function goToSlide(index, animate) {
+        if (isTransitioning) return;
+        
+        if (animate !== false) {
+          slider.classList.add('is-animating');
+          isTransitioning = true;
+        }
+        
+        currentIndex = index;
+        slider.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+      }
+      
+      function handleTransitionEnd() {
+        slider.classList.remove('is-animating');
+        isTransitioning = false;
+        
+        // If at clone, jump to real slide instantly
+        if (currentIndex === 0) {
+          // At last clone (before first), jump to real last
+          currentIndex = totalSlides;
+          slider.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+        } else if (currentIndex === totalSlides + 1) {
+          // At first clone (after last), jump to real first
+          currentIndex = 1;
+          slider.style.transform = 'translateX(-' + (currentIndex * 100) + '%)';
+        }
+      }
+      
+      slider.addEventListener('transitionend', handleTransitionEnd);
+      
+      function nextSlide() {
+        goToSlide(currentIndex + 1);
+      }
+      
+      function prevSlide() {
+        goToSlide(currentIndex - 1);
+      }
+      
+      function startAutoplay() {
+        stopAutoplay();
+        autoplayInterval = setInterval(nextSlide, delay);
+      }
+      
+      function stopAutoplay() {
+        if (autoplayInterval) {
+          clearInterval(autoplayInterval);
+          autoplayInterval = null;
+        }
+      }
+      
+      // Arrow button clicks
+      if (prevBtn) {
+        prevBtn.addEventListener('click', function() {
+          prevSlide();
+          startAutoplay();
+        });
+      }
+      
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function() {
+          nextSlide();
+          startAutoplay();
+        });
+      }
+      
+      // Pause on hover
+      wrapper.addEventListener('mouseenter', stopAutoplay);
+      wrapper.addEventListener('mouseleave', startAutoplay);
+      
+      // Start autoplay
+      startAutoplay();
+    });
+  })();
+</script>

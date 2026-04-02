@@ -1,0 +1,1144 @@
+{{ 'section-hero-v3.css' | asset_url | stylesheet_tag }}
+
+{%- assign config = section.settings -%}
+
+{%- assign desktop_image = config.image_desktop -%}
+{%- assign mobile_image = config.image_mobile -%}
+{%- assign video_webm = config.video_webm -%}
+{%- assign video_mp4 = config.video_mp4 -%}
+{%- assign has_video = false -%}
+{%- if video_webm != blank or video_mp4 != blank -%}
+  {%- assign has_video = true -%}
+{%- endif -%}
+
+{%- if config.enable_us_hero_images and localization.country.iso_code == 'US' -%}
+  {%- if config.us_desktop_image != blank -%}
+    {%- assign desktop_image = config.us_desktop_image -%}
+  {%- endif -%}
+  {%- if config.us_mobile_image != blank -%}
+    {%- assign mobile_image = config.us_mobile_image -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- if desktop_image == blank and mobile_image != blank -%}
+  {%- assign desktop_image = mobile_image -%}
+{%- endif -%}
+
+{%- if mobile_image == blank and desktop_image != blank -%}
+  {%- assign mobile_image = desktop_image -%}
+{%- endif -%}
+
+{%- assign cta_links = section.blocks | where: 'type', 'cta' -%}
+{%- assign cta_width_mobile = 100 -%}
+{%- assign cta_width_desktop = 100 -%}
+
+<style>
+#shopify-section-{{ section.id }} .section-hero--video-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+#shopify-section-{{ section.id }} .section-hero--video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+{%- if has_video -%}
+#shopify-section-{{ section.id }} .section-hero--content {
+  position: relative;
+  z-index: 1;
+}
+{%- endif -%}
+#shopify-section-{{ section.id }} .section-hero--heading.section-hero--heading--mobile{
+  display: none;
+}
+@media screen and (max-width: 767px) {
+  .mob-button--white {
+    background: #fff;
+    border-color: #fff;
+    color: #000;
+  }
+  .mob-button--black {
+    background: #000;
+    border: 1px solid #000;
+    color: #fff;
+  }
+  .mob-button--pink {
+    background: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    color: #fff;
+  }
+  #shopify-section-{{ section.id }} .section-hero--heading.section-hero--heading--mobile{
+    display: flex;
+  }
+  #shopify-section-{{ section.id }} .section-hero--heading.section-hero--heading--desktop{
+    display: none;
+  }
+}
+{% comment %} @media (max-width: 1300px) {
+  .section-hero--heading.highlight span {
+    height: auto;
+    line-height: 1.3;
+  }
+} {% endcomment %}
+
+.section-hero--heading:not(.highlight) span {
+  height: var(--line-height-mobile);
+  line-height: 1;
+}
+@media (min-width: 1024px) {
+  .section-hero--heading:not(.highlight) span {
+    height: var(--line-height-desktop);
+  }
+}
+</style>
+
+<div 
+  class="section-hero--inner"
+  style="
+    --ratio-mobile: {{ mobile_image.aspect_ratio | default: '1 / 1' }};
+    --ratio-desktop: {{ desktop_image.aspect_ratio | default: '16 / 9' }};
+  "
+>
+  {% assign mblWidth = 1550 %}
+  {% assign dskWidth = 3840 %}
+
+  {% if template contains 'index' %}
+    {% assign mblWidth = 900 %}
+    {% assign dskWidth = 2220 %}
+  {% endif %}
+
+  {%- if has_video -%}
+    <div class="section-hero--video-wrapper">
+      <video
+        class="section-hero--video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+      >
+        {%- if video_webm != blank -%}
+          <source src="{{ video_webm }}" type="video/webm">
+        {%- endif -%}
+        {%- if video_mp4 != blank -%}
+          <source src="{{ video_mp4 }}" type="video/mp4">
+        {%- endif -%}
+      </video>
+    </div>
+  {%- else -%}
+
+  <figure class="section-hero--image mobile">
+    {%- render 'component_image' with 
+      image: mobile_image,
+      width: mblWidth,
+      widths: '375, 550, 750, 1100, 1500',
+      sizes: '100vw',
+      is_eager: true
+    -%}
+  </figure>
+  <figure class="section-hero--image desktop">
+    {%- render 'component_image' with 
+      image: desktop_image,
+      width: dskWidth,
+      widths: '750, 1100, 1500, 1780, 2000, 3000, 3840',
+      sizes: '100vw',
+      is_eager: true
+    -%}
+  </figure>
+
+  {%- endif -%}
+  <div 
+    class="section-hero--content {{ config.position_mobile }} {{ config.position_desktop }}"
+    style="
+      --alignment-mobile: {{ config.alignment_mobile }};
+      --alignment-desktop: {{ config.alignment_desktop }};
+      --gap-mobile: {{ config.gap_mobile | append: 'px' }};
+      --gap-desktop: {{ config.gap_desktop | append: 'px' }};
+    "
+  >
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'heading' -%}
+          {%- assign heading = block.settings -%}
+          {%- assign cta_width_mobile = heading.width_mobile -%}
+          {%- assign cta_width_desktop = heading.width_desktop -%}
+          {%- assign desktop_heading_text = heading.heading -%}
+          {%- assign mobile_heading_text = heading.heading_mobile | default: heading.heading -%}
+
+          {%- assign text_color = heading.color_text -%}
+          {%- assign text_color_mobile = heading.color_text_mobile -%}
+          {%- assign highlight_color = heading.color_highlight -%}
+          {%- assign highlight_color_mobile = heading.color_highlight_mobile -%}
+          {%- assign line_height_desktop = heading.line_height_desktop -%}
+          {%- assign line_height_mobile = heading.line_height_mobile -%}
+          {%- assign font_size_desktop = heading.font_size_desktop -%}
+          {%- assign font_size_mobile = heading.font_size_mobile -%}
+          {%- assign width_desktop = heading.width_desktop -%}
+          {%- assign width_mobile = heading.width_mobile -%}
+          {%- assign heading_gap_desktop = heading.heading_gap_desktop | default: 0 -%}
+          {%- assign heading_gap_mobile = heading.heading_gap_mobile | default: 0 -%}
+          {%- assign show_highlight_desktop = heading.show_highlight_desktop -%}
+          {%- assign show_highlight_mobile = heading.show_highlight_mobile -%}
+
+          {%- if localization.country.iso_code == 'US' and heading.enable_us_content -%}
+            {%- if heading.us_heading != blank -%}
+              {%- assign desktop_heading_text = heading.us_heading -%}
+            {%- endif -%}
+            {%- if heading.us_heading_mobile != blank -%}
+              {%- assign mobile_heading_text = heading.us_heading_mobile -%}
+            {%- elsif heading.us_heading != blank -%}
+              {%- assign mobile_heading_text = heading.us_heading -%}
+            {%- endif -%}
+
+            {%- if heading.us_color_text != blank and heading.us_color_text != 'rgba(0,0,0,0)' -%}{%- assign text_color = heading.us_color_text -%}{%- endif -%}
+            {%- if heading.us_color_text_mobile != blank and heading.us_color_text_mobile != 'rgba(0,0,0,0)' -%}{%- assign text_color_mobile = heading.us_color_text_mobile -%}{%- endif -%}
+            {%- if heading.us_color_highlight != blank and heading.us_color_highlight != 'rgba(0,0,0,0)' -%}{%- assign highlight_color = heading.us_color_highlight -%}{%- endif -%}
+            {%- if heading.us_color_highlight_mobile != blank and heading.us_color_highlight_mobile != 'rgba(0,0,0,0)' -%}{%- assign highlight_color_mobile = heading.us_color_highlight_mobile -%}{%- endif -%}
+            {%- if heading.us_line_height_desktop != blank -%}{%- assign line_height_desktop = heading.us_line_height_desktop -%}{%- endif -%}
+            {%- if heading.us_line_height_mobile != blank -%}{%- assign line_height_mobile = heading.us_line_height_mobile -%}{%- endif -%}
+            {%- if heading.us_font_size_desktop != blank -%}{%- assign font_size_desktop = heading.us_font_size_desktop -%}{%- endif -%}
+            {%- if heading.us_font_size_mobile != blank -%}{%- assign font_size_mobile = heading.us_font_size_mobile -%}{%- endif -%}
+            {%- if heading.us_width_desktop != blank -%}{%- assign width_desktop = heading.us_width_desktop -%}{%- endif -%}
+            {%- if heading.us_width_mobile != blank -%}{%- assign width_mobile = heading.us_width_mobile -%}{%- endif -%}
+            {%- if heading.us_heading_gap_desktop != blank -%}{%- assign heading_gap_desktop = heading.us_heading_gap_desktop -%}{%- endif -%}
+            {%- if heading.us_heading_gap_mobile != blank -%}{%- assign heading_gap_mobile = heading.us_heading_gap_mobile -%}{%- endif -%}
+            {%- assign show_highlight_desktop = heading.us_show_highlight_desktop -%}
+            {%- assign show_highlight_mobile = heading.us_show_highlight_mobile -%}
+          {%- endif -%}
+
+          <h2 
+            class="section-hero--heading section-hero--heading--mobile {% if show_highlight_mobile %} highlight {% endif %}"
+            style="
+              --color-text: {{ text_color }};
+              --color-text-mobile: {{ text_color_mobile }};
+              --color-highlight: {{ highlight_color }};
+              --color-highlight-mobile: {{ highlight_color_mobile }};
+              --size-mobile: {{ font_size_mobile | append: 'px' }};
+              --size-desktop: {{ font_size_desktop | append: 'px' }};
+              --width-mobile: {{ width_mobile | append: '%' }};
+              --width-desktop: {{ width_desktop | append: '%' }};
+              --line-height-mobile: {{ line_height_mobile | append: 'px' }};
+              --line-height-desktop: {{ line_height_desktop | append: 'px' }};
+              --heading-gap-mobile: {{ heading_gap_mobile }}px;
+              --heading-gap-desktop: {{ heading_gap_desktop }}px;
+            "
+          >
+            {%- assign lines = mobile_heading_text | newline_to_br | split: '<br />' -%}
+            {%- for line in lines -%}
+              <span>{{ line }}</span>
+            {%- endfor -%}
+          </h2>
+          <h2 
+            class="section-hero--heading section-hero--heading--desktop {% if show_highlight_desktop %} highlight {% endif %}"
+            style="
+              --color-text: {{ text_color }};
+              --color-text-mobile: {{ text_color_mobile }};
+              --color-highlight: {{ highlight_color }};
+              --color-highlight-mobile: {{ highlight_color_mobile }};
+              --size-mobile: {{ font_size_mobile | append: 'px' }};
+              --size-desktop: {{ font_size_desktop | append: 'px' }};
+              --width-mobile: {{ width_mobile | append: '%' }};
+              --width-desktop: {{ width_desktop | append: '%' }};
+              --line-height-mobile: {{ line_height_mobile | append: 'px' }};
+              --line-height-desktop: {{ line_height_desktop | append: 'px' }};
+              --heading-gap-mobile: {{ heading_gap_mobile }}px;
+              --heading-gap-desktop: {{ heading_gap_desktop }}px;
+            "
+          >
+            {%- assign lines = desktop_heading_text | newline_to_br | split: '<br />' -%}
+            {%- for line in lines -%}
+              <span>{{ line }}</span>
+            {%- endfor -%}
+          </h2>
+        {%- when 'description' -%}
+          {%- assign description = block.settings -%}
+          {%- assign description_text = description.description -%}
+          
+          {%- assign color_desktop = description.color_desktop -%}
+          {%- assign color_mobile = description.color_mobile -%}
+          {%- assign font_size_mobile = description.font_size_mobile -%}
+          {%- assign font_size_desktop = description.font_size_desktop -%}
+          {%- assign line_mobile = description.line_height_mobile -%}
+          {%- assign line_desktop = description.line_height_desktop -%}
+          {%- assign width_mobile = description.width_mobile -%}
+          {%- assign width_desktop = description.width_desktop -%}
+          {%- assign font = description.font -%}
+
+          {%- if localization.country.iso_code == 'US' and description.enable_us_content -%}
+            {%- if description.us_description != blank -%}{%- assign description_text = description.us_description -%}{%- endif -%}
+            {%- if description.us_color_desktop != blank and description.us_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign color_desktop = description.us_color_desktop -%}{%- endif -%}
+            {%- if description.us_color_mobile != blank and description.us_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign color_mobile = description.us_color_mobile -%}{%- endif -%}
+            {%- if description.us_width_mobile != blank -%}{%- assign width_mobile = description.us_width_mobile -%}{%- endif -%}
+            {%- if description.us_width_desktop != blank -%}{%- assign width_desktop = description.us_width_desktop -%}{%- endif -%}
+          {%- endif -%}
+
+          <div 
+            class="section-hero--description {{ font }} text-underline"
+            style="
+              --color-desktop: {{ color_desktop }};
+              --color-mobile: {{ color_mobile }};
+              --size-mobile: {{ font_size_mobile | append: 'px' }};
+              --size-desktop: {{ font_size_desktop | append: 'px' }};
+              --line-mobile: {{ line_mobile }};
+              --line-desktop: {{ line_desktop }};
+              --width-mobile: {{ width_mobile | append: '%' }};
+              --width-desktop: {{ width_desktop | append: '%' }};
+            "
+          >
+            {{ description_text }}
+          </div>
+      {%- endcase -%}
+    {%- endfor -%}
+    {%- if cta_links.size > 0 -%}
+      {%- assign cta = cta_links[0].settings -%}
+      
+      {%- assign text_color_desktop = cta.text_color_desktop -%}
+      {%- assign background_color_desktop = cta.background_color_desktop -%}
+      {%- assign border_color_desktop = cta.border_color_desktop -%}
+      {%- assign hover_text_color_desktop = cta.hover_text_color_desktop -%}
+      {%- assign hover_background_color_desktop = cta.hover_background_color_desktop -%}
+      {%- assign hover_border_color_desktop = cta.hover_border_color_desktop -%}
+      {%- assign text_color_mobile = cta.text_color_mobile -%}
+      {%- assign background_color_mobile = cta.background_color_mobile -%}
+      {%- assign border_color_mobile = cta.border_color_mobile -%}
+      {%- assign hover_text_color_mobile = cta.hover_text_color_mobile -%}
+      {%- assign hover_background_color_mobile = cta.hover_background_color_mobile -%}
+      {%- assign hover_border_color_mobile = cta.hover_border_color_mobile -%}
+      {%- assign button_padding_inline_desktop = cta.button_padding_inline_desktop | default: 16 -%}
+      {%- assign button_padding_inline_mobile = cta.button_padding_inline_mobile | default: 12 -%}
+
+      {%- if localization.country.iso_code == 'US' and cta.enable_us_content -%}
+        {%- if cta.us_text_color_desktop != blank and cta.us_text_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign text_color_desktop = cta.us_text_color_desktop -%}{%- endif -%}
+        {%- if cta.us_background_color_desktop != blank and cta.us_background_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign background_color_desktop = cta.us_background_color_desktop -%}{%- endif -%}
+        {%- if cta.us_border_color_desktop != blank and cta.us_border_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign border_color_desktop = cta.us_border_color_desktop -%}{%- endif -%}
+        {%- if cta.us_hover_text_color_desktop != blank and cta.us_hover_text_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign hover_text_color_desktop = cta.us_hover_text_color_desktop -%}{%- endif -%}
+        {%- if cta.us_hover_background_color_desktop != blank and cta.us_hover_background_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign hover_background_color_desktop = cta.us_hover_background_color_desktop -%}{%- endif -%}
+        {%- if cta.us_hover_border_color_desktop != blank and cta.us_hover_border_color_desktop != 'rgba(0,0,0,0)' -%}{%- assign hover_border_color_desktop = cta.us_hover_border_color_desktop -%}{%- endif -%}
+        {%- if cta.us_text_color_mobile != blank and cta.us_text_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign text_color_mobile = cta.us_text_color_mobile -%}{%- endif -%}
+        {%- if cta.us_background_color_mobile != blank and cta.us_background_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign background_color_mobile = cta.us_background_color_mobile -%}{%- endif -%}
+        {%- if cta.us_border_color_mobile != blank and cta.us_border_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign border_color_mobile = cta.us_border_color_mobile -%}{%- endif -%}
+        {%- if cta.us_hover_text_color_mobile != blank and cta.us_hover_text_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign hover_text_color_mobile = cta.us_hover_text_color_mobile -%}{%- endif -%}
+        {%- if cta.us_hover_background_color_mobile != blank and cta.us_hover_background_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign hover_background_color_mobile = cta.us_hover_background_color_mobile -%}{%- endif -%}
+        {%- if cta.us_hover_border_color_mobile != blank and cta.us_hover_border_color_mobile != 'rgba(0,0,0,0)' -%}{%- assign hover_border_color_mobile = cta.us_hover_border_color_mobile -%}{%- endif -%}
+        {%- if cta.us_button_padding_inline_desktop != blank -%}{%- assign button_padding_inline_desktop = cta.us_button_padding_inline_desktop -%}{%- endif -%}
+        {%- if cta.us_button_padding_inline_mobile != blank -%}{%- assign button_padding_inline_mobile = cta.us_button_padding_inline_mobile -%}{%- endif -%}
+      {%- endif -%}
+
+      <div 
+        class="section-hero--ctas"
+        style="
+          --alignment-mobile: {{ config.alignment_mobile | replace: 'left', 'flex-start' | replace: 'right', 'flex-end' }};
+          --alignment-desktop: {{ config.alignment_desktop | replace: 'left', 'flex-start' | replace: 'right', 'flex-end' }};
+          --width-mobile: {{ cta_width_mobile | append: '%' }};
+          --width-desktop: {{ cta_width_desktop | append: '%' }};
+          --text-color-desktop: {{ text_color_desktop }};
+          --background-color-desktop: {{ background_color_desktop }};
+          --border-color-desktop: {{ border_color_desktop }};
+          --hover-text-color-desktop: {{ hover_text_color_desktop }};
+          --hover-background-color-desktop: {{ hover_background_color_desktop }};
+          --hover-border-color-desktop: {{ hover_border_color_desktop }};
+          --text-color-mobile: {{ text_color_mobile }};
+          --background-color-mobile: {{ background_color_mobile }};
+          --border-color-mobile: {{ border_color_mobile }};
+          --hover-text-color-mobile: {{ hover_text_color_mobile }};
+          --hover-background-color-mobile: {{ hover_background_color_mobile }};
+          --hover-border-color-mobile: {{ hover_border_color_mobile }};
+          --button-padding-inline-desktop: {{ button_padding_inline_desktop }}px;
+          --button-padding-inline-mobile: {{ button_padding_inline_mobile }}px;
+        "
+      >
+        {%- for block in cta_links -%}
+          {%- assign cta_text = block.settings.text -%}
+          {%- assign cta_url = block.settings.url -%}
+          {%- if localization.country.iso_code == 'US' and block.settings.enable_us_content -%}
+            {%- if block.settings.us_text != blank -%}
+              {%- assign cta_text = block.settings.us_text -%}
+            {%- endif -%}
+            {%- if block.settings.us_url != blank -%}
+              {%- assign cta_url = block.settings.us_url -%}
+            {%- endif -%}
+          {%- endif -%}
+          <a href="{{ cta_url }}" class="button {{ block.settings.color }} mob-{{ block.settings.mob_color }}">
+            {{ cta_text }}
+          </a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- schema -%}
+  {
+    "name": "Hero",
+    "tag": "section",
+    "class": "section-hero",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Layout"
+      },
+      {
+        "type": "select",
+        "id": "position_desktop",
+        "label": "Desktop Content Position",
+        "options": [
+          { "label": "Top Left", "value": "desktop-top-left" },
+          { "label": "Top Center", "value": "desktop-top-center" },
+          { "label": "Top Right", "value": "desktop-top-right" },
+          { "label": "Middle Left", "value": "desktop-middle-left" },
+          { "label": "Middle Center", "value": "desktop-middle-center" },
+          { "label": "Middle Right", "value": "desktop-middle-right" },
+          { "label": "Bottom Left", "value": "desktop-bottom-left" },
+          { "label": "Bottom Center", "value": "desktop-bottom-center" },
+          { "label": "Bottom Right", "value": "desktop-bottom-right" }
+        ],
+        "default": "desktop-middle-left"
+      },
+      {
+        "type": "select",
+        "id": "position_mobile",
+        "label": "Mobile Content Position",
+        "options": [
+          { "label": "Top Left", "value": "mobile-top-left" },
+          { "label": "Top Center", "value": "mobile-top-center" },
+          { "label": "Top Right", "value": "mobile-top-right" },
+          { "label": "Middle Left", "value": "mobile-middle-left" },
+          { "label": "Middle Center", "value": "mobile-middle-center" },
+          { "label": "Middle Right", "value": "mobile-middle-right" },
+          { "label": "Bottom Left", "value": "mobile-bottom-left" },
+          { "label": "Bottom Center", "value": "mobile-bottom-center" },
+          { "label": "Bottom Right", "value": "mobile-bottom-right" }
+        ],
+        "default": "mobile-top-center"
+      },
+      {
+        "type": "text_alignment",
+        "id": "alignment_desktop",
+        "label": "Desktop Text Alignment",
+        "default": "left"
+      },
+      {
+        "type": "text_alignment",
+        "id": "alignment_mobile",
+        "label": "Mobile Text Alignment",
+        "default": "center"
+      },
+      {
+        "type": "range",
+        "id": "gap_desktop",
+        "label": "Desktop content gap",
+        "info": "The space between each element",
+        "min": 10,
+        "max": 32,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "gap_mobile",
+        "label": "Mobile content gap",
+        "info": "The space between each element",
+        "min": 5,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "default": 12
+      },
+      {
+        "type": "header",
+        "content": "Images"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_desktop",
+        "label": "Desktop Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_mobile",
+        "label": "Image Mobile"
+      },
+      {
+        "type": "header",
+        "content": "US Hero Images"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_us_hero_images",
+        "label": "Enable US Hero Images",
+        "default": false
+      },
+      {
+        "type": "image_picker",
+        "id": "us_desktop_image",
+        "label": "US Desktop Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "us_mobile_image",
+        "label": "US Mobile Image"
+      },
+      {
+        "type": "header",
+        "content": "Video (overrides images when set)"
+      },
+      {
+        "type": "text",
+        "id": "video_webm",
+        "label": "Video URL (WebM)",
+        "info": "WebM format for better compression on modern browsers"
+      },
+      {
+        "type": "text",
+        "id": "video_mp4",
+        "label": "Video URL (MP4)",
+        "info": "MP4 format as fallback for Safari/iOS"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Heading",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Content"
+          },
+          {
+            "type": "textarea",
+            "id": "heading",
+            "label": "Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "heading_mobile",
+            "label": "Heading Mobile (Optional)"
+          },
+          {
+            "type": "number",
+            "id": "line_height_desktop",
+            "label": "Line Height (Desktop)",
+            "default": 60
+          },
+          {
+            "type": "number",
+            "id": "line_height_mobile",
+            "label": "Line Height (Mobile)",
+            "default": 40
+          },
+          {
+            "type": "header",
+            "content": "Colors"
+          },
+          {
+            "type": "color",
+            "id": "color_text",
+            "label": "Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "color_text_mobile",
+            "label": "Text Color (Mobile)",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "color_highlight",
+            "label": "Highlight Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "color_highlight_mobile",
+            "label": "Highlight Color (Mobile)",
+            "default": "#ffffff"
+          },
+          {
+            "type": "checkbox",
+            "id": "show_highlight_desktop",
+            "label": "Show highlight (desktop)",
+            "default": true
+          },
+          {
+            "type": "checkbox",
+            "id": "show_highlight_mobile",
+            "label": "Show highlight (mobile)",
+            "default": true
+          },
+          {
+            "type": "range",
+            "id": "heading_gap_desktop",
+            "label": "Space between heading lines (desktop)",
+            "min": 0,
+            "max": 40,
+            "step": 2,
+            "unit": "px",
+            "default": 10
+          },
+          {
+            "type": "range",
+            "id": "heading_gap_mobile",
+            "label": "Space between heading lines (mobile)",
+            "min": 0,
+            "max": 40,
+            "step": 2,
+            "unit": "px",
+            "default": 8
+          },
+          {
+            "type": "header",
+            "content": "Typography"
+          },
+          {
+            "type": "range",
+            "id": "font_size_desktop",
+            "label": "Desktop Font Size",
+            "min": 16,
+            "max": 60,
+            "step": 1,
+            "unit": "px",
+            "default": 55
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile",
+            "label": "Mobile Font Size",
+            "min": 16,
+            "max": 60,
+            "step": 1,
+            "unit": "px",
+            "default": 24
+          },
+          {
+            "type": "header",
+            "content": "Layout"
+          },
+          {
+            "type": "range",
+            "id": "width_desktop",
+            "label": "Desktop Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 40,
+            "unit": "%"
+          },
+          {
+            "type": "range",
+            "id": "width_mobile",
+            "label": "Mobile Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 90,
+            "unit": "%"
+          },
+                    {
+            "type": "header",
+            "content": "US Hero Region Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_us_content",
+            "label": "Enable US Content for this block",
+            "default": false
+          },
+          {
+            "type": "textarea",
+            "id": "us_heading",
+            "label": "US Heading"
+          },
+          {
+            "type": "textarea",
+            "id": "us_heading_mobile",
+            "label": "US Heading Mobile (Optional)"
+          },
+          {
+            "type": "number",
+            "id": "us_line_height_desktop",
+            "label": "US Line Height (Desktop)"
+          },
+          {
+            "type": "number",
+            "id": "us_line_height_mobile",
+            "label": "US Line Height (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_color_text",
+            "label": "US Text Color"
+          },
+          {
+            "type": "color",
+            "id": "us_color_text_mobile",
+            "label": "US Text Color (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_color_highlight",
+            "label": "US Highlight Color"
+          },
+          {
+            "type": "color",
+            "id": "us_color_highlight_mobile",
+            "label": "US Highlight Color (Mobile)"
+          },
+          {
+            "type": "checkbox",
+            "id": "us_show_highlight_desktop",
+            "label": "US Show highlight (desktop)"
+          },
+          {
+            "type": "checkbox",
+            "id": "us_show_highlight_mobile",
+            "label": "US Show highlight (mobile)"
+          },
+          {
+            "type": "range",
+            "id": "us_heading_gap_desktop",
+            "label": "US Space between heading lines (desktop)",
+            "min": 0,
+            "max": 40,
+            "step": 2,
+            "unit": "px",
+            "default": 10
+          },
+          {
+            "type": "range",
+            "id": "us_heading_gap_mobile",
+            "label": "US Space between heading lines (mobile)",
+            "min": 0,
+            "max": 40,
+            "step": 2,
+            "unit": "px",
+            "default": 8
+          },
+          {
+            "type": "range",
+            "id": "us_width_desktop",
+            "label": "US Desktop Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 40,
+            "unit": "%"
+          },
+          {
+            "type": "range",
+            "id": "us_width_mobile",
+            "label": "US Mobile Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 90,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "type": "description",
+        "name": "Description",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Content"
+          },
+          {
+            "type": "richtext",
+            "id": "description",
+            "label": "Description"
+          },
+          {
+            "type": "header",
+            "content": "Colors"
+          },
+          {
+            "type": "color",
+            "id": "color_desktop",
+            "label": "Desktop Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "color_mobile",
+            "label": "Mobile Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "header",
+            "content": "Typography"
+          },
+          {
+            "type": "select",
+            "id": "font",
+            "label": "Font",
+            "options": [
+              { "label": "Sans", "value": "sans" },
+              { "label": "Mono", "value": "mono" }
+            ],
+            "default": "sans"
+          },
+          {
+            "type": "range",
+            "id": "font_size_desktop",
+            "label": "Desktop Font Size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 18
+          },
+          {
+            "type": "range",
+            "id": "font_size_mobile",
+            "label": "Mobile Font Size",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "unit": "px",
+            "default": 16
+          },
+          {
+            "type": "range",
+            "id": "line_height_desktop",
+            "label": "Desktop Line Height",
+            "min": 1,
+            "max": 2,
+            "step": 0.1,
+            "default": 1.5,
+            "unit": "%"
+          },
+          {
+            "type": "range",
+            "id": "line_height_mobile",
+            "label": "Mobile Line Height",
+            "min": 1,
+            "max": 2,
+            "step": 0.1,
+            "default": 1.5,
+            "unit": "%"
+          },
+          {
+            "type": "header",
+            "content": "Layout"
+          },
+          {
+            "type": "range",
+            "id": "width_desktop",
+            "label": "Desktop Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 40,
+            "unit": "%"
+          },
+          {
+            "type": "range",
+            "id": "width_mobile",
+            "label": "Mobile Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 90,
+            "unit": "%"
+          },
+          {
+            "type": "header",
+            "content": "US Region Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_us_content",
+            "label": "Enable US Content for this block",
+            "default": false
+          },
+          {
+            "type": "richtext",
+            "id": "us_description",
+            "label": "US Description"
+          },
+          {
+            "type": "color",
+            "id": "us_color_desktop",
+            "label": "US Desktop Text Color"
+          },
+          {
+            "type": "color",
+            "id": "us_color_mobile",
+            "label": "US Mobile Text Color"
+          },
+          {
+            "type": "range",
+            "id": "us_width_desktop",
+            "label": "US Desktop Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 40,
+            "unit": "%"
+          },
+          {
+            "type": "range",
+            "id": "us_width_mobile",
+            "label": "US Mobile Width",
+            "min": 10,
+            "max": 100,
+            "step": 5,
+            "default": 90,
+            "unit": "%"
+          }
+        ]
+      },
+      {
+        "type": "cta",
+        "name": "CTA",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Color scheme (Desktop)"
+          },
+          {
+            "type": "color",
+            "id": "text_color_desktop",
+            "label": "Text Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "background_color_desktop",
+            "label": "Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "border_color_desktop",
+            "label": "Border Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "hover_text_color_desktop",
+            "label": "Text Color (Hover)",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "hover_background_color_desktop",
+            "label": "Background Color (Hover)",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "hover_border_color_desktop",
+            "label": "Border Color (Hover)",
+            "default": "#ffffff"
+          },
+          {
+            "type": "header",
+            "content": "Color scheme (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "text_color_mobile",
+            "label": "Text Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "background_color_mobile",
+            "label": "Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "border_color_mobile",
+            "label": "Border Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "hover_text_color_mobile",
+            "label": "Text Color (Hover)",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "hover_background_color_mobile",
+            "label": "Background Color (Hover)",
+            "default": "#ffffff"
+          },
+          {
+            "type": "color",
+            "id": "hover_border_color_mobile",
+            "label": "Border Color (Hover)",
+            "default": "#ffffff"
+          },
+          {
+            "type": "range",
+            "id": "button_padding_inline_desktop",
+            "label": "Button Padding (Desktop)",
+            "min": 0,
+            "max": 40,
+            "step": 1,
+            "default": 16
+          },
+          {
+            "type": "range",
+            "id": "button_padding_inline_mobile",
+            "label": "Button Padding (Mobile)",
+            "min": 0,
+            "max": 40,
+            "step": 1,
+            "default": 12
+          },
+          {
+            "type": "header",
+            "content": "Content"
+          },
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "URL"
+          },
+          {
+            "type": "header",
+            "content": "US Region Settings"
+          },
+          {
+            "type": "checkbox",
+            "id": "enable_us_content",
+            "label": "Enable US Content for this block",
+            "default": false
+          },
+          {
+            "type": "text",
+            "id": "us_text",
+            "label": "US Text"
+          },
+          {
+            "type": "url",
+            "id": "us_url",
+            "label": "US URL"
+          },
+          {
+            "type": "color",
+            "id": "us_text_color_desktop",
+            "label": "US Text Color"
+          },
+          {
+            "type": "color",
+            "id": "us_background_color_desktop",
+            "label": "US Background Color"
+          },
+          {
+            "type": "color",
+            "id": "us_border_color_desktop",
+            "label": "US Border Color"
+          },
+          {
+            "type": "color",
+            "id": "us_hover_text_color_desktop",
+            "label": "US Text Color (Hover)"
+          },
+          {
+            "type": "color",
+            "id": "us_hover_background_color_desktop",
+            "label": "US Background Color (Hover)"
+          },
+          {
+            "type": "color",
+            "id": "us_hover_border_color_desktop",
+            "label": "US Border Color (Hover)"
+          },
+          {
+            "type": "color",
+            "id": "us_text_color_mobile",
+            "label": "US Text Color (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_background_color_mobile",
+            "label": "US Background Color (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_border_color_mobile",
+            "label": "US Border Color (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_hover_text_color_mobile",
+            "label": "US Text Color (Hover) (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_hover_background_color_mobile",
+            "label": "US Background Color (Hover) (Mobile)"
+          },
+          {
+            "type": "color",
+            "id": "us_hover_border_color_mobile",
+            "label": "US Border Color (Hover) (Mobile)"
+          },
+          {
+            "type": "range",
+            "id": "us_button_padding_inline_desktop",
+            "label": "US Button Padding (Desktop)",
+            "min": 0,
+            "max": 40,
+            "step": 1,
+            "default": 16
+          },
+          {
+            "type": "range",
+            "id": "us_button_padding_inline_mobile",
+            "label": "US Button Padding (Mobile)",
+            "min": 0,
+            "max": 40,
+            "step": 1,
+            "default": 12
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Page Hero",
+        "settings": {
+          "position_desktop": "middle-left",
+          "position_mobile": "center-top",
+          "alignment_desktop": "left",
+          "alignment_mobile": "center",
+          "image_desktop": "shopify:\/\/shop_images\/jr-holiday-hero.png",
+          "image_mobile": "shopify:\/\/shop_images\/jr-holiday-hero-mobile.png"
+        },
+        "blocks": [
+          {
+            "type": "heading",
+            "settings": {
+              "heading": "Introducing The Holiday Collection",
+              "color_text": "#FFFFFF",
+              "color_highlight": "#464343",
+              "font_size_desktop": 55,
+              "font_size_mobile": 26,
+              "width_desktop": 40,
+              "width_mobile": 90
+            }
+          }
+        ]
+      }
+    ]
+  }
+{%- endschema -%}

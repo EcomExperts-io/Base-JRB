@@ -1,0 +1,95 @@
+<style>
+  .blockquote-section {
+    padding: 40px 20px;
+    font-family: 'BaseMonoWideWeb', 'Courier', 'Courier New', sans-serif;
+    text-align: center;
+  }
+  .blockquote-section__inner {
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .blockquote-section__quote {
+    font-size: 20px;
+    line-height: 32px;
+    letter-spacing: 0.3px;
+    font-family: 'Canela', serif;
+    font-weight: 300;
+  }
+  .blockquote-section__author {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 16px;
+    font-family: 'FontSpringArticulateDemibold', sans-serif;
+    font-weight: 700;
+    line-height: 16px;
+  }
+  @media (min-width: 700px) {
+    .blockquote-section__author {
+      font-size: 16px;
+      margin-top: 24px;
+    }
+    .blockquote-section__quote {
+      font-size: 28px;
+      line-height: 46px;
+    }
+    .blockquote-section {
+      padding: 60px;
+    }
+  }
+</style>
+<div class="blockquote-section" style="background: {{ section.settings.bg_color }}; color: {{ section.settings.text_color }};">
+  {% if section.settings.url != blank -%}
+    <a href="{{ section.settings.url }}" target="_blank" style="color: {{ section.settings.text_color }};">
+  {%- endif %}
+  <div class="blockquote-section__inner">
+    <p class="blockquote-section__quote">{{ section.settings.quote }}</p>
+    <p class="blockquote-section__author">{{ section.settings.author | prepend: '— ' }}</p>
+  </div>
+  {% if section.settings.url != blank %}</a>{% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Blockquote",
+  "class": "blockquote-section__section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Settings"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F5F2EC"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "Quote"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Author"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "URL"
+    }
+  ],
+  "presets": [{ "name": "Blockquote" }]
+}
+{% endschema %}

@@ -1,0 +1,125 @@
+{%- if localization.country.currency.iso_code == 'USD' -%}
+  {%- assign us_shipping_threshold = settings.cart_free_shipping_amount -%}
+{%- else -%}
+  {%- assign us_shipping_threshold = blank -%}
+{%- endif -%}
+
+<footer class="footer">
+  <div class="footer__nav">
+    <div class="footer__nav__cell">
+      <div class="footer__nav__heading">{{ newsletterTitle }}</div>
+      <form class="footer__subscribe js-footerSubscribe" action="#" method="post">
+        <div class="footer__subscribe__intro">
+          {{ newsletterHed }}
+        </div>
+        <div class="footer__subscribe__form">
+          <input type="hidden" name="SOURCE" value="Footer" />
+          {%- capture newsletter_messaging -%}
+            {%- render 'component_localized-copy', 
+              uk_copy: section.settings.newsletter_placeholder_uk,
+              eu_copy: section.settings.newsletter_placeholder_eu,
+              us_copy: section.settings.newsletterPlaceholder,
+              cad_copy: section.settings.newsletter_placeholder_ca,
+              irl_copy: section.settings.newsletter_placeholder_irl,
+            -%}
+          {%- endcapture -%}
+          <input
+            aria-label="Email"
+            data-error="Invalid format, please try again."
+            id="footer-newsletter-email"
+            name="EMAIL"
+            placeholder="Email Address"
+            required
+            type="email"
+            autocomplete="off"
+          />
+          <button type="submit">
+            Submit
+          </button>
+        </div>
+        {%- if newsletter_messaging != blank -%}
+          <div class="footer__subscribe__messaging">
+            {{ newsletter_messaging }}
+          </div>
+        {%- endif -%}
+        <p tabindex="-1" class="footer__subscribe__success js-footerSubscribeSuccess">
+          {{ newsletterSuccess }}
+        </p>
+      </form>
+    </div>
+    {%- for group in linklists[footerMenu].links -%}<div class="footer__nav__cell">
+      <div class="footer__nav__heading">{{ group.title }}</div>
+      {%- assign groupTitle = group.title | downcase -%}
+      <ul{% if groupTitle == 'connect' %} class="footer__nav__community"{% endif %}>
+        {% for link in group.links %}
+        {%- assign linkTitle = link.title | downcase -%}
+        <li>
+          <a 
+            href="{{ link.url }}"
+            data-footer
+            {% if link.title == 'Accessibility' %} 
+              data-acsb-custom-trigger="true"
+            {% else %}
+              target="_blank"
+              rel="noreferrer noopener"
+            {% endif %}
+          >
+            <span>{{ link.title }}</span>
+            {% if groupTitle == 'connect' %}
+              {%- assign social = 'facebook,instagram,pinterest,twitter,youtube' | split: ',' -%}
+              {%- case linkTitle -%}
+                {%- when 'instagram' -%}
+                  <svg viewBox="0 0 20 20">
+                    <path d="M7.7 10c0-1.3 1-2.3 2.3-2.3s2.3 1 2.3 2.3-1 2.3-2.3 2.3-2.3-1-2.3-2.3m-1.3 0c0 2 1.6 3.6 3.6 3.6s3.6-1.6 3.6-3.6S12 6.4 10 6.4 6.4 8 6.4 10m6.5-3.7c0 .5.4.8.8.8.5 0 .8-.4.8-.8 0-.5-.4-.8-.8-.8s-.8.3-.8.8m-5.7 9.4c-.7 0-1.1-.1-1.3-.2-.3-.1-.6-.3-.8-.5-.2-.2-.4-.5-.5-.8-.1-.2-.2-.6-.2-1.3v-2.8-2.8c0-.7.1-1.1.2-1.3.1-.3.3-.6.5-.8.2-.2.5-.4.8-.5.2-.1.6-.2 1.3-.2h5.6c.7 0 1.1.1 1.3.2.3.1.6.3.8.5s.4.5.5.8c.1.2.2.6.2 1.3v5.6c0 .7-.1 1.1-.2 1.3-.1.3-.3.6-.5.8s-.5.4-.8.5c-.2.1-.6.2-1.3.2H7.2M7.1 3c-.7 0-1.3.2-1.7.3-.4.2-.8.5-1.2.9s-.7.8-.8 1.2c-.2.5-.3 1-.4 1.7v5.8c0 .7.2 1.3.3 1.7.2.5.4.9.8 1.2.4.4.8.6 1.2.8.4.2 1 .3 1.7.3h5.8c.7 0 1.3-.2 1.7-.3.5-.2.9-.4 1.2-.8.4-.4.6-.8.8-1.2.2-.4.3-1 .3-1.7V10 7.1c0-.7-.2-1.3-.3-1.7-.2-.5-.4-.9-.8-1.2-.4-.4-.8-.6-1.2-.8s-1-.3-1.7-.3H9.9C8.1 3 7.9 3 7.1 3"></path>
+                  </svg>
+                {%- when 'facebook' -%}
+                  <svg viewBox="0 0 20 20">
+                    <path d="M6.5 7.6H8V6.2c0-.6 0-1.6.5-2.2.5-.6 1.1-1 2.3-1 1.9 0 2.7.3 2.7.3l-.4 2.1s-.6-.2-1.2-.2-1.1.2-1.1.8v1.6h2.4L13 9.7h-2.2V17H8V9.7H6.5V7.6z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                  </svg>
+                {%- when 'twitter' -%}
+                  <svg xmlns="http://www.w3.org/2000/svg" role="img" viewBox="-5 -5 30 30" id="X--Streamline-Simple-Icons" height="30" width="30">
+                    <path d="M15.750833333333334 0.9608333333333334h3.066666666666667l-6.699999999999999 7.658333333333333L20 19.038333333333334h-6.171666666666667l-4.833333333333333 -6.32 -5.531666666666667 6.32H0.395l7.166666666666667 -8.191666666666666L0 0.9616666666666667h6.328333333333334l4.3691666666666675 5.776666666666667ZM14.675 17.203333333333333h1.699166666666667L5.405 2.7H3.581666666666667Z" fill="#000000" stroke-width="0.8333"></path>
+                  </svg>
+                {%- when 'pinterest' -%}
+                  <svg viewBox="0 0 20 20">
+                    <path d="M11.1 13.6c-.9 0-1.7-.5-2-1.1 0 0-.5 2.1-.6 2.5-.4 1.4-1.4 2.9-1.5 3-.1 0-.2 0-.2-.1 0-.2-.3-2 0-3.5.2-.7 1.1-5 1.1-5s-.3-.6-.3-1.5c0-1.4.7-2.4 1.6-2.4.8 0 1.1.6 1.1 1.4 0 .8-.5 2.1-.7 3.3-.2 1 .4 1.8 1.3 1.8 1.6 0 2.6-2.2 2.6-4.9 0-2-1.2-3.5-3.5-3.5-2.4 0-4 2-4 4.4 0 .8.2 1.4.5 1.8.2.2.2.3.1.5 0 .2-.1.6-.2.7-.1.2-.2.3-.4.2-1.2-.5-1.7-1.9-1.7-3.5 0-2.6 2-5.7 5.9-5.7 3.2 0 5.3 2.5 5.3 5.3.1 3.6-1.7 6.3-4.4 6.3"></path>
+                  </svg>
+              {%- endcase -%}
+            {%- endif -%}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {%- endfor -%}
+  </div>
+  {% if disclaimer %}
+  <div class="footer__disclaimer">
+    <p>
+      <small>
+        {{ disclaimer }}
+      </small>
+    </p>
+  </div>
+  {% endif %}
+  <div class="footer__legal">
+    <ul>
+      {% for link in linklists.footerLegal.links %}
+        <li>
+          {% if link.title == 'Accessibility' -%}
+            <a href="{{ link.url }}" data-acsb-custom-trigger="true" class="cursor-pointer" tabindex="0" role="button">
+              Accessibility
+            </span>
+          {%- else -%}
+            <a href="{{ link.url }}">
+              {{ link.title }}
+            </a>
+          {%- endif -%}
+        </li>
+      {% endfor %}
+    </ul>
+    <p>
+      <small>&copy; JustSteven LLC {{ 'now' | date: "%Y" }}</small>
+    </p>
+  </div>
+</footer>

@@ -1,0 +1,352 @@
+{%- if card_image_override -%}
+  {%- assign card_image = card_image_override -%}
+{%- else -%}
+  {%- assign card_image = product.metafields.product_card.image -%}
+  {%- if card_image == blank -%}
+    {%- assign card_image = product.featured_image -%}
+  {%- endif -%}
+{%- endif -%}
+
+{%- assign hover_image = product.metafields.product_card.hover_image -%}
+{%- if hover_image == blank -%}
+  {%- assign hover_image = product.images[1] -%}
+{%- endif -%}
+
+{%- assign hasFlag = false -%}
+{%- assign hasSaleFlag = false -%}
+{%- assign flags = '' -%}
+{%- for tag in product.tags -%}
+  {%- if tag contains 'flag_' -%}
+    {%- assign hasFlag = true -%}
+    {%- assign flag_text = tag | split: "flag_" | last -%}
+    {%- if flags == '' -%}
+      {%- assign flags = flag_text -%}
+    {%- else -%}
+      {%- assign flags = flags | append: '||' | append: flag_text -%}
+    {%- endif -%}
+  {%- endif -%}
+  {% comment %}
+    {%- if flag == 'flag_Sale' -%}
+      {%- assign hasFlag = true -%}
+      {%- assign hasSaleFlag = true -%}
+      {%- assign discount = product.compare_at_price_max | minus: product.price | times: 100.0 | divided_by: product.compare_at_price_max | money_without_currency | times: 100 | remove: '.0' -%}
+    {%- elsif flag contains 'flag_' -%}
+      {%- assign hasFlag = true -%}
+      {%- assign flag = flag | split: "flag_" | last -%}
+    {%- endif -%}
+  {% endcomment %}
+{%- endfor -%}
+
+{%- assign flag_array = flags | split: '||' -%}
+{%- assign holiday_tags = settings.tag_list | split: ',' -%}
+{%- assign outline_tags = settings.outline_tag_list | split: ',' -%}
+{%- liquid 
+  capture hideClassNames
+    for tag in product.tags
+      if tag contains 'hide-'
+        assign hideClass = tag | split: 'hide-' | last | prepend: 'hidden--'
+        echo ' ' | append: hideClass | append: ' '
+      endif
+      if tag == 'hide'
+        echo ' hidden '
+      endif
+    endfor
+  endcapture
+-%}
+
+{% assign notify_me = product.metafields.custom.notify_me.value %}
+{%- capture card_srcset -%}
+  {{ card_image | image_url: width: 360, height: 360, crop: 'center' }} 360w, 
+  {{ card_image | image_url: width: 720, height: 720, crop: 'center' }} 720w, 
+  {{ card_image | image_url: width: 900, height: 900, crop: 'center' }} 900w,
+  {{ card_image | image_url: width: 1080, height: 1080, crop: 'center' }} 1080w,
+  {{ card_image | image_url: width: 1440, height: 1440, crop: 'center' }} 1440w
+{%- endcapture -%}
+
+{%- capture hover_srcset -%}
+  {{ hover_image | image_url: width: 360, height: 360, crop: 'center' }} 360w, 
+  {{ hover_image | image_url: width: 720, height: 720, crop: 'center' }} 720w, 
+  {{ hover_image | image_url: width: 900, height: 900, crop: 'center' }} 900w,
+  {{ hover_image | image_url: width: 1080, height: 1080, crop: 'center' }} 1080w,
+  {{ hover_image | image_url: width: 1440, height: 1440, crop: 'center' }} 1440w
+{%- endcapture -%}
+
+<div
+  class="product__card {% if product.metafields.custom.collection_card_hover %} product__card--custom-hover {% endif %} {% unless product.available %} sold-out {% endunless %} js-productCard {{ hideClassNames }} {% unless hover_image %}product__card--no-hover-images{% endunless %}"
+  data-carousel="{{ mobile_carousel | default: false }}"
+  data-product-id="{{ product.id }}"
+>
+  <div class="product__card-images">
+    {%- if mobile_carousel and hover_image != blank -%}
+      <div class="product__card-carousel swiper-container js-productCardCarousel">
+        <div class="swiper-wrapper">
+          <div class="product__card-carousel-slide swiper-slide">
+            {%- if index == 1  -%}
+              {{ card_image | image_url: width: 360, height: 360, crop: 'center' | image_tag: 
+                srcset: card_srcset, 
+                sizes: "(min-width: 1024px) 25vw, (min-width: 768px) 33.33vw, 50vw", 
+                preload: true, 
+                alt: card_image.alt, 
+                width: 360, 
+                height: 360, 
+                fetchpriority: 'high', loading: 'eager' 
+              }}
+            {%- else -%}
+              {{ card_image | image_url: width: 360, height: 360, crop: 'center' | image_tag: 
+                srcset: card_srcset, 
+                sizes: "(min-width: 1024px) 25vw, (min-width: 768px) 33.33vw, 50vw", 
+                alt: card_image.alt, 
+                width: 360, 
+                height: 360, 
+                loading: 'lazy' 
+              }}
+            {%- endif -%}
+          </div>
+          <div class="product__card-carousel-slide hover swiper-slide">
+            {{ hover_image | image_url: width: 360, height: 360, crop: 'center' | image_tag:
+              srcset: hover_srcset, 
+              sizes: "(min-width: 1024px) 25vw, (min-width: 768px) 33.33vw, 50vw", 
+              alt: hover_image.alt, 
+              width: 360, 
+              height: 360, 
+              loading: 'lazy' 
+            }}
+          </div>
+        </div>
+        <div class="swiper-pagination js-productCardCarouselPag"></div>
+      </div>
+    {%- else -%}
+      {%- if hover_image != blank -%}
+        {{ hover_image | image_url: width: 360, height: 360, crop: 'center' | image_tag: 
+          srcset: hover_srcset, 
+          sizes: "(min-width: 1024px) 25vw, (min-width: 768px) 33.33vw, 50vw", 
+          alt: hover_image.alt, 
+          width: 360, 
+          height: 360, 
+          loading: 'lazy', 
+          class: 'product__card-image' 
+        }}
+      {%- endif -%}
+
+      {% assign has_hover_class = 'product__card-image' %}
+      {% if hover_image != blank %}
+        {% assign has_hover_class = 'product__card-image has-hover' %}
+      {% endif %}
+
+      {% if index == 1 %}
+        {{ card_image | image_url: width: 360, height: 360, crop: 'center' | image_tag: 
+            srcset: card_srcset, 
+            sizes: "(min-width: 1024px) 25vw, (min-width: 768px) 33.33vw, 50vw",
+            preload: true, 
+            alt: card_image.alt, 
+            width: 360, 
+            height: 360, 
+            class: has_hover_class, 
+            fetchpriority: 'high', 
+            loading: 'eager' 
+        }}
+      {% else %}
+        {{ card_image | image_url: width: 360, height: 360, crop: 'center' | image_tag: 
+            srcset: card_srcset, 
+            sizes: "(min-width: 1024px) 25vw, (min-width: 768px) 33.33vw, 50vw", 
+            alt: card_image.alt, 
+            width: 360, 
+            height: 360, 
+            class: has_hover_class, 
+            loading: 'lazy' }}
+      {% endif %}
+    {%- endif -%}
+
+    {% if product.metafields.custom.collection_card_hover != blank %}
+      <div class="product__card-custom-hover-media">
+        {% assign media = product.metafields.custom.collection_card_hover.value | first %}
+        {% if media.media_type == 'video' %}
+          <video class="product__card-custom-hover-item product__card-custom-hover-item--1 product__card-custom-hover-video" preload="metadata" muted loop playsinline autoplay {% if media.preview_image %}poster="{{ media.preview_image.src | image_url }}"{% endif %} data-duration="{{ media.duration }}">
+            {% for source in media.sources %}
+              <source {% if template contains 'index' or template contains 'collection' %}data-{% endif %}src="{{ source.url }}" type="{{ source.mime_type }}" {% if source.height %}data-height="{{ source.height }}"{% endif %}>
+            {% endfor %}
+          </video>
+        {% else %}
+          <img class="product__card-custom-hover-item product__card-custom-hover-item--1 product__card-custom-hover-image" src="{{ media | image_url }}" width="" height="" alt="{{ media.alt }}">
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="product__card-flag-container">
+      {% if hasFlag %}
+        {% for flag in flag_array %}
+          {% assign is_holiday_tag = false %}
+          {% assign is_outline_tag = false %}
+          {% for outline_tag in outline_tags %}
+            {% assign trimmed_outline_tag = outline_tag | strip %}
+            {% if flag == trimmed_outline_tag %}
+              {% assign is_outline_tag = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          {% for holiday_tag in holiday_tags %}
+            {% assign trimmed_holiday_tag = holiday_tag | strip %}
+            {% if flag == trimmed_holiday_tag %}
+              {% assign is_holiday_tag = true %}
+              {% break %}
+            {% endif %}
+          {% endfor %}
+          <div class="product__card-flag {% if is_holiday_tag %}product__card-flag--holiday{% endif %} {% if is_outline_tag %}product__card-flag--outline{% endif %}" style="--tag-color: {{ settings.tag_color | default: '#f50a99' }}; --holiday-tag-bg-color: {{ settings.tag_bg_color | default: '#f50a99' }}; --holiday-tag-text-color: {{ settings.tag_bg_text_color | default: '#fff' }}; --outline-tag-color: {{ settings.outline_tag_color | default: '#f50a99' }};"> 
+            {{ flag }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {%- render 'product-awards', context: 'card', product: product -%}
+  </div>
+  <div class="product__card-info">
+    {% if compliance_product_title %}
+      <h3 class="product__card-title">{{ compliance_product_title }}</h3>
+    {% else %}
+      <h3 class="product__card-title">{{ product.title }}</h3>
+    {% endif %}
+    <div class="product__card_stars-button-container">
+      {%- unless hide_reviews -%}
+        <div class="product__card-stars">
+          {%- render 'component-review-stars', product: product -%}
+        </div>
+      {%- endunless -%}
+      {%- assign product_avaiable = product.available -%}
+      {%- if product.template_suffix == 'bundle' -%}
+        {%- assign bundle_products = product.metafields.bundle -%}
+        {%- assign bundle_available = true -%}
+        {%- assign bundle_discount = product.metafields.bundle_config.discount -%}
+        {%- assign discount_code = bundle_discount | split: '[' | last | split: ']' | first -%}
+        {%- assign discount_value = bundle_discount | split: '% ' | first -%}
+        {%- assign bundle_price = 0 -%}
+        {%- assign compare_at_price = 0 -%}
+        {%- for field in bundle_products -%}
+          {%- assign name = field | first -%}
+          {%- assign bundle_product = bundle_products[name].value -%}
+          {%- assign bundle_price = bundle_price | plus: bundle_product.price -%}
+          {%- assign compare_at_price = compare_at_price | plus: bundle_product.price -%}
+          {%- unless bundle_product.available -%}
+            {%- assign bundle_available = false -%}
+          {%- endunless -%}
+        {%- endfor -%}
+        {%- assign discount = discount_value | divided_by: 100.00 | times: bundle_price -%}
+        {%- assign compare_at_price = compare_at_price -%}
+        {%- assign bundle_price = bundle_price | minus: discount -%}
+        {%- assign product_avaiable = bundle_available -%}
+      {%- endif -%}
+      {%- if product_avaiable -%}
+        <button
+          type="button"
+          class="product__card-button {% if hide_button == true %} desktop-hidden {% endif %}"
+        >
+          <div class="product__card-button--text">
+            {%- if product.template_suffix == 'bundle' or product.template_suffix == 'set-builder' -%}
+              Customize
+            {%- else -%}
+              Shop Now
+            {%- endif -%}
+          </div>
+
+          {% assign discount_metafield_exists = product.metafields.custom.discount_percentage %}
+          <div class="product__card-button--price {% if discount_metafield_exists %}product__card-price--discount_metafield{% endif %}">
+            {% unless discount_metafield_exists %}
+              {%- if product.template_suffix == 'bundle' -%}
+                {% if compare_at_price > product.price %}
+                  <span class="product__card-button--sale bundle">
+                    {{ compare_at_price | money_without_trailing_zeros }}
+                  </span>
+                {% endif %}
+                <span class="product__card-button--regular bundle">
+                  {%- render 'component-card-price', price: bundle_price -%}
+                </span>
+              {%- else -%}
+                {% if product.compare_at_price != blank and product.compare_at_price != product.price %}
+                  <span class="product__card-button--sale">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+                {% endif %}
+
+                <span class="product__card-button--regular">
+                  {%- render 'component-card-price', price: product.price -%}
+                </span>
+              {%- endif -%}
+            {% else %}
+              <span class="product__card-button--sale">{%- render 'component-card-price', price: product.price -%}</span>
+              {% assign discount_percentage_value = product.metafields.custom.discount_percentage
+                | times: product.price
+                | divided_by: 100
+              %}
+              {% assign discount_percentage_value = product.price | minus: discount_percentage_value %}
+              <span class="product__card-button--regular">{{ discount_percentage_value | money_without_trailing_zeros }}</span>
+            {% endunless %}
+          </div>
+        </button>
+
+      {%- else -%}
+        <button
+          type="button"
+          class="product__card-button {% if hide_button == true %} desktop-hidden {% endif %} button--gray {% if notify_me == true %} js-waitlist {% endif %}"
+          data-id="{{ product.selected_or_first_available_variant.id }}"
+          data-product-id="{{ product.id }}"
+        >
+          {% if notify_me == true %}
+            <div class="product__card-button--text">Notify Me</div>
+          {% else %}
+            <div class="product__card-button--text">
+              {% if product.metafields.custom.sold_out_text != blank %}
+                {{ product.metafields.custom.sold_out_text }}
+              {% else %}
+              Sold Out
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="product__card-button--price {{ product.template_suffix }}">
+            {%- if product.template_suffix == 'bundle' -%}
+              {%- assign bundle_products = product.metafields.bundle -%}
+              {%- assign bundle_discount = product.metafields.bundle_config.discount -%}
+              {%- assign discount_code = bundle_discount | split: '[' | last | split: ']' | first -%}
+              {%- assign discount_value = bundle_discount | split: '% ' | first -%}
+              {%- assign bundle_price = 0 -%}
+              {%- assign compare_at_price = 0 -%}
+              {%- for field in bundle_products -%}
+                {%- assign name = field | first -%}
+                {%- assign bundle_product = bundle_products[name].value -%}
+                {%- assign bundle_price = bundle_price | plus: bundle_product.price -%}
+                {%- assign compare_at_price = compare_at_price | plus: bundle_product.price -%}
+              {%- endfor -%}
+              {%- assign discount = discount_value | divided_by: 100.00 | times: bundle_price -%}
+              {%- assign compare_at_price = compare_at_price -%}
+              {%- assign bundle_price = bundle_price | minus: discount -%}
+              {% if compare_at_price > product.price %}
+                <span class="product__card-button--sale bundle">
+                  {{ compare_at_price | money_without_trailing_zeros }}
+                </span>
+              {% endif %}
+              <span class="product__card-button--regular bundle">
+                {{ bundle_price | money_without_trailing_zeros }}
+              </span>
+            {%- else -%}
+              {% if product.compare_at_price != blank and product.compare_at_price != product.price %}
+                <span class="product__card-button--sale">{{ product.compare_at_price | money_without_trailing_zeros }}</span>
+              {% endif %}
+
+              <span class="product__card-button--regular">
+                {{ product.price | money_without_trailing_zeros }}
+              </span>
+            {%- endif -%}
+          </div>
+        </button>
+      {%- endif -%}
+    </div>
+  </div>
+  <a
+    href="{{ product.url | append: '?country=' | append: localization.country.iso_code }}"
+    data-url="{{ product.url | append: '?country=' | append: localization.country.iso_code }}"
+    class="product__card-link js-productCardLink {% if mobile_carousel and hover_image != blank %} has-carousel {% endif %}"
+    {% if product.tags contains 'sesami-service' %}
+      data-reload
+    {% endif %}
+  >
+    <span class="visually-hidden"> View more information about {{ product.title }} </span>
+  </a>
+</div>
